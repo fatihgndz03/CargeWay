@@ -174,3 +174,30 @@ export async function loadStations(): Promise<StationsResult> {
   }
   return { stations: SAMPLE_STATIONS, source: 'sample' };
 }
+
+/** İki koordinat arası kuş uçuşu mesafe (km). */
+export function distanceKm(a: [number, number], b: [number, number]): number {
+  const R = 6371;
+  const toRad = (d: number) => (d * Math.PI) / 180;
+  const dLat = toRad(b[0] - a[0]);
+  const dLon = toRad(b[1] - a[1]);
+  const h = Math.sin(dLat / 2) ** 2 + Math.cos(toRad(a[0])) * Math.cos(toRad(b[0])) * Math.sin(dLon / 2) ** 2;
+  return 2 * R * Math.asin(Math.sqrt(h));
+}
+
+export interface GeocodeResult {
+  label: string;
+  position: [number, number];
+}
+
+/** Yer adı → koordinat (OpenStreetMap Nominatim, yalnızca Türkiye). */
+export async function geocode(query: string): Promise<GeocodeResult | null> {
+  const url =
+    'https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&countrycodes=tr&accept-language=tr&q=' +
+    encodeURIComponent(query);
+  const res = await fetch(url, { headers: { Accept: 'application/json' } });
+  if (!res.ok) return null;
+  const data = (await res.json()) as { lat: string; lon: string; display_name: string }[];
+  if (!data.length) return null;
+  return { label: data[0].display_name, position: [Number(data[0].lat), Number(data[0].lon)] };
+}

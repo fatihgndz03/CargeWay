@@ -6,7 +6,7 @@ const navItems = [
   { label: 'Şarj Haritası', href: '/sarj-haritasi' },
   { label: 'Haberler', href: '/#haberler' },
   { label: 'Araçlar', href: '/#araclar' },
-  { label: 'Hakkımızda', href: '/#hakkimizda' },
+  { label: 'Nasıl Çalışır?', href: '/#nasil-calisir' },
 ];
 
 export default function Header() {

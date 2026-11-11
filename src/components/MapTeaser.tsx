@@ -1,16 +1,27 @@
 import { Link } from 'react-router-dom';
-import { MapPin, Zap, Clock, CheckCircle } from 'lucide-react';
+import { MapPin, Zap, SlidersHorizontal, Navigation, Crosshair } from 'lucide-react';
+
+type PinSize = 'sm' | 'md' | 'lg';
+const PIN_SIZE: Record<PinSize, string> = { sm: 'w-6 h-6', md: 'w-8 h-8', lg: 'w-10 h-10' };
+const PINS: { top: string; left: string; size: PinSize }[] = [
+  { top: '25%', left: '30%', size: 'lg' },
+  { top: '45%', left: '60%', size: 'sm' },
+  { top: '65%', left: '25%', size: 'md' },
+  { top: '30%', left: '70%', size: 'sm' },
+  { top: '70%', left: '55%', size: 'sm' },
+  { top: '50%', left: '42%', size: 'lg' },
+];
 
 const features = [
-  { icon: MapPin, text: 'Anlık konum bazlı arama' },
-  { icon: Zap, text: 'Hızlı ve standart şarj filtresi' },
-  { icon: Clock, text: 'Operatör ve soket tipine göre filtreleme' },
-  { icon: CheckCircle, text: 'Navigasyon entegrasyonu' },
+  { icon: Crosshair, text: 'Konumunuza göre yakındaki istasyonlar' },
+  { icon: Zap, text: 'AC (normal) / DC (hızlı) şarj filtresi' },
+  { icon: SlidersHorizontal, text: 'Operatör, güç ve soket tipine göre filtreleme' },
+  { icon: Navigation, text: 'Tek dokunuşla yol tarifi' },
 ];
 
 export default function MapTeaser() {
   return (
-    <section id="harita" className="bg-black py-24 border-t border-gray-800">
+    <section id="harita" className="bg-black py-24 border-t border-gray-800 scroll-mt-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           <div>
@@ -19,7 +30,7 @@ export default function MapTeaser() {
               Size En Yakın<br />Şarj İstasyonunu<br />Saniyeler İçinde Bulun
             </h2>
             <p className="text-gray-400 text-lg leading-relaxed mb-8">
-              Türkiye genelindeki tüm şarj ağlarını tek haritada görebilir, soket ve güç bilgilerini karşılaştırabilir ve yol tarifi alabilirsiniz.
+              Türkiye genelindeki farklı şarj ağlarının istasyonlarını tek haritada görebilir, soket ve güç bilgilerini karşılaştırabilir ve yol tarifi alabilirsiniz.
             </p>
 
             <ul className="space-y-4 mb-10">
@@ -54,50 +65,24 @@ export default function MapTeaser() {
                 }}
               />
 
-              {[
-                { top: '25%', left: '30%', active: true, size: 'lg' },
-                { top: '45%', left: '60%', active: false, size: 'sm' },
-                { top: '65%', left: '25%', active: true, size: 'md' },
-                { top: '30%', left: '70%', active: true, size: 'sm' },
-                { top: '70%', left: '55%', active: false, size: 'sm' },
-                { top: '50%', left: '42%', active: true, size: 'lg' },
-              ].map((pin, i) => (
+              {PINS.map((pin, i) => (
                 <div
                   key={i}
                   className="absolute -translate-x-1/2 -translate-y-1/2"
                   style={{ top: pin.top, left: pin.left }}
                 >
-                  {pin.active && pin.size === 'lg' && (
+                  {pin.size === 'lg' && (
                     <div className="absolute inset-0 -m-4 rounded-full bg-green-500/20 animate-ping" style={{ animationDuration: '2s' }} />
                   )}
-                  <div className={`relative w-${pin.size === 'lg' ? '10' : pin.size === 'md' ? '8' : '6'} h-${pin.size === 'lg' ? '10' : pin.size === 'md' ? '8' : '6'} ${pin.active ? 'bg-green-500 shadow-lg shadow-green-500/50' : 'bg-gray-600'} rounded-full flex items-center justify-center border-2 ${pin.active ? 'border-green-300' : 'border-gray-500'}`}>
-                    <Zap className={`${pin.size === 'sm' ? 'w-2.5 h-2.5' : 'w-4 h-4'} ${pin.active ? 'text-black' : 'text-gray-400'}`} fill="currentColor" />
+                  <div className={`relative ${PIN_SIZE[pin.size]} bg-green-500 shadow-lg shadow-green-500/50 rounded-full flex items-center justify-center border-2 border-green-300`}>
+                    <Zap className={`${pin.size === 'sm' ? 'w-2.5 h-2.5' : 'w-4 h-4'} text-black`} fill="currentColor" />
                   </div>
                 </div>
               ))}
 
               <div className="absolute bottom-4 left-4 right-4 bg-black/80 backdrop-blur-sm border border-gray-700 rounded-2xl p-4">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <div className="text-white font-bold text-sm">İstanbul, Kadıköy</div>
-                    <div className="text-gray-400 text-xs mt-0.5">47 şarj noktası bulundu</div>
-                  </div>
-                  <div className="flex gap-3 text-xs">
-                    <div className="flex items-center gap-1.5">
-                      <div className="w-2.5 h-2.5 bg-green-500 rounded-full" />
-                      <span className="text-gray-300">38 Müsait</span>
-                    </div>
-                    <div className="flex items-center gap-1.5">
-                      <div className="w-2.5 h-2.5 bg-red-500 rounded-full" />
-                      <span className="text-gray-300">9 Dolu</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="absolute top-4 right-4 flex flex-col gap-2">
-                <button className="w-9 h-9 bg-black/80 border border-gray-700 rounded-xl text-white font-bold hover:bg-gray-800 transition-colors">+</button>
-                <button className="w-9 h-9 bg-black/80 border border-gray-700 rounded-xl text-white font-bold hover:bg-gray-800 transition-colors">−</button>
+                <div className="text-white font-bold text-sm">Temsili görsel</div>
+                <div className="text-gray-400 text-xs mt-0.5">Gerçek istasyonları görmek için haritayı açın.</div>
               </div>
             </div>
 

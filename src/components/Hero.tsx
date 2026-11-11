@@ -1,9 +1,19 @@
-import { Link } from 'react-router-dom';
-import { ArrowRight, MapPin, Zap } from 'lucide-react';
+import { useState, type FormEvent } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Crosshair, Search, Zap } from 'lucide-react';
 
 export default function Hero() {
+  const navigate = useNavigate();
+  const [query, setQuery] = useState('');
+
+  const onSubmit = (e: FormEvent) => {
+    e.preventDefault();
+    const q = query.trim();
+    navigate(q ? `/sarj-haritasi?q=${encodeURIComponent(q)}` : '/sarj-haritasi');
+  };
+
   return (
-    <section className="relative min-h-screen bg-black flex items-center overflow-hidden pt-18">
+    <section className="relative min-h-[85vh] bg-black flex items-center overflow-hidden pt-18">
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-green-500/5 rounded-full blur-3xl" />
         <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-green-400/5 rounded-full blur-3xl" />
@@ -38,67 +48,38 @@ export default function Hero() {
             CargeWay, Türkiye'deki farklı şarj ağlarının istasyonlarını tek haritada bir araya getirir. Size en yakın istasyonu bulun, soket ve güç bilgilerini karşılaştırın, elektrikli araç dünyasındaki gelişmeleri takip edin.
           </p>
 
-          <div className="flex flex-col sm:flex-row gap-4">
-            <Link
-              to="/sarj-haritasi"
-              className="group inline-flex items-center justify-center gap-2 px-8 py-4 bg-green-500 hover:bg-green-400 text-black font-bold rounded-xl transition-all duration-200 shadow-xl shadow-green-500/25 hover:shadow-green-400/35 text-lg"
-            >
-              <MapPin className="w-5 h-5" />
-              Şarj İstasyonu Bul
-              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-            </Link>
-            <a
-              href="#haberler"
-              className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-transparent border border-gray-700 hover:border-green-500/50 text-white font-bold rounded-xl transition-all duration-200 text-lg hover:bg-green-500/5"
-            >
-              Son Haberleri Gör
-            </a>
-          </div>
-
-        </div>
-      </div>
-
-      <div className="absolute right-0 top-1/2 -translate-y-1/2 hidden xl:block w-1/2 h-full pointer-events-none">
-        <div className="relative w-full h-full flex items-center justify-center pr-12">
-          <div className="relative w-96 h-96">
-            <div className="absolute inset-0 rounded-3xl border border-green-500/10 animate-ping" style={{ animationDuration: '3s' }} />
-            <div className="absolute inset-12 rounded-2xl border border-green-500/15 animate-ping" style={{ animationDuration: '3s', animationDelay: '0.5s' }} />
-            <div className="absolute inset-24 rounded-lg border border-green-500/20 animate-ping" style={{ animationDuration: '3s', animationDelay: '1s' }} />
-
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="relative w-full h-full flex items-center justify-center">
-                <img
-                  src="https://images.pexels.com/photos/3729464/pexels-photo-3729464.jpeg?auto=compress&cs=tinysrgb&w=600"
-                  alt="Elektrikli Araç"
-                  className="w-72 h-64 object-cover rounded-2xl shadow-2xl shadow-green-500/30 filter drop-shadow-lg"
+          <form onSubmit={onSubmit} role="search" className="max-w-2xl">
+            <div className="flex flex-col sm:flex-row gap-3">
+              <label className="relative flex-1">
+                <span className="sr-only">Şehir, ilçe veya adres</span>
+                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
+                <input
+                  type="search"
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  placeholder="Şehir, ilçe veya adres ara"
+                  className="w-full pl-12 pr-4 py-4 bg-gray-900 border border-gray-700 focus:border-green-500 focus:outline-none rounded-xl text-white placeholder-gray-500 text-lg"
                 />
-
-                <div className="absolute -bottom-8 left-0 right-0 flex justify-center gap-4">
-                  <div className="bg-black/90 border border-green-500/30 rounded-xl px-4 py-2 backdrop-blur-md">
-                    <div className="text-green-400 text-xs font-bold">MENZIL</div>
-                    <div className="text-white font-bold">523 km</div>
-                  </div>
-                  <div className="bg-black/90 border border-green-500/30 rounded-xl px-4 py-2 backdrop-blur-md">
-                    <div className="text-green-400 text-xs font-bold">GÜÇ</div>
-                    <div className="text-white font-bold">476 HP</div>
-                  </div>
-                  <div className="bg-black/90 border border-green-500/30 rounded-xl px-4 py-2 backdrop-blur-md">
-                    <div className="text-green-400 text-xs font-bold">ŞARJ</div>
-                    <div className="text-white font-bold">28 dk</div>
-                  </div>
-                </div>
-
-                <div className="absolute top-0 right-0 w-32 h-32 bg-green-500/5 rounded-full blur-3xl" />
-              </div>
+              </label>
+              <button
+                type="submit"
+                className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-green-500 hover:bg-green-400 text-black font-bold rounded-xl transition-colors shadow-xl shadow-green-500/25 text-lg"
+              >
+                İstasyon Bul
+              </button>
             </div>
-          </div>
+            <button
+              type="button"
+              onClick={() => navigate('/sarj-haritasi?konum=1')}
+              className="mt-4 inline-flex items-center gap-2 text-green-400 hover:text-green-300 font-semibold"
+            >
+              <Crosshair className="w-4 h-4" />
+              Konumumu kullan
+            </button>
+          </form>
         </div>
       </div>
 
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 animate-bounce">
-        <span className="text-xs text-gray-600 tracking-widest uppercase">Keşfet</span>
-        <div className="w-px h-8 bg-gradient-to-b from-gray-600 to-transparent" />
-      </div>
     </section>
   );
 }

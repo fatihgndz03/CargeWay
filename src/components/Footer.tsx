@@ -5,7 +5,6 @@ type FooterLink = { label: string; to: string };
 
 /**
  * Yalnızca var olan sayfalara/bölümlere bağlantı verilir.
- * Kariyer, KVKK, gizlilik politikası vb. sayfalar hazırlandıkça buraya eklenecek.
  */
 const links: Record<string, FooterLink[]> = {
   Platform: [
@@ -14,8 +13,13 @@ const links: Record<string, FooterLink[]> = {
     { label: 'Haberler', to: '/#haberler' },
   ],
   CargeWay: [
-    { label: 'Hakkımızda', to: '/#hakkimizda' },
+    { label: 'Nasıl Çalışır?', to: '/#nasil-calisir' },
     { label: 'Neden CargeWay?', to: '/#neden-cargeway' },
+  ],
+  Yasal: [
+    { label: 'KVKK Aydınlatma Metni', to: '/kvkk' },
+    { label: 'Gizlilik Politikası', to: '/gizlilik' },
+    { label: 'Çerez Bilgilendirmesi', to: '/cerezler' },
   ],
 };
 
@@ -36,7 +40,7 @@ export default function Footer() {
   return (
     <footer id="hakkimizda" className="bg-black border-t border-gray-800">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="py-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
+        <div className="py-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12">
           <div className="lg:col-span-2">
             <Link to="/" className="flex items-center gap-2 mb-5">
               <div className="w-9 h-9 bg-green-500 rounded-lg flex items-center justify-center">

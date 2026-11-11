@@ -1,8 +1,8 @@
-import { Clock, MessageSquare, Activity, Users } from 'lucide-react';
+import { MapPin, MessageSquare, Activity, Users } from 'lucide-react';
 
 const features = [
   {
-    icon: Clock,
+    icon: MapPin,
     title: 'Tüm Ağlar Tek Haritada',
     description: 'Farklı şarj operatörlerinin istasyonlarını tek bir haritada görün; soket tipi, güç ve konum bilgilerini karşılaştırın.',
     color: 'text-green-400',
@@ -45,7 +45,7 @@ export default function WhyCargeWay() {
             Neden <span className="text-green-500">CargeWay?</span>
           </h2>
           <p className="text-gray-400 text-lg max-w-2xl mx-auto">
-            CargeWay'i diğer platformlardan ayıran özellikler ve sunduğu avantajlar.
+            Bugün sunduklarımız ve yakında gelecek özellikler.
           </p>
         </div>
 
