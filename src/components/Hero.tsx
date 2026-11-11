@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { ArrowRight, MapPin, Zap } from 'lucide-react';
 
 export default function Hero() {
@@ -34,18 +35,18 @@ export default function Hero() {
           </h1>
 
           <p className="text-lg sm:text-xl text-gray-400 leading-relaxed mb-10 max-w-2xl">
-            CargeWay ile Türkiye genelindeki binlerce şarj istasyonunu kolayca bulun, anlık doluluk durumlarını takip edin ve elektrikli araç dünyasındaki en güncel haberlere ulaşın.
+            CargeWay, Türkiye'deki farklı şarj ağlarının istasyonlarını tek haritada bir araya getirir. Size en yakın istasyonu bulun, soket ve güç bilgilerini karşılaştırın, elektrikli araç dünyasındaki gelişmeleri takip edin.
           </p>
 
-          <div className="flex flex-col sm:flex-row gap-4 mb-16">
-            <a
-              href="#harita"
+          <div className="flex flex-col sm:flex-row gap-4">
+            <Link
+              to="/sarj-haritasi"
               className="group inline-flex items-center justify-center gap-2 px-8 py-4 bg-green-500 hover:bg-green-400 text-black font-bold rounded-xl transition-all duration-200 shadow-xl shadow-green-500/25 hover:shadow-green-400/35 text-lg"
             >
               <MapPin className="w-5 h-5" />
               Şarj İstasyonu Bul
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-            </a>
+            </Link>
             <a
               href="#haberler"
               className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-transparent border border-gray-700 hover:border-green-500/50 text-white font-bold rounded-xl transition-all duration-200 text-lg hover:bg-green-500/5"
@@ -54,18 +55,6 @@ export default function Hero() {
             </a>
           </div>
 
-          <div className="flex flex-wrap gap-6 sm:gap-10">
-            {[
-              { value: '12.000+', label: 'Şarj Noktası' },
-              { value: '81', label: 'İlde Hizmet' },
-              { value: '500K+', label: 'Aktif Kullanıcı' },
-            ].map((stat) => (
-              <div key={stat.label} className="flex flex-col">
-                <span className="text-3xl font-black text-green-400">{stat.value}</span>
-                <span className="text-sm text-gray-500 mt-1">{stat.label}</span>
-              </div>
-            ))}
-          </div>
         </div>
       </div>
 

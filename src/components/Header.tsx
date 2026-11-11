@@ -3,9 +3,9 @@ import { Link } from 'react-router-dom';
 import { Zap, Menu, X } from 'lucide-react';
 
 const navItems = [
+  { label: 'Şarj Haritası', href: '/sarj-haritasi' },
   { label: 'Haberler', href: '/#haberler' },
   { label: 'Araçlar', href: '/#araclar' },
-  { label: 'Şarj Haritası', href: '/sarcj-haritasi' },
   { label: 'Hakkımızda', href: '/#hakkimizda' },
 ];
 
@@ -27,7 +27,7 @@ export default function Header() {
 
           <nav className="hidden md:flex items-center gap-1">
             {navItems.map((item) => (
-              item.href.startsWith('/') ? (
+              !item.href.includes('#') ? (
                 <Link
                   key={item.label}
                   to={item.href}
@@ -48,17 +48,16 @@ export default function Header() {
           </nav>
 
           <div className="hidden md:flex items-center gap-3">
-            <button className="text-sm text-gray-400 hover:text-white transition-colors font-medium">
-              Giriş Yap
-            </button>
-            <button
+            <Link
+              to="/sarj-haritasi"
               className="px-5 py-2 bg-green-500 hover:bg-green-400 text-black text-sm font-semibold rounded-lg transition-all duration-200 shadow-lg shadow-green-500/20 hover:shadow-green-400/30"
             >
-              Kayıt Ol
-            </button>
+              Haritayı Aç
+            </Link>
           </div>
 
           <button
+            aria-label={menuOpen ? 'Menüyü kapat' : 'Menüyü aç'}
             className="md:hidden text-gray-400 hover:text-white transition-colors"
             onClick={() => setMenuOpen(!menuOpen)}
           >
@@ -70,7 +69,7 @@ export default function Header() {
       {menuOpen && (
         <div className="md:hidden bg-black border-t border-green-500/20 px-4 py-4 space-y-1">
           {navItems.map((item) => (
-            item.href.startsWith('/') ? (
+            !item.href.includes('#') ? (
               <Link
                 key={item.label}
                 to={item.href}
@@ -91,12 +90,13 @@ export default function Header() {
             )
           ))}
           <div className="pt-3 flex flex-col gap-2">
-            <button className="block w-full px-4 py-3 text-center text-gray-400 hover:text-white transition-colors font-medium border border-gray-700 rounded-lg">
-              Giriş Yap
-            </button>
-            <button className="block w-full px-4 py-3 text-center bg-green-500 hover:bg-green-400 text-black font-semibold rounded-lg transition-colors">
-              Kayıt Ol
-            </button>
+            <Link
+              to="/sarj-haritasi"
+              onClick={() => setMenuOpen(false)}
+              className="block w-full px-4 py-3 text-center bg-green-500 hover:bg-green-400 text-black font-semibold rounded-lg transition-colors"
+            >
+              Haritayı Aç
+            </Link>
           </div>
         </div>
       )}

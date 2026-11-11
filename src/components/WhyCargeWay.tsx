@@ -3,8 +3,8 @@ import { Clock, MessageSquare, Activity, Users } from 'lucide-react';
 const features = [
   {
     icon: Clock,
-    title: 'Gerçek Zamanlı Bilgi',
-    description: 'Şarj istasyonlarının anlık doluluk durumunu, fiyatlarını ve çalışma saatlerini takip edin. Her saniye güncellenen bilgiler.',
+    title: 'Tüm Ağlar Tek Haritada',
+    description: 'Farklı şarj operatörlerinin istasyonlarını tek bir haritada görün; soket tipi, güç ve konum bilgilerini karşılaştırın.',
     color: 'text-green-400',
     bg: 'bg-green-500/10',
     border: 'border-green-500/20',
@@ -12,7 +12,7 @@ const features = [
   {
     icon: MessageSquare,
     title: 'Kullanıcı Yorumları',
-    description: 'Gerçek kullanıcılardan istasyonlar hakkında detaylı deneyimler, resimleri ve tavsiyelerini okuyun. Güvenilir geri dönüşler.',
+    description: 'Yakında: kullanıcılar istasyonlar hakkındaki deneyimlerini paylaşabilecek ve istasyonun çalışıp çalışmadığını bildirebilecek.',
     color: 'text-blue-400',
     bg: 'bg-blue-500/10',
     border: 'border-blue-500/20',
@@ -20,7 +20,7 @@ const features = [
   {
     icon: Activity,
     title: 'Şarj Takibi',
-    description: 'Aracınızın şarj geçmişini, ortalama şarj süresi ve maliyeti analiz edin. Enerji tüketimi raporlarını görün.',
+    description: 'Yakında: aracınıza göre şarj süresi ve maliyet hesaplayıcı ile yolculuğunuzu planlayın.',
     color: 'text-orange-400',
     bg: 'bg-orange-500/10',
     border: 'border-orange-500/20',
@@ -28,7 +28,7 @@ const features = [
   {
     icon: Users,
     title: 'Topluluk',
-    description: 'Diğer EV sahipleriyle bağlanın, deneyimleri paylaşın ve en iyi şarj noktalarını keşfedin. Aktif ve yardımsever topluluk.',
+    description: 'Yakında: diğer elektrikli araç sahipleriyle deneyim paylaşın ve en iyi şarj noktalarını birlikte keşfedin.',
     color: 'text-yellow-400',
     bg: 'bg-yellow-500/10',
     border: 'border-yellow-500/20',
@@ -37,7 +37,7 @@ const features = [
 
 export default function WhyCargeWay() {
   return (
-    <section className="bg-black py-24 border-t border-gray-800">
+    <section id="neden-cargeway" className="bg-black py-24 border-t border-gray-800">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
           <span className="text-green-500 text-sm font-semibold tracking-widest uppercase">Avantajlar</span>

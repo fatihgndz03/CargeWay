@@ -1,4 +1,4 @@
-import { ArrowRight, Battery, Gauge, Zap } from 'lucide-react';
+import { Battery, Gauge, Zap } from 'lucide-react';
 
 const vehicles = [
   {
@@ -44,13 +44,6 @@ export default function Vehicles() {
               Popüler Elektrikli<br />Araçları Keşfedin
             </h2>
           </div>
-          <a
-            href="#"
-            className="hidden sm:inline-flex items-center gap-2 text-green-400 hover:text-green-300 font-semibold transition-colors group"
-          >
-            Tüm Araçlar
-            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-          </a>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -95,12 +88,6 @@ export default function Vehicles() {
               </div>
             </div>
           ))}
-        </div>
-
-        <div className="mt-8 sm:hidden text-center">
-          <a href="#" className="inline-flex items-center gap-2 text-green-400 hover:text-green-300 font-semibold transition-colors">
-            Tüm Araçlar <ArrowRight className="w-4 h-4" />
-          </a>
         </div>
       </div>
     </section>

@@ -61,14 +61,10 @@ export default function News() {
           <div>
             <span className="text-green-500 text-sm font-semibold tracking-widest uppercase">Son Haberler</span>
             <h2 className="text-4xl sm:text-5xl font-black text-white mt-2">EV Dünyasından<br />Güncel Gelişmeler</h2>
+            <p className="mt-4 inline-flex items-center gap-2 px-3 py-1 rounded-full border border-yellow-500/30 bg-yellow-500/10 text-yellow-400 text-xs font-semibold">
+              Örnek içerik — gerçek haberler yakında eklenecek
+            </p>
           </div>
-          <a
-            href="#"
-            className="hidden sm:inline-flex items-center gap-2 text-green-400 hover:text-green-300 font-semibold transition-colors group"
-          >
-            Tüm Haberler
-            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-          </a>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -142,12 +138,6 @@ export default function News() {
               </div>
             ))}
           </div>
-        </div>
-
-        <div className="mt-8 sm:hidden text-center">
-          <a href="#" className="inline-flex items-center gap-2 text-green-400 hover:text-green-300 font-semibold transition-colors">
-            Tüm Haberler <ArrowRight className="w-4 h-4" />
-          </a>
         </div>
       </div>
     </section>

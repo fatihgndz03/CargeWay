@@ -1,9 +1,10 @@
+import { Link } from 'react-router-dom';
 import { MapPin, Zap, Clock, CheckCircle } from 'lucide-react';
 
 const features = [
   { icon: MapPin, text: 'Anlık konum bazlı arama' },
   { icon: Zap, text: 'Hızlı ve standart şarj filtresi' },
-  { icon: Clock, text: 'Gerçek zamanlı doluluk bilgisi' },
+  { icon: Clock, text: 'Operatör ve soket tipine göre filtreleme' },
   { icon: CheckCircle, text: 'Navigasyon entegrasyonu' },
 ];
 
@@ -18,7 +19,7 @@ export default function MapTeaser() {
               Size En Yakın<br />Şarj İstasyonunu<br />Saniyeler İçinde Bulun
             </h2>
             <p className="text-gray-400 text-lg leading-relaxed mb-8">
-              Türkiye genelindeki tüm şarj ağlarını tek haritada görebilir, anlık müsaitlik durumunu kontrol edebilir ve yol tarifi alabilirsiniz.
+              Türkiye genelindeki tüm şarj ağlarını tek haritada görebilir, soket ve güç bilgilerini karşılaştırabilir ve yol tarifi alabilirsiniz.
             </p>
 
             <ul className="space-y-4 mb-10">
@@ -32,13 +33,13 @@ export default function MapTeaser() {
               ))}
             </ul>
 
-            <a
-              href="#"
+            <Link
+              to="/sarj-haritasi"
               className="inline-flex items-center gap-2 px-8 py-4 bg-green-500 hover:bg-green-400 text-black font-bold rounded-xl transition-all duration-200 shadow-xl shadow-green-500/25 text-lg"
             >
               <MapPin className="w-5 h-5" />
               Haritayı Aç
-            </a>
+            </Link>
           </div>
 
           <div className="relative">

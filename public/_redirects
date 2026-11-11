@@ -1,0 +1,5 @@
+# Eski (yazım hatalı) harita adresi kalıcı olarak yeni adrese yönlendirilir
+/sarcj-haritasi  /sarj-haritasi  301
+
+# SPA: tüm diğer yollar React uygulamasına gider
+/*  /index.html  200

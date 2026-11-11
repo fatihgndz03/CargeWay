@@ -181,6 +181,10 @@ export default function Map() {
           ))}
         </div>
 
+        <div className="absolute top-4 right-4 z-[401] max-w-xs bg-yellow-500/15 border border-yellow-500/40 text-yellow-300 text-xs font-semibold rounded-lg px-3 py-2 backdrop-blur-md">
+          Örnek veri: Haritadaki istasyonlar, konum, fiyat ve doluluk bilgileri temsilidir; gerçek veriler yakında eklenecek.
+        </div>
+
         <div className="absolute bottom-4 right-4 z-[401] bg-black/80 backdrop-blur-md border border-gray-700 rounded-xl p-4 max-w-xs">
           <h3 className="font-bold text-white mb-2">Sonuçlar</h3>
           <p className="text-sm text-gray-400 mb-3">
