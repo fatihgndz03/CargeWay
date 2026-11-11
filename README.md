@@ -59,6 +59,29 @@ supabase/migrations/       Veritabanı şeması (SQL)
 public/            Statik dosyalar (_redirects vb.)
 ```
 
+## Veritabanı (Supabase)
+
+Şema `supabase/migrations/` altındadır:
+
+| Tablo | İçerik |
+| --- | --- |
+| `operators` | Şarj ağları / operatörler |
+| `stations` | İstasyonlar (konum, adres, operatör, veri kaynağı) |
+| `connectors` | İstasyondaki soketler (tip, AC/DC, güç, adet) |
+
+Tüm tablolarda RLS açıktır; herkes yalnızca **okuyabilir**. Yazma işlemleri yalnızca `service_role` anahtarıyla çalışan aktarım betikleriyle yapılır.
+
+Migration'ları uygulamak için (proje sahibi):
+
+```bash
+supabase link --project-ref <proje-ref>
+supabase db push
+```
+
+veya dosyaları Supabase panelindeki **SQL Editor**'de sırayla çalıştırın.
+
+Harita (`/sarj-haritasi`) önce Supabase'deki `stations` tablosunu okur. Tablo yoksa, boşsa veya Supabase yapılandırılmamışsa açıkça etiketlenmiş örnek veriyi gösterir.
+
 ## Veri notu
 
-Haritadaki istasyonlar ve ana sayfadaki haberler şu an **örnek veridir** ve sitede bu şekilde etiketlenmiştir. Gerçek istasyon verisi Faz 1 kapsamında eklenecektir.
+Haritadaki örnek istasyonlar (kurgusal "Örnek Operatör A/B/C") ve ana sayfadaki haberler **örnek veridir** ve sitede bu şekilde etiketlenmiştir. Gerçek istasyon verisi Faz 1 kapsamında eklenecektir.
