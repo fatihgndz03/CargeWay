@@ -40,6 +40,27 @@ Netlify'da bu değişkenler **Site configuration → Environment variables** bö
 | `npm run preview` | Derlemeyi yerelde önizleme |
 | `npm run typecheck` | TypeScript kontrolü |
 | `npm run lint` | ESLint kontrolü |
+| `npm run istasyon:aktar -- …` | İstasyon verisini CSV / Open Charge Map'ten Supabase'e aktarır (aşağıya bakın) |
+
+`npm run build`, derlemeden sonra `scripts/sitemap-olustur.mjs` ile `dist/sitemap.xml` üretir. Supabase değişkenleri tanımlıysa gerçek istasyonların `/istasyon/:slug` sayfaları da sitemap'e eklenir; Supabase'e ulaşılamazsa derleme bozulmaz.
+
+## İstasyon verisi aktarma
+
+Betik: `scripts/istasyon-aktar.mjs` (ayrıntılı açıklama dosyanın başında). CSV şablonu: `scripts/istasyon-sablonu.csv`.
+
+```bash
+# 1) Önce kuru çalıştırma: hiçbir şey yazmaz, özet + aktarim-onizleme.json üretir
+npm run istasyon:aktar -- --csv istasyonlar.csv --kuru
+npm run istasyon:aktar -- --ocm --env gizli.env --kuru     # gizli.env içinde OCM_API_KEY=...
+
+# 2) Gerçek aktarım (yalnızca kendi bilgisayarınızda)
+#    gizli.env: SUPABASE_URL=...  SUPABASE_SERVICE_ROLE_KEY=...
+npm run istasyon:aktar -- --csv istasyonlar.csv --env gizli.env
+```
+
+- Betik veri silmez; aynı kaynaktan (`source` + `source_id`) gelen istasyonları günceller ve soketlerini yeniler. Mevcut istasyonların adresleri (slug) değişmez.
+- `SUPABASE_SERVICE_ROLE_KEY` tam yetkili bir anahtardır: repoya, Netlify'a veya tarayıcı koduna asla eklemeyin.
+- Open Charge Map verisi **CC BY 4.0** lisanslıdır; harita ve istasyon sayfalarında atıf otomatik gösterilir.
 
 ## Netlify
 
@@ -53,10 +74,12 @@ Netlify'da bu değişkenler **Site configuration → Environment variables** bö
 src/
   components/      Ana sayfa bölümleri ve ortak bileşenler
   components/ComingSoon/   "Çok Yakında" sayfası
-  pages/           Sayfalar (ör. şarj haritası)
+  pages/           Sayfalar (şarj haritası, istasyon detayı /istasyon/:slug, yasal metinler)
+  data/            Haberler ve örnek istasyon verisi
   lib/             Supabase istemcisi ve yapılandırma
 supabase/migrations/       Veritabanı şeması (SQL)
-public/            Statik dosyalar (_redirects vb.)
+scripts/           Veri aktarım ve sitemap betikleri
+public/            Statik dosyalar (_redirects, robots.txt, favicon)
 ```
 
 ## Veritabanı (Supabase)

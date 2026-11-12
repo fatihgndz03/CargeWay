@@ -9,6 +9,7 @@ import MapTeaser from './components/MapTeaser';
 import Footer from './components/Footer';
 import ComingSoon from './components/ComingSoon';
 import MapPage from './pages/Map';
+import StationDetailPage from './pages/StationDetail';
 import HowItWorks from './components/HowItWorks';
 import { CookiesPage, KvkkPage, PrivacyPage } from './pages/Legal';
 import { SHOW_COMING_SOON } from './lib/config';
@@ -54,6 +55,7 @@ function App() {
     <Routes>
       <Route path="/" element={<Home />} />
       <Route path="/sarj-haritasi" element={<MapRoute />} />
+      <Route path="/istasyon/:slug" element={<StationDetailPage />} />
       <Route path="/kvkk" element={<KvkkPage />} />
       <Route path="/gizlilik" element={<PrivacyPage />} />
       <Route path="/cerezler" element={<CookiesPage />} />

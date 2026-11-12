@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type FormEvent } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { MapContainer, TileLayer, Marker, Popup, CircleMarker, useMap } from 'react-leaflet';
+import MarkerClusterGroup from 'react-leaflet-cluster';
 import L from 'leaflet';
-import { ChevronUp, Crosshair, List, Navigation, Search, SlidersHorizontal, X, Zap } from 'lucide-react';
+import { ChevronRight, ChevronUp, Crosshair, List, Navigation, Search, SlidersHorizontal, X, Zap } from 'lucide-react';
 import {
   CONNECTOR_LABELS,
   DEFAULT_FILTERS,
@@ -43,6 +44,32 @@ function markerIcon(color: string, dc: boolean): L.DivIcon {
   });
   iconCache.set(key, icon);
   return icon;
+}
+
+/** Küme (cluster) simgesi: koyu zemin, yeşil halka, içinde istasyon sayısı. */
+function clusterIcon(cluster: L.MarkerCluster): L.DivIcon {
+  const count = cluster.getChildCount();
+  const size = count < 10 ? 36 : count < 100 ? 44 : 52;
+  return L.divIcon({
+    className: '',
+    html: `<div style="width:${size}px;height:${size}px;border-radius:50%;background:rgba(0,0,0,.85);border:3px solid #22c55e;box-shadow:0 0 0 4px rgba(34,197,94,.25);display:flex;align-items:center;justify-content:center;color:#fff;font:700 13px system-ui">${count}</div>`,
+    iconSize: [size, size],
+    iconAnchor: [size / 2, size / 2],
+  });
+}
+
+const OCM_ATTRIBUTION =
+  'İstasyon verisi: <a href="https://openchargemap.org" target="_blank" rel="noopener">Open Charge Map</a> (CC BY 4.0)';
+
+function ExtraAttribution({ html }: { html: string }) {
+  const map = useMap();
+  useEffect(() => {
+    map.attributionControl.addAttribution(html);
+    return () => {
+      map.attributionControl.removeAttribution(html);
+    };
+  }, [map, html]);
+  return null;
 }
 
 interface FlyTarget {
@@ -104,9 +131,15 @@ function StationPopup({ station }: { station: Station }) {
           </li>
         ))}
       </ul>
+      {power !== null && <p className="mt-2 text-xs text-gray-500">Maks. {power} kW</p>}
 
       <div className="mt-3 flex items-center justify-between gap-2">
-        {power !== null && <span className="text-xs text-gray-500">Maks. {power} kW</span>}
+        <Link
+          to={`/istasyon/${station.slug}`}
+          className="inline-flex items-center gap-0.5 text-xs font-semibold !text-green-400 hover:!text-green-300"
+        >
+          Detaylar <ChevronRight className="h-3.5 w-3.5" />
+        </Link>
         <a
           href={directionsUrl(station)}
           target="_blank"
@@ -299,6 +332,7 @@ export default function MapPage() {
   const [searching, setSearching] = useState(false);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const markerRefs = useRef(new Map<string, L.Marker>());
+  const clusterRef = useRef<L.MarkerClusterGroup | null>(null);
   const initialParamsHandled = useRef(false);
 
   useEffect(() => {
@@ -311,7 +345,6 @@ export default function MapPage() {
     };
   }, []);
 
-  const flyTo = (position: [number, number], zoom: number) => setFlyTarget({ position, zoom, key: Date.now() });
 
   const locate = useCallback(() => {
     if (!('geolocation' in navigator)) {
@@ -384,6 +417,8 @@ export default function MapPage() {
     return (Object.keys(CONNECTOR_LABELS) as ConnectorType[]).filter((t) => set.has(t));
   }, [stations]);
 
+  const usesOcm = useMemo(() => stations.some((s) => s.source === 'ocm'), [stations]);
+
   const filtered = useMemo(() => filterStations(stations, filters), [stations, filters]);
 
   // Liste: kullanıcı konumu varsa ona, yoksa harita merkezine göre yakından uzağa
@@ -397,12 +432,29 @@ export default function MapPage() {
     return withDist;
   }, [filtered, userPos, center]);
 
-  const selectStation = (s: Station) => {
+  const selectStation = useCallback((s: Station) => {
     setSelectedId(s.id);
     setDrawer('closed');
-    flyTo([s.latitude, s.longitude], 15);
-    window.setTimeout(() => markerRefs.current.get(s.id)?.openPopup(), 900);
-  };
+    const marker = markerRefs.current.get(s.id);
+    const cluster = clusterRef.current;
+    if (marker && cluster) {
+      // Kümelenmiş işaretçiyi görünür hale getirip popup'ını aç
+      cluster.zoomToShowLayer(marker, () => marker.openPopup());
+    } else {
+      setFlyTarget({ position: [s.latitude, s.longitude], zoom: 15, key: Date.now() });
+    }
+  }, []);
+
+  // Detay sayfasından gelen ?istasyon=slug parametresi
+  const stationParamHandled = useRef(false);
+  useEffect(() => {
+    if (stationParamHandled.current || !result) return;
+    const slug = searchParams.get('istasyon');
+    if (!slug) return;
+    stationParamHandled.current = true;
+    const s = result.stations.find((x) => x.slug === slug);
+    if (s) window.setTimeout(() => selectStation(s), 300);
+  }, [result, searchParams, selectStation]);
 
   const panelProps = {
     filters,
@@ -458,6 +510,8 @@ export default function MapPage() {
               url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
               attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> katkıcıları &copy; <a href="https://carto.com/attributions">CARTO</a>'
             />
+            {/* Open Charge Map verisi CC BY 4.0 lisanslıdır; atıf zorunludur */}
+            {usesOcm && <ExtraAttribution html={OCM_ATTRIBUTION} />}
             <FlyTo target={flyTarget} />
             <CenterTracker onChange={setCenter} />
 
@@ -467,6 +521,14 @@ export default function MapPage() {
               </CircleMarker>
             )}
 
+            <MarkerClusterGroup
+              ref={clusterRef}
+              chunkedLoading
+              showCoverageOnHover={false}
+              maxClusterRadius={50}
+              spiderfyOnMaxZoom
+              iconCreateFunction={clusterIcon}
+            >
             {filtered.map((station) => (
               <Marker
                 key={station.id}
@@ -483,6 +545,7 @@ export default function MapPage() {
                 </Popup>
               </Marker>
             ))}
+            </MarkerClusterGroup>
           </MapContainer>
 
           {/* Mobil arama kutusu */}
