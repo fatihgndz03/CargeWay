@@ -5,6 +5,7 @@ import L from 'leaflet';
 import { ArrowLeft, Clock, ExternalLink, Info, MapPin, Navigation, Plug, ShieldCheck, Zap } from 'lucide-react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
+import { applySeo, DEFAULT_DESCRIPTION } from '../lib/seo';
 import {
   ACCESS_LABELS,
   CONNECTOR_LABELS,
@@ -30,16 +31,6 @@ const pinIcon = L.divIcon({
   iconSize: [36, 36],
   iconAnchor: [18, 36],
 });
-
-function setMeta(name: string, content: string) {
-  let el = document.querySelector<HTMLMetaElement>(`meta[name="${name}"]`);
-  if (!el) {
-    el = document.createElement('meta');
-    el.name = name;
-    document.head.appendChild(el);
-  }
-  el.content = content;
-}
 
 type LoadState =
   | { kind: 'loading' }
@@ -68,22 +59,19 @@ export default function StationDetailPage() {
   }, [slug]);
 
   useEffect(() => {
+    if (state.kind === 'notfound') {
+      applySeo('İstasyon bulunamadı | CargeWay', DEFAULT_DESCRIPTION);
+      return;
+    }
     if (state.kind !== 'ok') return;
     const s = state.station;
-    const prevTitle = document.title;
-    const prevDesc = document.querySelector<HTMLMetaElement>('meta[name="description"]')?.content ?? '';
     const place = [s.district, s.city].filter(Boolean).join(', ');
-    document.title = `${s.name}${place ? ` — ${place}` : ''} şarj istasyonu | CargeWay`;
     const types = [...new Set(s.connectors.map((c) => CONNECTOR_LABELS[c.connectorType]))].join(', ');
     const p = maxPower(s);
-    setMeta(
-      'description',
+    applySeo(
+      `${s.name}${place ? ` — ${place}` : ''} şarj istasyonu | CargeWay`,
       `${s.name}${place ? ` (${place})` : ''}: ${types || 'soket bilgisi yok'}${p ? `, en fazla ${p} kW` : ''}. Konum, soketler ve yol tarifi CargeWay'de.`
     );
-    return () => {
-      document.title = prevTitle;
-      setMeta('description', prevDesc);
-    };
   }, [state]);
 
   return (

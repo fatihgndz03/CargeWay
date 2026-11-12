@@ -1,7 +1,8 @@
-import { useEffect, type ReactNode } from 'react';
+import { type ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
+import { useSeo } from '../lib/seo';
 
 /**
  * TASLAK hukuki metinler. Yayından önce bir hukukçu tarafından kontrol edilmeli
@@ -10,10 +11,7 @@ import Footer from '../components/Footer';
 const SON_GUNCELLEME = '11 Kasım 2026';
 
 function LegalLayout({ title, children }: { title: string; children: ReactNode }) {
-  useEffect(() => {
-    document.title = `${title} — CargeWay`;
-    window.scrollTo(0, 0);
-  }, [title]);
+  useSeo(`${title} — CargeWay`, `CargeWay ${title}: kişisel verilerin işlenmesi, haklarınız ve iletişim bilgileri.`);
 
   return (
     <div className="bg-black min-h-screen">
