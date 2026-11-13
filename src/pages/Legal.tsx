@@ -3,12 +3,13 @@ import { Link } from 'react-router-dom';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { useSeo } from '../lib/seo';
+import { KUNYE, KUNYE_TAMAM } from '../data/kunye';
 
 /**
  * TASLAK hukuki metinler. Yayından önce bir hukukçu tarafından kontrol edilmeli
  * ve köşeli parantez içindeki alanlar ([...]) doldurulmalıdır.
  */
-const SON_GUNCELLEME = '11 Kasım 2026';
+const SON_GUNCELLEME = '13 Kasım 2026';
 
 function LegalLayout({ title, children }: { title: string; children: ReactNode }) {
   useSeo(`${title} — CargeWay`, `CargeWay ${title}: kişisel verilerin işlenmesi, haklarınız ve iletişim bilgileri.`);
@@ -17,9 +18,11 @@ function LegalLayout({ title, children }: { title: string; children: ReactNode }
     <div className="bg-black min-h-screen">
       <Header />
       <main className="max-w-3xl mx-auto px-4 sm:px-6 pt-32 pb-24 text-gray-300">
-        <p className="mb-6 inline-block rounded-lg border border-yellow-500/30 bg-yellow-500/10 px-3 py-1.5 text-xs font-semibold text-yellow-400">
-          Taslak metin — hukuki kontrol sonrası kesinleşecektir.
-        </p>
+        {!KUNYE_TAMAM && (
+          <p className="mb-6 inline-block rounded-lg border border-yellow-500/30 bg-yellow-500/10 px-3 py-1.5 text-xs font-semibold text-yellow-400">
+            Taslak metin — hukuki kontrol sonrası kesinleşecektir.
+          </p>
+        )}
         <h1 className="text-3xl sm:text-4xl font-black text-white mb-2">{title}</h1>
         <p className="text-sm text-gray-500 mb-10">Son güncelleme: {SON_GUNCELLEME}</p>
         <div className="space-y-6 leading-relaxed [&_h2]:text-xl [&_h2]:font-bold [&_h2]:text-white [&_h2]:pt-4 [&_ul]:list-disc [&_ul]:pl-6 [&_ul]:space-y-1 [&_a]:text-green-400 [&_a:hover]:underline">
@@ -31,8 +34,8 @@ function LegalLayout({ title, children }: { title: string; children: ReactNode }
   );
 }
 
-const VERI_SORUMLUSU = '[Veri sorumlusunun adı/unvanı ve adresi]';
-const ILETISIM = '[iletişim e-posta adresi]';
+const VERI_SORUMLUSU = `${KUNYE.siteSahibi}, ${KUNYE.adres}`;
+const ILETISIM = KUNYE.eposta;
 
 export function KvkkPage() {
   return (
@@ -46,8 +49,9 @@ export function KvkkPage() {
       <h2>2. İşlenen kişisel veriler ve amaçları</h2>
       <ul>
         <li>
-          <strong>E-posta adresi:</strong> Bülten / lansman bildirimi formunu doldurmanız halinde, size CargeWay hakkında
-          duyuru göndermek amacıyla.
+          <strong>E-posta adresi:</strong> Lansman bildirimi formunu doldurup onay kutusunu işaretlemeniz halinde, size
+          CargeWay hakkında duyuru göndermek amacıyla. Bu onay, 6563 sayılı Kanun kapsamında elektronik ileti onayı
+          niteliğindedir; her e-postadaki bağlantıdan veya {ILETISIM} adresine yazarak dilediğiniz an geri alabilirsiniz.
         </li>
         <li>
           <strong>Konum bilgisi:</strong> "Konumumu kullan" özelliğini kullandığınızda tarayıcınızın paylaştığı konum, yalnızca
@@ -69,7 +73,7 @@ export function KvkkPage() {
       </p>
       <h2>4. Aktarım</h2>
       <p>
-        Hizmetin sunulması için şu hizmet sağlayıcılardan yararlanılmaktadır: veritabanı (Supabase), barındırma (Netlify),
+        Hizmetin sunulması için şu hizmet sağlayıcılardan yararlanılmaktadır: veritabanı (Supabase), barındırma (Vercel),
         harita altlığı (CARTO / OpenStreetMap) ve adres arama (OpenStreetMap Nominatim). Bu sağlayıcıların sunucuları yurt
         dışında bulunabilir; yurt dışına aktarım KVKK m. 9 hükümlerine uygun olarak yapılır. [Hukuki kontrol: aktarım
         dayanağı netleştirilmeli.]
@@ -148,6 +152,47 @@ export function CookiesPage() {
       <p>
         İleride analiz veya benzeri çerezler eklenirse, bu sayfa güncellenecek ve gerekli durumlarda açık rızanız
         istenecektir.
+      </p>
+    </LegalLayout>
+  );
+}
+
+export function ContactPage() {
+  return (
+    <LegalLayout title="İletişim ve Künye">
+      <p>
+        CargeWay, Türkiye'deki elektrikli araç şarj istasyonlarını tek haritada gösteren bağımsız bir bilgi platformudur.
+        Bir şarj operatörü değildir; sitede ödeme alınmaz.
+      </p>
+      <h2>Tanıtıcı bilgiler</h2>
+      <ul>
+        <li>
+          <strong>Site sahibi / içerik sağlayıcı:</strong> {KUNYE.siteSahibi}
+        </li>
+        <li>
+          <strong>Adres:</strong> {KUNYE.adres}
+        </li>
+        <li>
+          <strong>E-posta:</strong>{' '}
+          {KUNYE.eposta.includes('[') ? KUNYE.eposta : <a href={`mailto:${KUNYE.eposta}`}>{KUNYE.eposta}</a>}
+        </li>
+        {KUNYE.sicil && (
+          <li>
+            <strong>Sicil / vergi no:</strong> {KUNYE.sicil}
+          </li>
+        )}
+        <li>
+          <strong>Yer sağlayıcı:</strong> {KUNYE.yerSaglayici}
+        </li>
+      </ul>
+      <h2>İstasyon bilgileri hakkında</h2>
+      <p>
+        Haritadaki istasyon, soket, güç ve erişim bilgileri bilgilendirme amaçlıdır; doğruluğu, güncelliği ve istasyonun
+        çalışır durumda olduğu garanti edilmez. Yola çıkmadan önce operatörün kendi uygulamasından kontrol edin. Hatalı bir
+        bilgi görürseniz yukarıdaki e-posta adresinden bize bildirebilirsiniz.
+      </p>
+      <p>
+        Kişisel verilerinize ilişkin bilgi için <Link to="/kvkk">KVKK Aydınlatma Metni</Link>'ni inceleyin.
       </p>
     </LegalLayout>
   );

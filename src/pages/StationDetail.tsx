@@ -118,6 +118,11 @@ function Detail({ station: s, nearby }: { station: StationDetailT; nearby: { sta
         </p>
       )}
 
+      <p className="mb-5 text-xs text-gray-500">
+        Bilgiler bilgilendirme amaçlıdır; istasyonun çalışır durumda olduğu ve bilgilerin güncelliği garanti edilmez.
+        Yola çıkmadan önce operatörün uygulamasından kontrol edin.
+      </p>
+
       <header className="mb-8">
         <p className="text-sm text-green-400 font-semibold mb-1">{s.operator?.name ?? 'Operatör bilinmiyor'}</p>
         <h1 className="text-3xl sm:text-4xl font-black text-white leading-tight">{s.name}</h1>
