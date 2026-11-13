@@ -5,7 +5,7 @@ import { Zap, Menu, X } from 'lucide-react';
 const navItems = [
   { label: 'Şarj Haritası', href: '/sarj-haritasi' },
   { label: 'Haberler', href: '/#haberler' },
-  { label: 'Araçlar', href: '/#araclar' },
+  { label: 'Araçlar', href: '/araclar' },
   { label: 'Nasıl Çalışır?', href: '/#nasil-calisir' },
 ];
 

@@ -11,7 +11,7 @@
 import { writeFileSync, existsSync, mkdirSync } from 'node:fs';
 
 const SITE = (process.env.SITE_URL || 'https://cargeway.com').replace(/\/+$/, '');
-const STATIC_PATHS = ['/', '/sarj-haritasi', '/kvkk', '/gizlilik', '/cerezler'];
+const STATIC_PATHS = ['/', '/sarj-haritasi', '/araclar', '/kvkk', '/gizlilik', '/cerezler'];
 
 function xmlEscape(s) {
   return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');

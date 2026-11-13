@@ -9,7 +9,7 @@ type FooterLink = { label: string; to: string };
 const links: Record<string, FooterLink[]> = {
   Platform: [
     { label: 'Şarj Haritası', to: '/sarj-haritasi' },
-    { label: 'Araçlar', to: '/#araclar' },
+    { label: 'Araçlar', to: '/araclar' },
     { label: 'Haberler', to: '/#haberler' },
   ],
   CargeWay: [

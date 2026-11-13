@@ -1,4 +1,6 @@
-import { ArrowUpRight, Car } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { ArrowRight, ArrowUpRight, Car } from 'lucide-react';
+import { MARKALAR, MODELLER } from '../data/araclar';
 
 /**
  * Sade araç kartları. Görsel ve teknik değerler (menzil, güç, şarj süresi)
@@ -14,7 +16,8 @@ export default function Vehicles() {
   return (
     <section id="araclar" className="bg-black py-24 border-t border-gray-800 scroll-mt-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="mb-12">
+        <div className="mb-12 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6">
+          <div>
           <span className="text-green-500 text-sm font-semibold tracking-widest uppercase">Araçlar</span>
           <h2 className="text-4xl sm:text-5xl font-black text-white mt-2">
             Türkiye'de Sık Görülen
@@ -25,6 +28,14 @@ export default function Vehicles() {
             Menzil, batarya ve şarj hızı bilgilerini içeren araç rehberi hazırlanıyor. Şimdilik güncel teknik bilgiler için
             üreticinin sayfasına bakabilirsiniz.
           </p>
+          </div>
+          <Link
+            to="/araclar"
+            className="inline-flex items-center gap-2 text-green-400 hover:text-green-300 font-semibold shrink-0 group"
+          >
+            Tüm araçlar ({MODELLER.length} model, {MARKALAR.length} marka)
+            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+          </Link>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
