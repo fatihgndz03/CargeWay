@@ -502,6 +502,10 @@ export default function MapPage() {
             </h2>
             <StationList stations={sorted} onSelect={selectStation} selectedId={selectedId} />
           </div>
+          <p className="border-t border-gray-800 px-5 py-3 text-[11px] leading-snug text-gray-500">
+            İstasyon bilgileri bilgilendirme amaçlıdır; doğruluğu garanti edilmez. Yola çıkmadan önce operatörün
+            uygulamasından kontrol edin.
+          </p>
         </aside>
 
         <div className="relative flex-1">

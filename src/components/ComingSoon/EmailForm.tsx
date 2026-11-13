@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { Send, CheckCircle, AlertCircle, Loader2 } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 
@@ -7,10 +8,11 @@ type Status = 'idle' | 'loading' | 'success' | 'error' | 'duplicate';
 export default function EmailForm() {
   const [email, setEmail] = useState('');
   const [status, setStatus] = useState<Status>('idle');
+  const [onay, setOnay] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email.trim()) return;
+    if (!email.trim() || !onay) return;
 
     if (!supabase) {
       setStatus('error');
@@ -27,6 +29,7 @@ export default function EmailForm() {
     if (!error) {
       setStatus('success');
       setEmail('');
+      setOnay(false);
     } else if (error.code === '23505') {
       setStatus('duplicate');
     } else {
@@ -67,7 +70,7 @@ export default function EmailForm() {
           />
           <button
             type="submit"
-            disabled={status === 'loading' || !email.trim()}
+            disabled={status === 'loading' || !email.trim() || !onay}
             className="absolute right-2 flex items-center justify-center w-10 h-10 rounded-lg bg-green-500 hover:bg-green-400 disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-200 shadow-md shadow-green-500/20 active:scale-95"
           >
             {status === 'loading' ? (
@@ -77,6 +80,25 @@ export default function EmailForm() {
             )}
           </button>
         </form>
+      )}
+
+      {status !== 'success' && status !== 'duplicate' && (
+        <label className="mt-3 flex items-start gap-2.5 text-left text-xs leading-relaxed text-zinc-500 cursor-pointer">
+          <input
+            type="checkbox"
+            checked={onay}
+            onChange={(e) => setOnay(e.target.checked)}
+            required
+            className="mt-0.5 h-4 w-4 shrink-0 accent-green-500"
+          />
+          <span>
+            CargeWay'in lansman ve duyurularıyla ilgili bana e-posta göndermesini kabul ediyorum.{' '}
+            <Link to="/kvkk" className="text-zinc-400 underline hover:text-green-400">
+              KVKK Aydınlatma Metni
+            </Link>
+            'ni okudum. Onayımı istediğim zaman geri alabilirim.
+          </span>
+        </label>
       )}
 
       {status === 'error' && (

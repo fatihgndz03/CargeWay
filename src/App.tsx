@@ -19,6 +19,7 @@ const VehiclesPage = lazy(() => import('./pages/Vehicles'));
 const NotFoundPage = lazy(() => import('./pages/NotFound'));
 const KvkkPage = lazy(() => import('./pages/Legal').then((m) => ({ default: m.KvkkPage })));
 const PrivacyPage = lazy(() => import('./pages/Legal').then((m) => ({ default: m.PrivacyPage })));
+const ContactPage = lazy(() => import('./pages/Legal').then((m) => ({ default: m.ContactPage })));
 const CookiesPage = lazy(() => import('./pages/Legal').then((m) => ({ default: m.CookiesPage })));
 
 /** Adres değişince canonical etiketini günceller ve (bölüm bağlantısı değilse) sayfanın başına döner. */
@@ -79,9 +80,17 @@ function MapRoute() {
 
 function App() {
   if (SHOW_COMING_SOON) {
+    // Bakım modunda da yasal sayfalara ve iletişim/künyeye erişilebilmeli.
     return (
       <Suspense fallback={<PageLoading />}>
-        <ComingSoon />
+        <RouteEffects />
+        <Routes>
+          <Route path="/kvkk" element={<KvkkPage />} />
+          <Route path="/gizlilik" element={<PrivacyPage />} />
+          <Route path="/cerezler" element={<CookiesPage />} />
+          <Route path="/iletisim" element={<ContactPage />} />
+          <Route path="*" element={<ComingSoon />} />
+        </Routes>
       </Suspense>
     );
   }
@@ -97,6 +106,7 @@ function App() {
         <Route path="/kvkk" element={<KvkkPage />} />
         <Route path="/gizlilik" element={<PrivacyPage />} />
         <Route path="/cerezler" element={<CookiesPage />} />
+        <Route path="/iletisim" element={<ContactPage />} />
         {/* Eski yazım hatalı adres */}
         <Route path="/sarcj-haritasi" element={<Navigate to="/sarj-haritasi" replace />} />
         <Route path="*" element={<NotFoundPage />} />

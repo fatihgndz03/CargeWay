@@ -1,10 +1,10 @@
 import Logo from './Logo';
 import EmailForm from './EmailForm';
-import SocialLinks from './SocialLinks';
+import { Link } from 'react-router-dom';
 
 export default function ComingSoon() {
   return (
-    <div className="relative min-h-screen bg-[#080808] flex flex-col items-center justify-center overflow-hidden px-6">
+    <div className="relative min-h-screen bg-[#080808] flex flex-col items-center justify-center overflow-hidden px-6 py-12">
       <GridBackground />
       <GlowOrbs />
 
@@ -39,14 +39,16 @@ export default function ComingSoon() {
 
         <div className="animate-fade-in w-full flex flex-col items-center gap-8" style={{ animationDelay: '450ms' }}>
           <EmailForm />
-          <div className="flex flex-col items-center gap-4">
-            <p className="text-zinc-600 text-xs tracking-widest uppercase">Bizi Takip Et</p>
-            <SocialLinks />
-          </div>
         </div>
       </div>
 
-      <footer className="absolute bottom-6 left-0 right-0 text-center">
+      <footer className="relative z-10 mt-14 text-center">
+        <nav className="mb-2 flex flex-wrap justify-center gap-x-4 gap-y-1 text-xs text-zinc-500">
+          <Link to="/iletisim" className="hover:text-green-400">İletişim ve Künye</Link>
+          <Link to="/kvkk" className="hover:text-green-400">KVKK</Link>
+          <Link to="/gizlilik" className="hover:text-green-400">Gizlilik</Link>
+          <Link to="/cerezler" className="hover:text-green-400">Çerezler</Link>
+        </nav>
         <p className="text-zinc-700 text-xs tracking-wide">
           © 2026 CargeWay. Tüm hakları saklıdır.
         </p>

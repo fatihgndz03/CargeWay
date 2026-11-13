@@ -20,6 +20,7 @@ const links: Record<string, FooterLink[]> = {
     { label: 'KVKK Aydınlatma Metni', to: '/kvkk' },
     { label: 'Gizlilik Politikası', to: '/gizlilik' },
     { label: 'Çerez Bilgilendirmesi', to: '/cerezler' },
+    { label: 'İletişim ve Künye', to: '/iletisim' },
   ],
 };
 
@@ -72,6 +73,10 @@ export default function Footer() {
 
         <div className="py-6 border-t border-gray-800">
           <p className="text-gray-500 text-sm">&copy; {new Date().getFullYear()} CargeWay. Tüm hakları saklıdır.</p>
+          <p className="text-gray-600 text-xs mt-2">
+            İstasyon bilgileri bilgilendirme amaçlıdır; doğruluğu ve güncelliği garanti edilmez. Yola çıkmadan önce
+            operatörün uygulamasından kontrol edin.
+          </p>
         </div>
       </div>
     </footer>
