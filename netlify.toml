@@ -1,0 +1,7 @@
+# Netlify derleme ayarları (panelde boş bırakılsa bile bunlar kullanılır)
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "20"

@@ -12,6 +12,12 @@ export default function EmailForm() {
     e.preventDefault();
     if (!email.trim()) return;
 
+    if (!supabase) {
+      setStatus('error');
+      setTimeout(() => setStatus('idle'), 4000);
+      return;
+    }
+
     setStatus('loading');
 
     const { error } = await supabase

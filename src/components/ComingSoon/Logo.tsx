@@ -13,7 +13,7 @@ export default function Logo() {
         <h1 className="text-3xl font-black tracking-widest text-white uppercase">
           Carge<span className="text-green-400">Way</span>
         </h1>
-        <p className="text-xs tracking-[0.3em] text-zinc-500 uppercase mt-1">Electric Vehicle Charging</p>
+        <p className="text-xs tracking-[0.3em] text-zinc-500 uppercase mt-1">Elektrikli Araç Şarj Haritası</p>
       </div>
     </div>
   );

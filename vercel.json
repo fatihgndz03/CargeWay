@@ -1,0 +1,9 @@
+{
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
+  "framework": "vite",
+  "redirects": [
+    { "source": "/sarcj-haritasi", "destination": "/sarj-haritasi", "permanent": true }
+  ],
+  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]
+}
