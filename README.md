@@ -108,3 +108,14 @@ Harita (`/sarj-haritasi`) önce Supabase'deki `stations` tablosunu okur. Tablo y
 ## Veri notu
 
 Haritadaki örnek istasyonlar (kurgusal "Örnek Operatör A/B/C") ve ana sayfadaki haberler **örnek veridir** ve sitede bu şekilde etiketlenmiştir. Gerçek istasyon verisi Faz 1 kapsamında eklenecektir.
+
+## Şarj ünitesi kurulum talepleri (Teklif al)
+
+`/sarj-unitesi-kurulumu` sayfasındaki form, talepleri Supabase'deki `kurulum_talepleri` tablosuna yazar.
+
+1. Supabase panelinde **SQL Editor**'ü açın ve `supabase/migrations/20261119120000_create_kurulum_talepleri.sql` dosyasının içeriğini çalıştırın.
+2. Talepleri **Table Editor → kurulum_talepleri** bölümünden görün. `durum` sütununu (`yeni → iletildi → teklif_verildi → kazanildi/kaybedildi`) ve `yonlendirilen_firma` alanını takip için kullanın.
+3. Ziyaretçiler yalnızca talep ekleyebilir; okuma/silme yetkileri yoktur.
+4. Supabase ortam değişkenleri tanımlı değilse form "Talepler şu an alınamıyor" mesajı gösterir.
+
+Onay metni değişirse `src/pages/Installation.tsx` içindeki `ONAY_METNI_SURUMU` değerini güncelleyin.

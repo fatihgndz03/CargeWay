@@ -10,6 +10,7 @@ const links: Record<string, FooterLink[]> = {
   Platform: [
     { label: 'Şarj Haritası', to: '/sarj-haritasi' },
     { label: 'Araçlar', to: '/araclar' },
+    { label: 'Şarj Ünitesi Kurulumu', to: '/sarj-unitesi-kurulumu' },
     { label: 'Haberler', to: '/#haberler' },
   ],
   CargeWay: [

@@ -4,6 +4,7 @@ import { Car, MapPin, Search, X } from 'lucide-react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { useSeo } from '../lib/seo';
+import InstallCta from '../components/InstallCta';
 import { MARKALAR, MODELLER } from '../data/araclar';
 
 // "Ioniq"/"ioniq" ve "İstanbul"/"istanbul" gibi yazımlar eşleşsin diye ı/i farkı yok sayılır.
@@ -131,6 +132,9 @@ export default function VehiclesPage() {
             >
               <MapPin className="w-4 h-4" /> Şarj haritasını aç
             </Link>
+          </div>
+          <div className="mt-4">
+            <InstallCta variant="compact" />
           </div>
         </div>
       </main>

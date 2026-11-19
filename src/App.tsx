@@ -7,6 +7,7 @@ import Vehicles from './components/Vehicles';
 import WhyCargeWay from './components/WhyCargeWay';
 import MapTeaser from './components/MapTeaser';
 import Footer from './components/Footer';
+import InstallCta from './components/InstallCta';
 import HowItWorks from './components/HowItWorks';
 import { SHOW_COMING_SOON } from './lib/config';
 import { applyCanonical, DEFAULT_DESCRIPTION, DEFAULT_TITLE, useSeo } from './lib/seo';
@@ -15,6 +16,7 @@ import { applyCanonical, DEFAULT_DESCRIPTION, DEFAULT_TITLE, useSeo } from './li
 const ComingSoon = lazy(() => import('./components/ComingSoon'));
 const MapPage = lazy(() => import('./pages/Map'));
 const StationDetailPage = lazy(() => import('./pages/StationDetail'));
+const InstallationPage = lazy(() => import('./pages/Installation'));
 const VehiclesPage = lazy(() => import('./pages/Vehicles'));
 const NotFoundPage = lazy(() => import('./pages/NotFound'));
 const KvkkPage = lazy(() => import('./pages/Legal').then((m) => ({ default: m.KvkkPage })));
@@ -57,6 +59,7 @@ function Home() {
       <Hero />
       <MapTeaser />
       <HowItWorks />
+      <InstallCta />
       <News />
       <Vehicles />
       <WhyCargeWay />
@@ -103,6 +106,7 @@ function App() {
         <Route path="/sarj-haritasi" element={<MapRoute />} />
         <Route path="/istasyon/:slug" element={<StationDetailPage />} />
         <Route path="/araclar" element={<VehiclesPage />} />
+        <Route path="/sarj-unitesi-kurulumu" element={<InstallationPage />} />
         <Route path="/kvkk" element={<KvkkPage />} />
         <Route path="/gizlilik" element={<PrivacyPage />} />
         <Route path="/cerezler" element={<CookiesPage />} />
