@@ -39,6 +39,7 @@ CREATE TABLE IF NOT EXISTS kurulum_talepleri (
   telefon            text NOT NULL CHECK (telefon ~ '^[0-9 +()-]{10,20}$'),
   eposta             text CHECK (eposta IS NULL OR eposta ~* '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$'),
   not_metni          text CHECK (char_length(not_metni) <= 1000),
+  yuk_yonetimi_ilgi  boolean NOT NULL DEFAULT false,  -- akıllı yük yönetimi / ev enerji takibi ilgisi
 
   -- Onaylar (KVKK m.5/1 açık rıza + aktarım rızası)
   kvkk_onay          boolean NOT NULL,

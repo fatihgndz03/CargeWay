@@ -16,6 +16,8 @@ import { applyCanonical, DEFAULT_DESCRIPTION, DEFAULT_TITLE, useSeo } from './li
 const ComingSoon = lazy(() => import('./components/ComingSoon'));
 const MapPage = lazy(() => import('./pages/Map'));
 const StationDetailPage = lazy(() => import('./pages/StationDetail'));
+const GuidesIndexPage = lazy(() => import('./pages/Guides').then((m) => ({ default: m.GuidesIndexPage })));
+const GuidePage = lazy(() => import('./pages/Guides').then((m) => ({ default: m.GuidePage })));
 const InstallationPage = lazy(() => import('./pages/Installation'));
 const VehiclesPage = lazy(() => import('./pages/Vehicles'));
 const NotFoundPage = lazy(() => import('./pages/NotFound'));
@@ -107,6 +109,8 @@ function App() {
         <Route path="/istasyon/:slug" element={<StationDetailPage />} />
         <Route path="/araclar" element={<VehiclesPage />} />
         <Route path="/sarj-unitesi-kurulumu" element={<InstallationPage />} />
+        <Route path="/rehber" element={<GuidesIndexPage />} />
+        <Route path="/rehber/:slug" element={<GuidePage />} />
         <Route path="/kvkk" element={<KvkkPage />} />
         <Route path="/gizlilik" element={<PrivacyPage />} />
         <Route path="/cerezler" element={<CookiesPage />} />

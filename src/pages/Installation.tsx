@@ -109,6 +109,7 @@ export default function InstallationPage() {
   const [telefon, setTelefon] = useState('');
   const [eposta, setEposta] = useState('');
   const [not, setNot] = useState('');
+  const [yukYonetimi, setYukYonetimi] = useState(false);
   const [kvkk, setKvkk] = useState(false);
   const [paylasim, setPaylasim] = useState(false);
   const [hataMesaji, setHataMesaji] = useState('');
@@ -137,6 +138,7 @@ export default function InstallationPage() {
       telefon: telefon.trim(),
       eposta: eposta.trim() || null,
       not_metni: not.trim().slice(0, 1000) || null,
+      yuk_yonetimi_ilgi: yukYonetimi,
       kvkk_onay: kvkk,
       paylasim_onay: paylasim,
       onay_metni_surumu: ONAY_METNI_SURUMU,
@@ -259,6 +261,21 @@ export default function InstallationPage() {
                         <Alan etiket="Elektrik panosu ile park yeri arası mesafe (tahmini)">
                           <Secenekler secenekler={MESAFE} deger={mesafe} onSec={setMesafe} />
                         </Alan>
+                        <label className="flex items-start gap-3 rounded-xl border border-gray-800 bg-gray-900 p-4 cursor-pointer hover:border-green-500/40">
+                          <input
+                            type="checkbox"
+                            checked={yukYonetimi}
+                            onChange={(e) => setYukYonetimi(e.target.checked)}
+                            className="mt-0.5 h-4 w-4 shrink-0 accent-green-500"
+                          />
+                          <span className="text-sm">
+                            <span className="block font-semibold text-white">Akıllı yük yönetimi ilgimi çekiyor</span>
+                            <span className="block text-xs text-gray-400 mt-0.5">
+                              Evin toplam tüketimine göre şarj gücünü otomatik ayarlayan ve hangi cihazın ne kadar
+                              harcadığını telefondan gösteren sistem. (İsteğe bağlı)
+                            </span>
+                          </span>
+                        </label>
                         {mekan !== 'ev' && (
                           <Alan etiket="Kaç şarj ünitesi düşünüyorsunuz?" ipucu="Bilmiyorsanız boş bırakın.">
                             <input
