@@ -10,11 +10,15 @@ const links: Record<string, FooterLink[]> = {
   Platform: [
     { label: 'Şarj Haritası', to: '/sarj-haritasi' },
     { label: 'Araçlar', to: '/araclar' },
+    { label: 'Şarj Ünitesi Kurulumu', to: '/sarj-unitesi-kurulumu' },
+    { label: 'Rehberler', to: '/rehber' },
+    { label: 'Ürün Rehberi', to: '/urunler' },
     { label: 'Haberler', to: '/#haberler' },
   ],
   CargeWay: [
     { label: 'Nasıl Çalışır?', to: '/#nasil-calisir' },
     { label: 'Neden CargeWay?', to: '/#neden-cargeway' },
+    { label: 'İş Ortağımız Olun', to: '/is-ortagi-ol' },
   ],
   Yasal: [
     { label: 'KVKK Aydınlatma Metni', to: '/kvkk' },

@@ -7,6 +7,7 @@ import Vehicles from './components/Vehicles';
 import WhyCargeWay from './components/WhyCargeWay';
 import MapTeaser from './components/MapTeaser';
 import Footer from './components/Footer';
+import InstallCta from './components/InstallCta';
 import HowItWorks from './components/HowItWorks';
 import { SHOW_COMING_SOON } from './lib/config';
 import { applyCanonical, DEFAULT_DESCRIPTION, DEFAULT_TITLE, useSeo } from './lib/seo';
@@ -15,6 +16,11 @@ import { applyCanonical, DEFAULT_DESCRIPTION, DEFAULT_TITLE, useSeo } from './li
 const ComingSoon = lazy(() => import('./components/ComingSoon'));
 const MapPage = lazy(() => import('./pages/Map'));
 const StationDetailPage = lazy(() => import('./pages/StationDetail'));
+const GuidesIndexPage = lazy(() => import('./pages/Guides').then((m) => ({ default: m.GuidesIndexPage })));
+const GuidePage = lazy(() => import('./pages/Guides').then((m) => ({ default: m.GuidePage })));
+const ProductsPage = lazy(() => import('./pages/Products'));
+const InstallationPage = lazy(() => import('./pages/Installation'));
+const PartnerPage = lazy(() => import('./pages/Partner'));
 const VehiclesPage = lazy(() => import('./pages/Vehicles'));
 const NotFoundPage = lazy(() => import('./pages/NotFound'));
 const KvkkPage = lazy(() => import('./pages/Legal').then((m) => ({ default: m.KvkkPage })));
@@ -52,11 +58,13 @@ function Home() {
   }, [hash]);
 
   return (
-    <div className="bg-black min-h-screen">
+    // overflow-x-clip: dekoratif bulanık daireler mobilde yatay kaydırma yaratmasın
+    <div className="bg-black min-h-screen overflow-x-clip">
       <Header />
       <Hero />
       <MapTeaser />
       <HowItWorks />
+      <InstallCta />
       <News />
       <Vehicles />
       <WhyCargeWay />
@@ -103,6 +111,11 @@ function App() {
         <Route path="/sarj-haritasi" element={<MapRoute />} />
         <Route path="/istasyon/:slug" element={<StationDetailPage />} />
         <Route path="/araclar" element={<VehiclesPage />} />
+        <Route path="/sarj-unitesi-kurulumu" element={<InstallationPage />} />
+        <Route path="/is-ortagi-ol" element={<PartnerPage />} />
+        <Route path="/rehber" element={<GuidesIndexPage />} />
+        <Route path="/rehber/:slug" element={<GuidePage />} />
+        <Route path="/urunler" element={<ProductsPage />} />
         <Route path="/kvkk" element={<KvkkPage />} />
         <Route path="/gizlilik" element={<PrivacyPage />} />
         <Route path="/cerezler" element={<CookiesPage />} />

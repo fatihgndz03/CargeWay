@@ -1,5 +1,5 @@
-import { type ReactNode } from 'react';
-import { Link } from 'react-router-dom';
+import { useEffect, type ReactNode } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { useSeo } from '../lib/seo';
@@ -9,10 +9,16 @@ import { KUNYE, KUNYE_TAMAM } from '../data/kunye';
  * TASLAK hukuki metinler. Yayından önce bir hukukçu tarafından kontrol edilmeli
  * ve köşeli parantez içindeki alanlar ([...]) doldurulmalıdır.
  */
-const SON_GUNCELLEME = '13 Kasım 2026';
+const SON_GUNCELLEME = '21 Kasım 2026';
 
 function LegalLayout({ title, children }: { title: string; children: ReactNode }) {
   useSeo(`${title} — CargeWay`, `CargeWay ${title}: kişisel verilerin işlenmesi, haklarınız ve iletişim bilgileri.`);
+  const { hash } = useLocation();
+  // Formlardaki "/kvkk#bolum" bağlantıları ilgili bölüme gitsin
+  useEffect(() => {
+    if (!hash) return;
+    document.getElementById(decodeURIComponent(hash.slice(1)))?.scrollIntoView();
+  }, [hash]);
 
   return (
     <div className="bg-black min-h-screen">
@@ -54,6 +60,17 @@ export function KvkkPage() {
           niteliğindedir; her e-postadaki bağlantıdan veya {ILETISIM} adresine yazarak dilediğiniz an geri alabilirsiniz.
         </li>
         <li>
+          <strong>Şarj ünitesi kurulum talebi:</strong> "Teklif al" formunu doldurmanız halinde ad soyad, telefon,
+          (isteğe bağlı) e-posta, il/ilçe, mekan ve otopark bilgileri, araç modeli ve notunuz; kurulum teklifi
+          hazırlanması ve sizinle iletişime geçilmesi amacıyla.
+        </li>
+        <li id="is-ortagi" className="scroll-mt-28">
+          <strong>İş ortaklığı başvurusu (kurulum firmaları):</strong> "İş Ortağımız Olun" formunu doldurmanız halinde
+          firma adı, web sitesi, yetki belgesi türleri, hizmet verilen iller ve kurulum türleri ile yetkili kişinin ad
+          soyadı, telefonu, e-postası ve notu; başvurunun değerlendirilmesi, sizinle iletişime geçilmesi ve iş ortaklığı
+          sözleşmesinin kurulması amacıyla.
+        </li>
+        <li>
           <strong>Konum bilgisi:</strong> "Konumumu kullan" özelliğini kullandığınızda tarayıcınızın paylaştığı konum, yalnızca
           haritayı bulunduğunuz yere götürmek için cihazınızda kullanılır; sunucularımıza gönderilmez ve saklanmaz.
         </li>
@@ -68,10 +85,19 @@ export function KvkkPage() {
       </ul>
       <h2>3. Hukuki sebepler</h2>
       <p>
-        E-posta adresiniz açık rızanıza (KVKK m. 5/1) dayanılarak; teknik kayıtlar ise veri sorumlusunun meşru menfaati
-        (KVKK m. 5/2-f) ve hukuki yükümlülükler (KVKK m. 5/2-ç) kapsamında işlenir.
+        E-posta adresiniz ve kurulum talebi bilgileriniz açık rızanıza (KVKK m. 5/1) dayanılarak; teknik kayıtlar ise veri sorumlusunun meşru menfaati
+        (KVKK m. 5/2-f) ve hukuki yükümlülükler (KVKK m. 5/2-ç) kapsamında işlenir. İş ortaklığı başvurularındaki
+        bilgiler, bir sözleşmenin kurulmasıyla doğrudan ilgili olması (KVKK m. 5/2-c) ve veri sorumlusunun meşru
+        menfaati (KVKK m. 5/2-f) hukuki sebeplerine dayanılarak işlenir; bu başvurular için ayrıca açık rıza
+        alınmaz. [Hukuki kontrol: hukuki sebepler netleştirilmeli.]
       </p>
       <h2>4. Aktarım</h2>
+      <p>
+        <strong>Kurulum talepleri:</strong> Formda ayrıca açık rıza vermeniz halinde talep bilgileriniz, teklif
+        hazırlamaları ve sizinle iletişime geçmeleri amacıyla CargeWay'in anlaşmalı olduğu, bölgenizde hizmet veren
+        şarj ünitesi kurulum firmalarına (yurt içi) aktarılır. Bilgileriniz bu firmalara başka bir amaçla kullanılmak
+        üzere verilmez. Rızanızı dilediğiniz zaman geri alabilirsiniz; geri alma, önceki aktarımları etkilemez.
+      </p>
       <p>
         Hizmetin sunulması için şu hizmet sağlayıcılardan yararlanılmaktadır: veritabanı (Supabase), barındırma (Vercel),
         harita altlığı (CARTO / OpenStreetMap) ve adres arama (OpenStreetMap Nominatim). Bu sağlayıcıların sunucuları yurt
@@ -80,7 +106,12 @@ export function KvkkPage() {
       </p>
       <h2>5. Saklama süresi</h2>
       <p>
-        E-posta adresiniz, abonelikten çıkana veya silinmesini talep edene kadar saklanır. [Diğer süreler netleştirilmeli.]
+        E-posta adresiniz, abonelikten çıkana veya silinmesini talep edene kadar saklanır. Kurulum talebi bilgileriniz,
+        talebin oluşturulmasından itibaren en fazla 2 yıl saklanır ve bu sürenin sonunda silinir veya anonim hale
+        getirilir. İş ortaklığı başvuruları, anlaşma yapılmazsa başvuru tarihinden itibaren en fazla 2 yıl saklanır;
+        anlaşma yapılırsa sözleşme süresince ve ilgili mevzuattaki saklama süreleri boyunca tutulur. İş ortaklığı
+        başvuru bilgileri üçüncü kişilere aktarılmaz; yalnızca yukarıda sayılan hizmet sağlayıcıların sunucularında
+        saklanır. [Hukuki kontrol: saklama süreleri netleştirilmeli.]
       </p>
       <h2>6. Haklarınız</h2>
       <p>
@@ -105,6 +136,11 @@ export function PrivacyPage() {
       <h2>Topladığımız bilgiler</h2>
       <ul>
         <li>Bülten formuna kendi isteğinizle yazdığınız e-posta adresi.</li>
+        <li>
+          "Teklif al" formuna yazdığınız iletişim, konum ve kurulum bilgileri (onayınızla anlaşmalı kurulum firmalarına
+          iletilir).
+        </li>
+        <li>Kurulum firmalarının "İş Ortağımız Olun" formuna yazdığı firma ve iletişim bilgileri.</li>
         <li>Barındırma sağlayıcısının tuttuğu standart erişim kayıtları.</li>
       </ul>
       <h2>Toplamadığımız bilgiler</h2>

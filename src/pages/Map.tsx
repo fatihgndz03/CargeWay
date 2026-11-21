@@ -1,3 +1,4 @@
+import InstallCta from '../components/InstallCta';
 import { useCallback, useEffect, useMemo, useRef, useState, type FormEvent } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { MapContainer, TileLayer, Marker, Popup, CircleMarker, useMap } from 'react-leaflet';
@@ -502,6 +503,9 @@ export default function MapPage() {
             </h2>
             <StationList stations={sorted} onSelect={selectStation} selectedId={selectedId} />
           </div>
+          <div className="border-t border-gray-800 p-4">
+            <InstallCta variant="compact" />
+          </div>
           <p className="border-t border-gray-800 px-5 py-3 text-[11px] leading-snug text-gray-500">
             İstasyon bilgileri bilgilendirme amaçlıdır; doğruluğu garanti edilmez. Yola çıkmadan önce operatörün
             uygulamasından kontrol edin.
@@ -624,6 +628,9 @@ export default function MapPage() {
                       </button>
                     </div>
                     <StationList stations={sorted} onSelect={selectStation} selectedId={selectedId} />
+                    <div className="mt-4">
+                      <InstallCta variant="compact" />
+                    </div>
                   </>
                 )}
               </div>

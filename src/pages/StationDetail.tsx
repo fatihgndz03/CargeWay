@@ -1,3 +1,4 @@
+import InstallCta from '../components/InstallCta';
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { MapContainer, Marker, TileLayer } from 'react-leaflet';
@@ -198,6 +199,7 @@ function Detail({ station: s, nearby }: { station: StationDetailT; nearby: { sta
         </section>
 
         <aside className="lg:col-span-2 space-y-6">
+          <InstallCta variant="compact" />
           <div className="overflow-hidden rounded-2xl border border-gray-800">
             <div className="h-56">
               <MapContainer
