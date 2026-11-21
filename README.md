@@ -119,3 +119,34 @@ Haritadaki örnek istasyonlar (kurgusal "Örnek Operatör A/B/C") ve ana sayfada
 4. Supabase ortam değişkenleri tanımlı değilse form "Talepler şu an alınamıyor" mesajı gösterir.
 
 Onay metni değişirse `src/pages/Installation.tsx` içindeki `ONAY_METNI_SURUMU` değerini güncelleyin.
+
+## Kurulum firması (iş ortağı) başvuruları
+
+`/is-ortagi-ol` sayfasındaki form, başvuruları `is_ortagi_basvurulari` tablosuna yazar (`supabase/migrations/20261121120000_create_is_ortagi_basvurulari.sql`). Ziyaretçiler yalnızca başvuru ekleyebilir. Durum: `yeni → inceleniyor → gorusuldu → anlasildi / reddedildi`. **`anlasildi` durumunu yalnızca yazılı anlaşma yapıldıktan sonra verin**; yönetim görünümleri "anlaşmalı firma" olarak bunu sayar.
+
+## Yönetim görünümleri
+
+`supabase/migrations/20261121180000_create_yonetim_gorunumleri.sql` iki salt okunur görünüm ekler (yalnızca Supabase paneli / service_role; ziyaretçiler okuyamaz):
+
+| Görünüm | İçerik |
+| --- | --- |
+| `yonetim_il_ozeti` | İl bazında toplam / yeni / açık talep, son talep tarihi, anlaşmalı firma ve bekleyen başvuru sayısı |
+| `yonetim_acik_talep_eslesme` | Açık (`yeni` / `iletildi`) her talep için iline ve mekân tipine hizmet veren anlaşmalı firmalar |
+
+Supabase → **SQL Editor**'de `select * from yonetim_il_ozeti;` ile kullanın. Önce iki tablo migration'ı uygulanmış olmalı.
+
+## Yeni kayıt e-posta bildirimi
+
+`supabase/functions/yeni-kayit-bildirim` Edge Function'ı, yeni kurulum talebi **veya** iş ortaklığı başvurusu geldiğinde size e-posta gönderir (Resend ile). Veritabanına dokunmaz, kişisel veriyi loglamaz; `x-webhook-secret` başlığı olmayan istekleri reddeder.
+
+1. [resend.com](https://resend.com)'da hesap açın, `cargeway.com` alan adını doğrulayın (DNS kayıtları), bir API anahtarı oluşturun.
+2. Gizli değerleri girin (koda yazmayın):
+   ```bash
+   supabase secrets set WEBHOOK_SECRET=<uzun-rastgele-metin> RESEND_API_KEY=<anahtar> BILDIRIM_EPOSTA=<sizin-adresiniz> GONDEREN_EPOSTA=bildirim@cargeway.com
+   ```
+3. Fonksiyonu yayınlayın: `supabase functions deploy yeni-kayit-bildirim --no-verify-jwt`
+4. Supabase → **Database → Webhooks → Create a new hook** — iki kez, her tablo için bir tane:
+   - Tablo `kurulum_talepleri`, olay **Insert**; ikinci webhook'ta tablo `is_ortagi_basvurulari`, olay **Insert**
+   - Tür **HTTP Request**, yöntem **POST**, URL `https://<proje-ref>.supabase.co/functions/v1/yeni-kayit-bildirim`
+   - HTTP başlığı: `x-webhook-secret: <WEBHOOK_SECRET ile aynı değer>`
+5. Önizlemede bir deneme talebi ve bir deneme başvurusu gönderip e-postaların geldiğini kontrol edin; deneme kayıtlarını Table Editor'den silin.
