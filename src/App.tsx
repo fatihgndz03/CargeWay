@@ -20,6 +20,7 @@ const GuidesIndexPage = lazy(() => import('./pages/Guides').then((m) => ({ defau
 const GuidePage = lazy(() => import('./pages/Guides').then((m) => ({ default: m.GuidePage })));
 const ProductsPage = lazy(() => import('./pages/Products'));
 const InstallationPage = lazy(() => import('./pages/Installation'));
+const PartnerPage = lazy(() => import('./pages/Partner'));
 const VehiclesPage = lazy(() => import('./pages/Vehicles'));
 const NotFoundPage = lazy(() => import('./pages/NotFound'));
 const KvkkPage = lazy(() => import('./pages/Legal').then((m) => ({ default: m.KvkkPage })));
@@ -111,6 +112,7 @@ function App() {
         <Route path="/istasyon/:slug" element={<StationDetailPage />} />
         <Route path="/araclar" element={<VehiclesPage />} />
         <Route path="/sarj-unitesi-kurulumu" element={<InstallationPage />} />
+        <Route path="/is-ortagi-ol" element={<PartnerPage />} />
         <Route path="/rehber" element={<GuidesIndexPage />} />
         <Route path="/rehber/:slug" element={<GuidePage />} />
         <Route path="/urunler" element={<ProductsPage />} />

@@ -18,6 +18,7 @@ const links: Record<string, FooterLink[]> = {
   CargeWay: [
     { label: 'Nasıl Çalışır?', to: '/#nasil-calisir' },
     { label: 'Neden CargeWay?', to: '/#neden-cargeway' },
+    { label: 'İş Ortağımız Olun', to: '/is-ortagi-ol' },
   ],
   Yasal: [
     { label: 'KVKK Aydınlatma Metni', to: '/kvkk' },

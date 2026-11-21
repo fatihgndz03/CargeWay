@@ -15,7 +15,7 @@ const SITE = (process.env.SITE_URL || 'https://cargeway.com').replace(/\/+$/, ''
 const REHBER_YOLLARI = [
   ...readFileSync(new URL('../src/data/rehberler.ts', import.meta.url), 'utf8').matchAll(/^\s+slug: '([a-z0-9-]+)',$/gm),
 ].map((m) => `/rehber/${m[1]}`);
-const STATIC_PATHS = ['/', '/sarj-haritasi', '/araclar', '/sarj-unitesi-kurulumu', '/rehber', ...REHBER_YOLLARI, '/urunler', '/kvkk', '/iletisim', '/gizlilik', '/cerezler'];
+const STATIC_PATHS = ['/', '/sarj-haritasi', '/araclar', '/sarj-unitesi-kurulumu', '/is-ortagi-ol', '/rehber', ...REHBER_YOLLARI, '/urunler', '/kvkk', '/iletisim', '/gizlilik', '/cerezler'];
 
 function xmlEscape(s) {
   return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
