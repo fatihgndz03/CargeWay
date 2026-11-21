@@ -146,4 +146,184 @@ export const REHBERLER: Rehber[] = [
       { ad: 'Para Dergi — Yeni binalarda araç şarj istasyonları zorunlu', url: 'https://www.paradergi.com.tr/sektorler/2023/11/13/yeni-binalarda-arac-sarj-istasyonlari-zorunlu' },
     ],
   },
+  {
+    slug: 'dogru-sarj-unitesi-secimi',
+    baslik: 'Doğru şarj ünitesi seçimi: 7,4 / 11 / 22 kW, tek faz / üç faz',
+    ozet:
+      '7,4, 11 ve 22 kW üniteler arasındaki fark nedir, tek faz ile üç faz neyi değiştirir, aracınız ne kadar gücü kabul eder? Basit hesaplar ve kısa bir kontrol listesiyle doğru üniteyi seçin.',
+    guncelleme: '21 Kasım 2026',
+    okumaDk: 6,
+    icerik: [
+      {
+        tip: 'p',
+        metin:
+          'Şarj ünitesi alırken ilk bakılan değer genellikle kW olur. Oysa en yüksek güçteki ünite her zaman en doğru seçim değildir: evinizin elektrik bağlantısı, sözleşme gücünüz ve aracınızın kabul edebildiği güç, ünitenin gerçekte ne kadar hızlı şarj edeceğini belirler.',
+      },
+      { tip: 'h2', metin: '7,4, 11 ve 22 kW nereden geliyor?' },
+      {
+        tip: 'p',
+        metin:
+          'AC şarj ünitesinin gücü, faz sayısı ile her fazdan çekilen akımın çarpımından gelir. Faz-nötr gerilimi yaklaşık 230 V olduğunda kaba hesaplar şöyledir:',
+      },
+      {
+        tip: 'liste',
+        maddeler: [
+          'Tek faz, 32 A: 230 V × 32 A ≈ 7,4 kW',
+          'Üç faz, 16 A: 3 × 230 V × 16 A ≈ 11 kW',
+          'Üç faz, 32 A: 3 × 230 V × 32 A ≈ 22 kW',
+        ],
+      },
+      {
+        tip: 'p',
+        metin:
+          'Yani 22 kW bir ünite, üç fazlı ve her fazda 32 A taşıyabilen bir bağlantı ister. Evlerin çoğu tek faz beslendiği için üç faz bir ünite takmak çoğu zaman önce tesisat ve abonelik değişikliği gerektirir.',
+      },
+      { tip: 'h2', metin: 'Belirleyici olan çoğu zaman araçtır' },
+      {
+        tip: 'p',
+        metin:
+          'AC şarjda elektriği bataryaya uygun hale getiren, aracın içindeki araç üstü şarj cihazıdır (OBC). Ünite ne kadar güçlü olursa olsun araç kendi OBC sınırından fazlasını almaz. Aracınız en fazla 11 kW AC kabul ediyorsa 22 kW ünite şarjı hızlandırmaz. Benzer şekilde kullandığınız kablonun akım değeri de gücü sınırlayabilir.',
+      },
+      {
+        tip: 'p',
+        metin:
+          'Bazı modeller tek fazda daha düşük akım çeker; bu durumda tek fazlı bir bağlantıda güç 7,4 kW\'ın altında kalır. Aracınızın AC şarj değerini (kW ve kaç fazla şarj olduğunu) kullanım kılavuzundan veya üreticinin sitesinden kontrol edin.',
+      },
+      { tip: 'h2', metin: 'Şarj süresini kabaca hesaplamak' },
+      {
+        tip: 'p',
+        metin:
+          'Yaklaşık süre = eklenecek enerji (kWh) ÷ şarj gücü (kW). Örneğin bataryaya 40 kWh eklemek için 7,4 kW ile yaklaşık 5,5 saat, 11 kW ile yaklaşık 3,5–4 saat, 22 kW ile (araç destekliyorsa) yaklaşık 2 saat gerekir. Kayıplar, batarya sıcaklığı ve doluluk arttıkça yavaşlayan şarj nedeniyle gerçek süre biraz daha uzun olur. Aracı gece boyunca şarj eden çoğu kullanıcı için 7,4 veya 11 kW yeterlidir.',
+      },
+      { tip: 'h2', metin: 'Hangi güç kime uygun?' },
+      {
+        tip: 'liste',
+        maddeler: [
+          '7,4 kW (tek faz): Tek faz beslenen daireler ve evler; günlük kullanımı orta düzeyde olan sürücüler.',
+          '11 kW (üç faz): Üç faz bağlantısı olan müstakil ev ve villalar. Faz başına 16 A çektiği için altyapıyı 22 kW\'a göre daha az zorlar.',
+          '22 kW (üç faz): Aracı 22 kW AC kabul eden kullanıcılar, kısa sürede birden fazla aracın şarj edildiği işyerleri ve filolar. Bağlantı ve sözleşme gücünün buna uygun olması gerekir.',
+        ],
+      },
+      { tip: 'h2', metin: 'Güç dışında bakılacak özellikler' },
+      {
+        tip: 'liste',
+        maddeler: [
+          'Soket tipi: Türkiye ve Avrupa\'da AC şarj için yaygın standart Type 2\'dir. Kablolu ünite pratiktir; soketli ünite farklı kablolarla esneklik sağlar.',
+          'Kaçak akım koruması: Ünitenin DC kaçak akımı algılayan bir koruması olup olmadığını sorun; yoksa panoda uygun tipte koruma gerekebilir. Bu seçimi kurulumcunuzla yapın.',
+          'Dinamik yük yönetimi: Evdeki diğer cihazlar çok güç çektiğinde şarj gücünü otomatik düşürür; sözleşme gücü sınırlı evlerde sigorta atmasını önlemeye yardımcı olur.',
+          'Zamanlama ve uygulama: Şarjı belirli saatlere kaydırmak ve tüketimi ayrı izlemek, faturayı kontrol etmeyi kolaylaştırır.',
+          'Kart (RFID) ve OCPP desteği: Apartman, site ve işyerlerinde kullanıcıları ayırmak ve üniteyi bir yönetim yazılımına bağlamak için önemlidir.',
+          'Dış mekân dayanımı: Açık otoparkta kullanılacaksa toz-su koruma sınıfına (IP) ve çalışma sıcaklığı aralığına bakın.',
+        ],
+      },
+      { tip: 'h2', metin: 'Kısa kontrol listesi' },
+      {
+        tip: 'liste',
+        maddeler: [
+          'Aracımın AC şarj gücü kaç kW, kaç fazla şarj oluyor?',
+          'Aboneliğim tek faz mı, üç faz mı; sözleşme gücüm ne kadar?',
+          'Günde ortalama kaç km yol yapıyorum, araç gece kaç saat park halinde?',
+          'Ünite kapalı mekâna mı, açık alana mı takılacak?',
+          'İleride ikinci bir elektrikli araç düşünüyor muyum?',
+        ],
+      },
+      {
+        tip: 'not',
+        metin:
+          'Hesaplar yaklaşıktır. Ünite gücünü ve koruma elemanlarını, yerinde keşif yapan yetkili bir elektrikçi veya kurulum firmasıyla birlikte belirleyin.',
+      },
+    ],
+    kaynaklar: [
+      { ad: 'V2C — Şarj cihazı 7 kW mı 22 kW mı? Monofaze ve trifaze farkı (15.07.2025)', url: 'https://v2charge.com/tr/elektrikli-araclar-icin-tek-fazli-ve-uc-fazli-sarj-cihazlari-arasindaki-farklar/' },
+      { ad: 'go-e — Wallbox 11 veya 22 kW: hangisine ihtiyacınız var? (14.06.2024)', url: 'https://go-e.com/tr/blog/wallbox-11-veya-22-kw' },
+      { ad: 'Hyundai Türkiye — Evde şarj (erişim: 21.11.2026)', url: 'https://www.hyundai.com/tr/tr/elektrifikasyon/elektrikli-otomobil-sahibi-olmak/neden-elektrikli/sarj/evde-sarj.html' },
+    ],
+  },
+  {
+    slug: 'isyeri-ve-otoparklara-sarj-istasyonu',
+    baslik: 'İşyeri ve otoparklara şarj istasyonu: seçenekler ve süreç',
+    ozet:
+      'Ofis, mağaza, otel veya ticari otoparkınıza şarj istasyonu kurarken AC mi DC mi seçmeli, ücretli hizmet vermek neyi değiştirir, hangi düzenlemelere bakmalı? Adım adım süreç ve maliyet kalemleri.',
+    guncelleme: '21 Kasım 2026',
+    okumaDk: 7,
+    hukukiNot: true,
+    icerik: [
+      { tip: 'h2', metin: 'Önce amacı belirleyin' },
+      {
+        tip: 'p',
+        metin:
+          'İşyerlerinde şarj istasyonu genellikle üç ihtiyaçtan biri için kurulur: şirket araçlarının (filo) şarjı, çalışanların araçlarının mesai sırasında şarjı ya da müşteri ve misafirlere hizmet. Amaç; ünite sayısını, gücünü, ödeme yöntemini ve hangi düzenlemelerin geçerli olacağını belirler.',
+      },
+      { tip: 'h2', metin: 'AC mi, DC mi?' },
+      {
+        tip: 'p',
+        metin: 'Seçimi belirleyen en önemli ölçüt, araçların otoparkınızda ne kadar beklediğidir:',
+      },
+      {
+        tip: 'liste',
+        maddeler: [
+          'Uzun bekleme (ofis, otel, gece parkı): 11 veya 22 kW AC üniteler genellikle yeterlidir; altyapı maliyeti DC\'ye göre düşüktür.',
+          'Kısa bekleme (mağaza, restoran, yol üstü tesis): Kısa sürede anlamlı şarj için DC hızlı şarj gerekir. DC üniteler çok daha yüksek bağlantı gücü ister; çoğu zaman trafo veya ayrı bir enerji bağlantısı gündeme gelir.',
+          'Karma çözüm: Birkaç AC ünitenin yanında tek bir DC ünite, farklı kullanıcı tiplerine hizmet etmenin yaygın bir yoludur.',
+        ],
+      },
+      { tip: 'h2', metin: 'Kendi kullanımınız mı, ücretli şarj hizmeti mi?' },
+      {
+        tip: 'p',
+        metin:
+          'Türkiye\'de şarj hizmeti, 2 Nisan 2022\'de Resmî Gazete\'de yayımlanan Şarj Hizmeti Yönetmeliği ile EPDK düzenlemesi altına alındı; şarj ağı işletmeciliği lisansa bağlandı. Yönetmelikte Mart 2026\'da da değişiklik yapıldığı ve şarj ağı işletmecilerinin yükümlülüklerinin genişletildiği haberlere yansıdı.',
+      },
+      {
+        tip: 'p',
+        metin:
+          'Bu nedenle üçüncü kişilere ücret karşılığı şarj hizmeti vermeyi planlıyorsanız, istasyonunuzu lisanslı bir şarj ağı işletmecisinin ağına dahil etmek gibi modelleri ve gereken izinleri kurulumdan önce bir uzmana danışarak netleştirin. Yalnızca kendi araçlarınız veya çalışanlarınız için kurulan ünitelerde yükümlülükler farklılaşabilir.',
+      },
+      { tip: 'h2', metin: 'Yeni yapılarda ve büyük otoparklarda yükümlülükler' },
+      {
+        tip: 'p',
+        metin:
+          'Otopark Yönetmeliği\'nde yapılan değişikliklerle, belirli sayının üzerinde otopark yeri olan yeni yapılarda şarj ünitesi ve elektrikli araca uygun park yeri ayrılması; genel otoparklarda ve büyük alışveriş merkezlerinde ise daha yüksek oranlar istendiği aktarılıyor. Yeni bir yapı veya otopark projesindeyseniz güncel oranları proje müellifiniz ve belediyenizle doğrulayın.',
+      },
+      { tip: 'h2', metin: 'Süreç adım adım' },
+      {
+        tip: 'liste',
+        maddeler: [
+          'İhtiyaç analizi: Günde kaç aracın, ne kadar süre beklediğini ve ne kadar enerji gerektiğini tahmin edin.',
+          'Altyapı incelemesi: Mevcut bağlantı gücü, ana pano, kablo güzergâhları ve gerekirse trafo kapasitesi incelenir.',
+          'Ünite ve yazılım seçimi: Kullanıcı tanıma (kart/uygulama), raporlama, ödeme ve uzaktan yönetim (OCPP uyumu) ihtiyaçları belirlenir.',
+          'Yük yönetimi: Tüm ünitelerin aynı anda tam güçte çalışmasını beklemek yerine gücü üniteler arasında paylaştıran bir sistem, gereken bağlantı gücünü ve maliyeti düşürebilir.',
+          'Proje, izinler ve kurulum: Gerekli başvurular yapılır; tesisat yetkili firma tarafından kurulur ve test edilir.',
+          'İşletme: Bakım, arıza müdahalesi ve kullanım kuralları (park süresi, ücretlendirme) belirlenir.',
+        ],
+      },
+      { tip: 'h2', metin: 'Maliyeti etkileyen kalemler' },
+      {
+        tip: 'liste',
+        maddeler: [
+          'Ünite sayısı, türü (AC/DC) ve gücü.',
+          'Bağlantı gücü artışı; gerekirse trafo ve orta gerilim işleri.',
+          'Ana pano, kablo, kanal ve kazı işleri; ünite başına mesafe.',
+          'Zemin işleri, ayaklı montaj, çarpma bariyerleri ve park yeri işaretlemesi.',
+          'Yönetim yazılımı, kullanıcı kartları ve varsa abonelik ücretleri.',
+          'Bakım ve servis sözleşmesi.',
+        ],
+      },
+      {
+        tip: 'p',
+        metin:
+          'İşyeri kurulumlarında fiyatlar projeye özgü olduğundan bu rehberde rakam vermiyoruz; keşif sonrası kalem kalem teklif almanızı öneririz.',
+      },
+      {
+        tip: 'not',
+        metin:
+          'Bu yazı genel bilgilendirme amaçlıdır, hukuki tavsiye değildir. Ücretli şarj hizmeti, lisans ve imar yükümlülükleri için bir avukata veya uzmana danışın.',
+      },
+    ],
+    kaynaklar: [
+      { ad: 'Gönen Hukuk — Şarj Hizmeti Yönetmeliği yürürlüğe girdi (RG 02.04.2022)', url: 'https://gonen.com.tr/sarj-hizmeti-yonetmeligi-yururluge-girdi/?lang=tr' },
+      { ad: 'Bloomberg HT — Şarj Hizmeti Yönetmeliğinde değişiklik (23.03.2026)', url: 'https://www.bloomberght.com/sarj-hizmeti-yonetmeliginde-degisiklik-3772453' },
+      { ad: 'Para Dergi — Yeni binalarda araç şarj istasyonları zorunlu (13.11.2023)', url: 'https://www.paradergi.com.tr/sektorler/2023/11/13/yeni-binalarda-arac-sarj-istasyonlari-zorunlu' },
+      { ad: 'Resmî Gazete — Otopark Yönetmeliğinde Değişiklik (25.03.2021)', url: 'https://www.resmigazete.gov.tr/eskiler/2021/03/20210325-12.htm' },
+    ],
+  },
 ];

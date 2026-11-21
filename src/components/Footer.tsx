@@ -12,6 +12,7 @@ const links: Record<string, FooterLink[]> = {
     { label: 'Araçlar', to: '/araclar' },
     { label: 'Şarj Ünitesi Kurulumu', to: '/sarj-unitesi-kurulumu' },
     { label: 'Rehberler', to: '/rehber' },
+    { label: 'Ürün Rehberi', to: '/urunler' },
     { label: 'Haberler', to: '/#haberler' },
   ],
   CargeWay: [

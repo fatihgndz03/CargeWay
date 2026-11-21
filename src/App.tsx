@@ -18,6 +18,7 @@ const MapPage = lazy(() => import('./pages/Map'));
 const StationDetailPage = lazy(() => import('./pages/StationDetail'));
 const GuidesIndexPage = lazy(() => import('./pages/Guides').then((m) => ({ default: m.GuidesIndexPage })));
 const GuidePage = lazy(() => import('./pages/Guides').then((m) => ({ default: m.GuidePage })));
+const ProductsPage = lazy(() => import('./pages/Products'));
 const InstallationPage = lazy(() => import('./pages/Installation'));
 const VehiclesPage = lazy(() => import('./pages/Vehicles'));
 const NotFoundPage = lazy(() => import('./pages/NotFound'));
@@ -56,7 +57,8 @@ function Home() {
   }, [hash]);
 
   return (
-    <div className="bg-black min-h-screen">
+    // overflow-x-clip: dekoratif bulanık daireler mobilde yatay kaydırma yaratmasın
+    <div className="bg-black min-h-screen overflow-x-clip">
       <Header />
       <Hero />
       <MapTeaser />
@@ -111,6 +113,7 @@ function App() {
         <Route path="/sarj-unitesi-kurulumu" element={<InstallationPage />} />
         <Route path="/rehber" element={<GuidesIndexPage />} />
         <Route path="/rehber/:slug" element={<GuidePage />} />
+        <Route path="/urunler" element={<ProductsPage />} />
         <Route path="/kvkk" element={<KvkkPage />} />
         <Route path="/gizlilik" element={<PrivacyPage />} />
         <Route path="/cerezler" element={<CookiesPage />} />

@@ -8,6 +8,7 @@ const navItems = [
   { label: 'Araçlar', href: '/araclar' },
   { label: 'Kurulum', href: '/sarj-unitesi-kurulumu' },
   { label: 'Rehber', href: '/rehber' },
+  { label: 'Ürünler', href: '/urunler' },
 ];
 
 export default function Header() {
