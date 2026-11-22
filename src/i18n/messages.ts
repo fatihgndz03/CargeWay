@@ -100,6 +100,8 @@ const tr = {
     metin:
       'Müstakil ev, apartman, site veya işyeri için wallbox kurulumu: birkaç soruyu yanıtlayın, bölgenizdeki kurulum firmalarından teklif alın. Ücretsiz ve bağlayıcı değil.',
     kisaBaslik: 'Evine / sitene şarj ünitesi kurdur',
+    ilgiliRehberler: 'Şarj ünitesi rehberleri',
+    tumRehberler: 'Tüm rehberler',
   },
   neden: {
     ust: 'Avantajlar',
@@ -338,6 +340,8 @@ const en: Mesajlar = {
     metin:
       'Wallbox installation for houses, apartment buildings, residential complexes and businesses: answer a few questions and get quotes from installers in your area. Free and non-binding.',
     kisaBaslik: 'Install a charger at home or in your building',
+    ilgiliRehberler: 'Charger guides',
+    tumRehberler: 'All guides',
   },
   neden: {
     ust: 'Benefits',
@@ -567,6 +571,8 @@ const az: Mesajlar = {
     metin:
       'Fərdi ev, yaşayış binası, yaşayış kompleksi və ya iş yeri üçün wallbox quraşdırılması: bir neçə suala cavab verin, bölgənizdəki quraşdırıcılardan təklif alın. Pulsuz və öhdəliksiz.',
     kisaBaslik: 'Evinizə və ya binanıza şarj qurğusu quraşdırın',
+    ilgiliRehberler: 'Şarj qurğusu bələdçiləri',
+    tumRehberler: 'Bütün bələdçilər',
   },
   neden: {
     ust: 'Üstünlüklər',

@@ -6,6 +6,7 @@ import Footer from '../components/Footer';
 import { useSeo } from '../lib/seo';
 import { bicim, useT } from '../i18n';
 import InstallCta from '../components/InstallCta';
+import IlgiliRehberler from '../components/IlgiliRehberler';
 import { MARKALAR, MODELLER } from '../data/araclar';
 
 // "Ioniq"/"ioniq" ve "İstanbul"/"istanbul" gibi yazımlar eşleşsin diye ı/i farkı yok sayılır.
@@ -136,6 +137,10 @@ export default function VehiclesPage() {
           <div className="mt-4">
             <InstallCta variant="compact" />
           </div>
+          <IlgiliRehberler
+            className="mt-4"
+            sluglar={['dogru-sarj-unitesi-secimi', 'evde-sarj-unitesi-wallbox-kurulumu', 'apartman-ve-sitelerde-sarj-unitesi']}
+          />
         </div>
       </main>
       <Footer />

@@ -1,4 +1,5 @@
 import InstallCta from '../components/InstallCta';
+import IlgiliRehberler from '../components/IlgiliRehberler';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Link } from '../components/DilLink';
@@ -203,6 +204,9 @@ function Detail({ station: s, nearby }: { station: StationDetailT; nearby: { sta
 
         <aside className="lg:col-span-2 space-y-6">
           <InstallCta variant="compact" />
+          <IlgiliRehberler
+            sluglar={['evde-sarj-unitesi-wallbox-kurulumu', 'apartman-ve-sitelerde-sarj-unitesi', 'isyeri-ve-otoparklara-sarj-istasyonu']}
+          />
           <div className="overflow-hidden rounded-2xl border border-gray-800">
             <div className="h-56">
               <MapContainer

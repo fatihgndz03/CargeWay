@@ -4,6 +4,7 @@ import { ArrowLeft, BookOpen, Clock, ExternalLink, Info } from 'lucide-react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import InstallCta from '../components/InstallCta';
+import IlgiliRehberler from '../components/IlgiliRehberler';
 import NotFoundPage from './NotFound';
 import { useSeo } from '../lib/seo';
 import { REHBERLER, type Blok } from '../data/rehberler';
@@ -96,6 +97,18 @@ export function GuidePage() {
           <div className="mt-10">
             <InstallCta variant="compact" />
           </div>
+
+          <IlgiliRehberler
+            className="mt-6"
+            sluglar={REHBERLER.filter((x) => x.slug !== r.slug).map((x) => x.slug)}
+          />
+          <p className="mt-4 text-sm text-gray-400">
+            Wallbox, şarj kablosu ve adaptör seçerken nelere bakılacağını{' '}
+            <Link to="/urunler" className="text-green-400 hover:underline">
+              ürün rehberimizde
+            </Link>{' '}
+            özetledik.
+          </p>
 
           <section className="mt-10 border-t border-gray-800 pt-6">
             <h2 className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-3">Kaynaklar</h2>
