@@ -135,6 +135,25 @@ Onay metni değişirse `src/pages/Installation.tsx` içindeki `ONAY_METNI_SURUMU
 
 Supabase → **SQL Editor**'de `select * from yonetim_il_ozeti;` ile kullanın. Önce iki tablo migration'ı uygulanmış olmalı.
 
+## Saklama süresi temizliği (varsayılan kapalı)
+
+`supabase/migrations/20261122130000_create_saklama_temizligi.sql` (canlıya otomatik uygulanmaz) şu fonksiyonu ekler:
+
+```sql
+-- Kuru çalıştırma: yalnızca kaç kaydın silineceğini gösterir
+select * from saklama_suresi_dolanlari_temizle('2 years');
+-- Gerçek silme (geri alınamaz)
+select * from saklama_suresi_dolanlari_temizle('2 years', false);
+```
+
+- Süresi dolan tüm kurulum talepleri ve `anlasildi` olmayan iş ortağı başvuruları silinir; her gerçek çalışma `saklama_temizlik_kaydi` tablosuna yalnızca tarih + sayı olarak yazılır.
+- 30 günden kısa süre reddedilir; anonim/authenticated çalıştıramaz.
+- Otomatik (pg_cron) zamanlama, saklama süresi onaylanana kadar **eklenmez**; komut migration dosyasının başında.
+
+## Hizmet verilmeyen il uyarısı (varsayılan kapalı)
+
+`src/data/hizmetBolgeleri.ts` → `HIZMET_VERILEN_ILLER`. `null` iken uyarı yok. Anlaşmalı firmaların illeri yazılınca (ör. `['İstanbul', 'Kocaeli']`) teklif formunda (ülke Türkiye iken) listede olmayan il seçilirse üç dilde bilgi notu çıkar; gönderim engellenmez. Azerbaycan için şimdilik uyarı yok.
+
 ## Yeni kayıt e-posta bildirimi
 
 `supabase/functions/yeni-kayit-bildirim` Edge Function'ı, yeni kurulum talebi **veya** iş ortaklığı başvurusu geldiğinde size e-posta gönderir (Resend ile). Veritabanına dokunmaz, kişisel veriyi loglamaz; `x-webhook-secret` başlığı olmayan istekleri reddeder.

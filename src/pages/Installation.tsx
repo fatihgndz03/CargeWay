@@ -19,6 +19,7 @@ import { useSeo } from '../lib/seo';
 import { supabase } from '../lib/supabase';
 import { ILLER } from '../data/iller';
 import { AZ_SEHERLER } from '../data/azSeherler';
+import { gecersizIller, hizmetDisiIl } from '../data/hizmetBolgeleri';
 import { bicim, useDil, useT } from '../i18n';
 import { Alan, Secenekler, inputCls } from '../components/FormParcalari';
 
@@ -28,6 +29,10 @@ export const ONAY_METNI_SURUMU = '2026-11-19';
 type MekanTipi = 'ev' | 'apartman-site' | 'isyeri-otopark';
 type Ulke = 'TR' | 'AZ';
 type Durum = 'form' | 'gonderiliyor' | 'basarili' | 'hata' | 'kapali';
+
+if (import.meta.env.DEV && gecersizIller().length > 0) {
+  console.warn('HIZMET_VERILEN_ILLER içinde tanınmayan il adı:', gecersizIller());
+}
 
 export default function InstallationPage() {
   const t = useT();
@@ -287,6 +292,15 @@ export default function InstallationPage() {
                         ))}
                       </select>
                     </Alan>
+                    {ulke === 'TR' && hizmetDisiIl(il) && (
+                      <div
+                        role="status"
+                        className="flex gap-3 rounded-xl border border-amber-500/30 bg-amber-500/10 p-4 text-sm text-amber-100"
+                      >
+                        <AlertCircle className="w-5 h-5 shrink-0 text-amber-400" aria-hidden />
+                        <p>{bicim(k.hizmetDisiUyari, { il })}</p>
+                      </div>
+                    )}
                     <Alan etiket={k.ilce}>
                       <input value={ilce} onChange={(e) => setIlce(e.target.value)} maxLength={60} className={inputCls} placeholder={ulke === 'AZ' ? 'Nəsimi' : 'Kadıköy'} />
                     </Alan>
