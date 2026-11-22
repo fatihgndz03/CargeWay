@@ -1,5 +1,6 @@
-import { Link } from 'react-router-dom';
+import { Link } from './DilLink';
 import { MapPin, Zap, SlidersHorizontal, Navigation, Crosshair } from 'lucide-react';
+import { useT } from '../i18n';
 
 type PinSize = 'sm' | 'md' | 'lg';
 const PIN_SIZE: Record<PinSize, string> = { sm: 'w-6 h-6', md: 'w-8 h-8', lg: 'w-10 h-10' };
@@ -12,25 +13,23 @@ const PINS: { top: string; left: string; size: PinSize }[] = [
   { top: '50%', left: '42%', size: 'lg' },
 ];
 
-const features = [
-  { icon: Crosshair, text: 'Konumunuza göre yakındaki istasyonlar' },
-  { icon: Zap, text: 'AC (normal) / DC (hızlı) şarj filtresi' },
-  { icon: SlidersHorizontal, text: 'Operatör, güç ve soket tipine göre filtreleme' },
-  { icon: Navigation, text: 'Tek dokunuşla yol tarifi' },
-];
+const ICONS = [Crosshair, Zap, SlidersHorizontal, Navigation];
 
 export default function MapTeaser() {
+  const t = useT();
+  const m = t.haritaTanitim;
+  const features = m.ozellikler.map((text, i) => ({ icon: ICONS[i], text }));
   return (
     <section id="harita" className="bg-black py-24 border-t border-gray-800 scroll-mt-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           <div>
-            <span className="text-green-500 text-sm font-semibold tracking-widest uppercase">Şarj Haritası</span>
+            <span className="text-green-500 text-sm font-semibold tracking-widest uppercase">{m.ust}</span>
             <h2 className="text-4xl sm:text-5xl font-black text-white mt-3 mb-6 leading-tight">
-              Size En Yakın<br />Şarj İstasyonunu<br />Saniyeler İçinde Bulun
+              {m.baslik[0]}<br />{m.baslik[1]}<br />{m.baslik[2]}
             </h2>
             <p className="text-gray-400 text-lg leading-relaxed mb-8">
-              Türkiye genelindeki farklı şarj ağlarının istasyonlarını tek haritada görebilir, soket ve güç bilgilerini karşılaştırabilir ve yol tarifi alabilirsiniz.
+              {m.aciklama}
             </p>
 
             <ul className="space-y-4 mb-10">
@@ -49,7 +48,7 @@ export default function MapTeaser() {
               className="inline-flex items-center gap-2 px-8 py-4 bg-green-500 hover:bg-green-400 text-black font-bold rounded-xl transition-all duration-200 shadow-xl shadow-green-500/25 text-lg"
             >
               <MapPin className="w-5 h-5" />
-              Haritayı Aç
+              {t.ortak.haritayiAc}
             </Link>
           </div>
 
@@ -81,8 +80,8 @@ export default function MapTeaser() {
               ))}
 
               <div className="absolute bottom-4 left-4 right-4 bg-black/80 backdrop-blur-sm border border-gray-700 rounded-2xl p-4">
-                <div className="text-white font-bold text-sm">Temsili görsel</div>
-                <div className="text-gray-400 text-xs mt-0.5">Gerçek istasyonları görmek için haritayı açın.</div>
+                <div className="text-white font-bold text-sm">{m.temsiliBaslik}</div>
+                <div className="text-gray-400 text-xs mt-0.5">{m.temsiliMetin}</div>
               </div>
             </div>
 

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link } from '../components/DilLink';
 import {
   ArrowLeft,
   ArrowRight,
@@ -18,40 +18,45 @@ import Footer from '../components/Footer';
 import { useSeo } from '../lib/seo';
 import { supabase } from '../lib/supabase';
 import { ILLER } from '../data/iller';
+import { AZ_SEHERLER } from '../data/azSeherler';
+import { bicim, useDil, useT } from '../i18n';
 import { Alan, Secenekler, inputCls } from '../components/FormParcalari';
 
 /** Onay metni değişirse bu sürümü güncelleyin; talep kaydında saklanır. */
 export const ONAY_METNI_SURUMU = '2026-11-19';
 
 type MekanTipi = 'ev' | 'apartman-site' | 'isyeri-otopark';
+type Ulke = 'TR' | 'AZ';
 type Durum = 'form' | 'gonderiliyor' | 'basarili' | 'hata' | 'kapali';
 
-const MEKANLAR: { id: MekanTipi; baslik: string; aciklama: string; icon: typeof Home }[] = [
-  { id: 'ev', baslik: 'Müstakil ev / villa', aciklama: 'Kendi garajınız veya otoparkınız', icon: Home },
-  { id: 'apartman-site', baslik: 'Apartman / site', aciklama: 'Ortak otopark, yönetim kararı gerekebilir', icon: Building2 },
-  { id: 'isyeri-otopark', baslik: 'İşyeri / otopark / otel', aciklama: 'Çalışan, müşteri veya filo için', icon: Factory },
-];
-
-const OTOPARK = [
-  { id: 'kapali', ad: 'Kapalı otopark' },
-  { id: 'acik', ad: 'Açık otopark' },
-  { id: 'mustakil-garaj', ad: 'Müstakil garaj' },
-  { id: 'bilinmiyor', ad: 'Emin değilim' },
-];
-
-const MESAFE = [
-  { id: '0-10', ad: '10 m\'den az' },
-  { id: '10-25', ad: '10–25 m' },
-  { id: '25-50', ad: '25–50 m' },
-  { id: '50+', ad: '50 m\'den fazla' },
-  { id: 'bilinmiyor', ad: 'Bilmiyorum' },
-];
-
 export default function InstallationPage() {
-  useSeo(
-    'Şarj Ünitesi Kurulumu — Ücretsiz Teklif Al | CargeWay',
-    'Evinize, sitenize veya işyerinize elektrikli araç şarj ünitesi (wallbox) kurdurmak için ücretsiz teklif talebi oluşturun.',
-  );
+  const t = useT();
+  const dil = useDil();
+  const k = t.kurulum;
+  useSeo(k.seoBaslik, k.seoAciklama);
+
+  const MEKANLAR: { id: MekanTipi; baslik: string; aciklama: string; icon: typeof Home }[] = [
+    { id: 'ev', ...k.mekanlar.ev, icon: Home },
+    { id: 'apartman-site', ...k.mekanlar.site, icon: Building2 },
+    { id: 'isyeri-otopark', ...k.mekanlar.isyeri, icon: Factory },
+  ];
+  const OTOPARK = [
+    { id: 'kapali', ad: k.otopark.kapali },
+    { id: 'acik', ad: k.otopark.acik },
+    { id: 'mustakil-garaj', ad: k.otopark.garaj },
+    { id: 'bilinmiyor', ad: k.otopark.bilinmiyor },
+  ];
+  const MESAFE = [
+    { id: '0-10', ad: k.mesafe.az10 },
+    { id: '10-25', ad: k.mesafe.m10_25 },
+    { id: '25-50', ad: k.mesafe.m25_50 },
+    { id: '50+', ad: k.mesafe.fazla50 },
+    { id: 'bilinmiyor', ad: k.mesafe.bilinmiyor },
+  ];
+
+  // Ülke varsayılanı dile göre: AZ sürümü Azerbaycan, diğerleri Türkiye
+  const [ulke, setUlke] = useState<Ulke>(dil === 'az' ? 'AZ' : 'TR');
+  const sehirler: readonly string[] = ulke === 'AZ' ? AZ_SEHERLER : ILLER;
 
   const [adim, setAdim] = useState(1);
   const [durum, setDurum] = useState<Durum>(supabase ? 'form' : 'kapali');
@@ -90,6 +95,8 @@ export default function InstallationPage() {
       tahmini_mesafe: mesafe || null,
       unite_sayisi: Number.isFinite(uniteSayi) && uniteSayi > 0 ? Math.min(uniteSayi, 200) : null,
       arac_modeli: arac.trim().slice(0, 80) || null,
+      ulke,
+      dil,
       il,
       ilce: ilce.trim().slice(0, 60) || null,
       ad: ad.trim().slice(0, 80),
@@ -104,7 +111,7 @@ export default function InstallationPage() {
     if (error) {
       console.error('Talep gönderilemedi:', error.message);
       setDurum('hata');
-      setHataMesaji('Talebiniz şu an gönderilemedi. Lütfen biraz sonra tekrar deneyin.');
+      setHataMesaji(k.gonderHata);
       return;
     }
     setDurum('basarili');
@@ -117,49 +124,39 @@ export default function InstallationPage() {
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 grid lg:grid-cols-[1fr_minmax(0,32rem)] gap-x-12 gap-y-8 items-start">
           {/* Sol üst: başlık (mobilde formdan önce) */}
           <div className="lg:col-start-1 lg:row-start-1">
-            <span className="text-green-500 text-sm font-semibold tracking-widest uppercase">Şarj ünitesi kurulumu</span>
+            <span className="text-green-500 text-sm font-semibold tracking-widest uppercase">{k.ust}</span>
             <h1 className="text-4xl sm:text-5xl font-black text-white mt-2 leading-tight">
-              Evinize ya da sitenize
+              {k.baslik1}
               <br />
-              <span className="text-green-500">şarj ünitesi</span> kurdurun
+              <span className="text-green-500">{k.vurgu}</span> {k.baslik2}
             </h1>
             <p className="mt-5 text-gray-400 text-lg max-w-xl">
-              Birkaç soruyu yanıtlayın; talebinizi bölgenizde hizmet veren anlaşmalı kurulum firmalarına iletelim, size
-              teklifle dönsünler. Talep oluşturmak ücretsizdir ve sizi bağlamaz.
+              {k.giris}
             </p>
           </div>
 
           {/* Sol alt: açıklama maddeleri (mobilde formdan sonra) */}
           <div className="lg:col-start-1 lg:row-start-2 order-3 lg:order-none">
             <ul className="space-y-4">
-              {[
-                { icon: FileText, t: 'Keşif ve teklif', d: 'Firma, mesafe ve elektrik altyapınıza göre fiyat verir.' },
-                { icon: Wrench, t: 'Kurulum', d: 'Wallbox montajı, kablolama ve koruma elemanları yetkili ekiplerce yapılır.' },
-                {
-                  icon: ShieldCheck,
-                  t: 'Bilgileriniz korunur',
-                  d: 'Yalnızca teklif hazırlamak için, onay verdiğiniz firmalarla paylaşılır.',
-                },
-              ].map(({ icon: Icon, t, d }) => (
-                <li key={t} className="flex gap-4">
+              {[FileText, Wrench, ShieldCheck].map((Icon, i) => ({ Icon, b: k.maddeler[i].baslik, d: k.maddeler[i].metin })).map(({ Icon, b, d }) => (
+                <li key={b} className="flex gap-4">
                   <div className="w-11 h-11 shrink-0 rounded-xl bg-green-500/10 border border-green-500/20 flex items-center justify-center">
                     <Icon className="w-5 h-5 text-green-400" />
                   </div>
                   <div>
-                    <p className="font-semibold text-white">{t}</p>
+                    <p className="font-semibold text-white">{b}</p>
                     <p className="text-sm text-gray-400">{d}</p>
                   </div>
                 </li>
               ))}
             </ul>
             <p className="mt-8 text-xs text-gray-500 max-w-xl">
-              CargeWay kurulum yapmaz; talepleri kurulum firmalarına ileten bir bilgi platformudur. Fiyat, süre ve garanti
-              koşulları teklifi veren firmaya aittir.
+              {k.not}
             </p>
             <p className="mt-3 text-xs text-gray-500 max-w-xl">
-              Şarj ünitesi kurulumu yapan bir firma mısınız?{' '}
+              {k.firmaMi}{' '}
               <Link to="/is-ortagi-ol" className="text-green-400 hover:underline">
-                İş ortağımız olun
+                {k.isOrtagi}
               </Link>
               .
             </p>
@@ -170,25 +167,24 @@ export default function InstallationPage() {
             {durum === 'kapali' ? (
               <div className="text-center py-10">
                 <AlertCircle className="w-10 h-10 text-yellow-400 mx-auto mb-3" />
-                <p className="text-white font-semibold">Talepler şu an alınamıyor</p>
-                <p className="text-sm text-gray-400 mt-2">Form kısa süre içinde açılacak. Lütfen daha sonra tekrar deneyin.</p>
+                <p className="text-white font-semibold">{k.kapaliBaslik}</p>
+                <p className="text-sm text-gray-400 mt-2">{k.kapaliMetin}</p>
               </div>
             ) : durum === 'basarili' ? (
               <div className="text-center py-10">
                 <CheckCircle2 className="w-12 h-12 text-green-400 mx-auto mb-4" />
-                <p className="text-xl font-bold text-white">Talebiniz alındı</p>
+                <p className="text-xl font-bold text-white">{k.basariBaslik}</p>
                 <p className="text-sm text-gray-400 mt-2 max-w-sm mx-auto">
-                  Bilgilerinizi bölgenizde hizmet veren kurulum firmalarına ileteceğiz. Firmalar genellikle telefonla
-                  sizinle iletişime geçer.
+                  {k.basariMetin}
                 </p>
                 <Link to="/sarj-haritasi" className="inline-block mt-6 text-green-400 hover:text-green-300 font-semibold text-sm">
-                  Şarj haritasına dön →
+                  {k.haritayaDon}
                 </Link>
               </div>
             ) : (
               <form onSubmit={gonder} noValidate>
                 {/* İlerleme */}
-                <div className="flex items-center gap-2 mb-6" aria-label={`Adım ${adim} / 3`}>
+                <div className="flex items-center gap-2 mb-6" aria-label={bicim(k.adim, { n: adim })}>
                   {[1, 2, 3].map((n) => (
                     <div key={n} className={`h-1.5 flex-1 rounded-full ${n <= adim ? 'bg-green-500' : 'bg-gray-800'}`} />
                   ))}
@@ -197,7 +193,7 @@ export default function InstallationPage() {
                 {adim === 1 && (
                   <div className="space-y-6">
                     <div>
-                      <p className="text-lg font-bold text-white mb-3">Nereye kurulum istiyorsunuz?</p>
+                      <p className="text-lg font-bold text-white mb-3">{k.soru1}</p>
                       <div className="space-y-2.5">
                         {MEKANLAR.map(({ id, baslik, aciklama, icon: Icon }) => (
                           <button
@@ -220,10 +216,10 @@ export default function InstallationPage() {
                     </div>
                     {mekan && (
                       <>
-                        <Alan etiket="Otopark tipi">
+                        <Alan etiket={k.otoparkTipi}>
                           <Secenekler secenekler={OTOPARK} deger={otopark} onSec={setOtopark} />
                         </Alan>
-                        <Alan etiket="Elektrik panosu ile park yeri arası mesafe (tahmini)">
+                        <Alan etiket={k.mesafeEtiket}>
                           <Secenekler secenekler={MESAFE} deger={mesafe} onSec={setMesafe} />
                         </Alan>
                         <label className="flex items-start gap-3 rounded-xl border border-gray-800 bg-gray-900 p-4 cursor-pointer hover:border-green-500/40">
@@ -234,15 +230,14 @@ export default function InstallationPage() {
                             className="mt-0.5 h-4 w-4 shrink-0 accent-green-500"
                           />
                           <span className="text-sm">
-                            <span className="block font-semibold text-white">Akıllı yük yönetimi ilgimi çekiyor</span>
+                            <span className="block font-semibold text-white">{k.yukBaslik}</span>
                             <span className="block text-xs text-gray-400 mt-0.5">
-                              Evin toplam tüketimine göre şarj gücünü otomatik ayarlayan ve hangi cihazın ne kadar
-                              harcadığını telefondan gösteren sistem. (İsteğe bağlı)
+                              {k.yukMetin}
                             </span>
                           </span>
                         </label>
                         {mekan !== 'ev' && (
-                          <Alan etiket="Kaç şarj ünitesi düşünüyorsunuz?" ipucu="Bilmiyorsanız boş bırakın.">
+                          <Alan etiket={k.uniteEtiket} ipucu={k.uniteIpucu}>
                             <input
                               type="number"
                               min={1}
@@ -251,17 +246,17 @@ export default function InstallationPage() {
                               value={unite}
                               onChange={(e) => setUnite(e.target.value)}
                               className={inputCls}
-                              placeholder="Örn. 4"
+                              placeholder={k.uniteYer}
                             />
                           </Alan>
                         )}
-                        <Alan etiket="Aracınız (isteğe bağlı)">
+                        <Alan etiket={k.aracEtiket}>
                           <input
                             value={arac}
                             onChange={(e) => setArac(e.target.value)}
                             maxLength={80}
                             className={inputCls}
-                            placeholder="Örn. Togg T10X"
+                            placeholder={k.aracYer}
                           />
                         </Alan>
                       </>
@@ -271,30 +266,40 @@ export default function InstallationPage() {
 
                 {adim === 2 && (
                   <div className="space-y-5">
-                    <p className="text-lg font-bold text-white">Kurulum nerede yapılacak?</p>
-                    <Alan etiket="İl">
+                    <p className="text-lg font-bold text-white">{k.soru2}</p>
+                    <Alan etiket={k.ulke}>
+                      <Secenekler
+                        secenekler={(['TR', 'AZ'] as const).map((u) => ({ id: u, ad: k.ulkeler[u] }))}
+                        deger={ulke}
+                        onSec={(u) => {
+                          setUlke(u);
+                          setIl('');
+                        }}
+                      />
+                    </Alan>
+                    <Alan etiket={k.il}>
                       <select value={il} onChange={(e) => setIl(e.target.value)} className={inputCls}>
-                        <option value="">İl seçin</option>
-                        {ILLER.map((x) => (
+                        <option value="">{k.ilSec}</option>
+                        {sehirler.map((x) => (
                           <option key={x} value={x}>
                             {x}
                           </option>
                         ))}
                       </select>
                     </Alan>
-                    <Alan etiket="İlçe (isteğe bağlı)">
-                      <input value={ilce} onChange={(e) => setIlce(e.target.value)} maxLength={60} className={inputCls} placeholder="Örn. Kadıköy" />
+                    <Alan etiket={k.ilce}>
+                      <input value={ilce} onChange={(e) => setIlce(e.target.value)} maxLength={60} className={inputCls} placeholder={ulke === 'AZ' ? 'Nəsimi' : 'Kadıköy'} />
                     </Alan>
                   </div>
                 )}
 
                 {adim === 3 && (
                   <div className="space-y-5">
-                    <p className="text-lg font-bold text-white">Size nasıl ulaşalım?</p>
-                    <Alan etiket="Ad soyad">
+                    <p className="text-lg font-bold text-white">{k.soru3}</p>
+                    <Alan etiket={k.ad}>
                       <input value={ad} onChange={(e) => setAd(e.target.value)} maxLength={80} autoComplete="name" className={inputCls} />
                     </Alan>
-                    <Alan etiket="Telefon">
+                    <Alan etiket={k.telefon}>
                       <input
                         type="tel"
                         value={telefon}
@@ -302,11 +307,11 @@ export default function InstallationPage() {
                         autoComplete="tel"
                         inputMode="tel"
                         className={inputCls}
-                        placeholder="05xx xxx xx xx"
+                        placeholder={ulke === 'AZ' ? k.telefonYerAZ : k.telefonYerTR}
                       />
-                      {telefon && !telefonGecerli && <span className="block text-xs text-red-400 mt-1">Geçerli bir telefon numarası girin.</span>}
+                      {telefon && !telefonGecerli && <span className="block text-xs text-red-400 mt-1">{k.telefonHata}</span>}
                     </Alan>
-                    <Alan etiket="E-posta (isteğe bağlı)">
+                    <Alan etiket={k.eposta}>
                       <input
                         type="email"
                         value={eposta}
@@ -314,16 +319,16 @@ export default function InstallationPage() {
                         autoComplete="email"
                         className={inputCls}
                       />
-                      {!epostaGecerli && <span className="block text-xs text-red-400 mt-1">Geçerli bir e-posta girin.</span>}
+                      {!epostaGecerli && <span className="block text-xs text-red-400 mt-1">{k.epostaHata}</span>}
                     </Alan>
-                    <Alan etiket="Not (isteğe bağlı)">
+                    <Alan etiket={k.notEtiket}>
                       <textarea
                         value={not}
                         onChange={(e) => setNot(e.target.value)}
                         maxLength={1000}
                         rows={3}
                         className={inputCls}
-                        placeholder="Örn. site yönetimi onay verdi, otoparkta 3 faz var…"
+                        placeholder={k.notYer}
                       />
                     </Alan>
                     <div className="space-y-3 pt-1">
@@ -331,9 +336,9 @@ export default function InstallationPage() {
                         <input type="checkbox" checked={kvkk} onChange={(e) => setKvkk(e.target.checked)} className="mt-0.5 h-4 w-4 shrink-0 accent-green-500" />
                         <span>
                           <Link to="/kvkk" target="_blank" className="text-gray-200 underline hover:text-green-400">
-                            KVKK Aydınlatma Metni
+                            {k.onay1Link}
                           </Link>
-                          'ni okudum; bilgilerimin teklif talebimin karşılanması amacıyla işlenmesine açık rıza veriyorum.
+                          {k.onay1Metin}
                         </span>
                       </label>
                       <label className="flex items-start gap-2.5 text-xs leading-relaxed text-gray-400 cursor-pointer">
@@ -344,9 +349,7 @@ export default function InstallationPage() {
                           className="mt-0.5 h-4 w-4 shrink-0 accent-green-500"
                         />
                         <span>
-                          Ad, telefon, e-posta, konum ve kurulum bilgilerimin teklif hazırlanması amacıyla CargeWay'in
-                          anlaşmalı kurulum firmalarıyla paylaşılmasına ve bu firmaların benimle iletişime geçmesine açık
-                          rıza veriyorum.
+                          {k.onay2}
                         </span>
                       </label>
                     </div>
@@ -365,7 +368,7 @@ export default function InstallationPage() {
                       onClick={() => setAdim(adim - 1)}
                       className="inline-flex items-center gap-1.5 px-4 py-3 text-sm font-semibold text-gray-300 hover:text-white"
                     >
-                      <ArrowLeft className="w-4 h-4" /> Geri
+                      <ArrowLeft className="w-4 h-4" /> {t.ortak.geri}
                     </button>
                   ) : (
                     <span />
@@ -377,7 +380,7 @@ export default function InstallationPage() {
                       onClick={() => setAdim(adim + 1)}
                       className="inline-flex items-center gap-1.5 px-6 py-3 bg-green-500 hover:bg-green-400 disabled:opacity-40 disabled:cursor-not-allowed text-black font-bold rounded-xl"
                     >
-                      Devam <ArrowRight className="w-4 h-4" />
+                      {t.ortak.devam} <ArrowRight className="w-4 h-4" />
                     </button>
                   ) : (
                     <button
@@ -386,7 +389,7 @@ export default function InstallationPage() {
                       className="inline-flex items-center gap-2 px-6 py-3 bg-green-500 hover:bg-green-400 disabled:opacity-40 disabled:cursor-not-allowed text-black font-bold rounded-xl"
                     >
                       {durum === 'gonderiliyor' && <Loader2 className="w-4 h-4 animate-spin" />}
-                      Teklif iste
+                      {k.gonder}
                     </button>
                   )}
                 </div>

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link } from '../components/DilLink';
 import { ArrowRight, BookOpen, Cable, CheckCircle2, ExternalLink, Info, PlugZap, Plug } from 'lucide-react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
@@ -7,6 +7,7 @@ import InstallCta, { KURULUM_YOLU } from '../components/InstallCta';
 import { useSeo } from '../lib/seo';
 import { KATEGORILER, SATIS_ORTAKLIGI_VAR, URUNLER, type KategoriSlug } from '../data/urunler';
 import { REHBERLER } from '../data/rehberler';
+import { YalnizTurkceNotu } from '../components/DilSecici';
 
 const IKON: Record<KategoriSlug, typeof PlugZap> = { wallbox: PlugZap, kablo: Cable, adaptor: Plug };
 
@@ -23,6 +24,7 @@ export default function ProductsPage() {
       <Header />
       <main className="flex-1 pt-28 pb-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <YalnizTurkceNotu />
           <span className="text-green-500 text-sm font-semibold tracking-widest uppercase">Ürün rehberi</span>
           <h1 className="text-4xl sm:text-5xl font-black text-white mt-2">Şarj ünitesi, kablo ve adaptör</h1>
           <p className="mt-4 text-gray-400 max-w-2xl">

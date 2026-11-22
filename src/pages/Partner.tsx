@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link } from '../components/DilLink';
 import {
   AlertCircle,
   ArrowLeft,
@@ -17,6 +17,7 @@ import { Alan, Secenekler, inputCls } from '../components/FormParcalari';
 import { useSeo } from '../lib/seo';
 import { supabase } from '../lib/supabase';
 import { ILLER } from '../data/iller';
+import { YalnizTurkceNotu } from '../components/DilSecici';
 
 /** Aydınlatma metni değişirse bu sürümü güncelleyin; başvuru kaydında saklanır. */
 export const ORTAK_ONAY_METNI_SURUMU = '2026-11-21';
@@ -157,6 +158,7 @@ export default function PartnerPage() {
       <Header />
       <main className="flex-1 pt-28 pb-24">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 grid lg:grid-cols-[1fr_minmax(0,32rem)] gap-x-12 gap-y-8 items-start">
+          <YalnizTurkceNotu />
           <div className="lg:col-start-1 lg:row-start-1">
             <span className="text-green-500 text-sm font-semibold tracking-widest uppercase">Kurulum firmaları için</span>
             <h1 className="text-4xl sm:text-5xl font-black text-white mt-2 leading-tight">

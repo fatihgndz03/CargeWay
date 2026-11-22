@@ -10,7 +10,9 @@ import Footer from './components/Footer';
 import InstallCta from './components/InstallCta';
 import HowItWorks from './components/HowItWorks';
 import { SHOW_COMING_SOON } from './lib/config';
-import { applyCanonical, DEFAULT_DESCRIPTION, DEFAULT_TITLE, useSeo } from './lib/seo';
+import { DILLER, adrestenDil, useDil, useT, useYol, yol, type Dil } from './i18n';
+import DilSaglayici from './i18n/DilSaglayici';
+import { applyCanonical, applyAlternates, useSeo } from './lib/seo';
 
 // Harita (Leaflet) ve alt sayfalar ayrı dosyalara bölünür; ana sayfa daha hızlı açılır.
 const ComingSoon = lazy(() => import('./components/ComingSoon'));
@@ -32,24 +34,30 @@ const CookiesPage = lazy(() => import('./pages/Legal').then((m) => ({ default: m
 function RouteEffects() {
   const { pathname, hash } = useLocation();
   useEffect(() => {
+    const { dil, yol: ic } = adrestenDil(pathname);
+    document.documentElement.lang = dil;
     applyCanonical(pathname);
+    applyAlternates(DILLER.map((d) => ({ hreflang: d.hreflang, path: yol(ic, d.kod) })), yol(ic, 'tr'));
     if (!hash) window.scrollTo(0, 0);
   }, [pathname, hash]);
   return null;
 }
 
 function PageLoading() {
+  const t = useT();
   return (
     <div className="bg-black min-h-screen flex items-center justify-center" role="status" aria-live="polite">
       <div className="h-10 w-10 rounded-full border-2 border-gray-800 border-t-green-500 animate-spin" />
-      <span className="sr-only">Yükleniyor…</span>
+      <span className="sr-only">{t.ortak.yukleniyor}</span>
     </div>
   );
 }
 
 function Home() {
   const { hash } = useLocation();
-  useSeo(DEFAULT_TITLE, DEFAULT_DESCRIPTION);
+  const t = useT();
+  const dil = useDil();
+  useSeo(t.seo.anaBaslik, t.seo.anaAciklama);
   // Başka bir sayfadan /#bolum bağlantısıyla gelindiğinde ilgili bölüme kaydır
   useEffect(() => {
     if (!hash) return;
@@ -65,7 +73,8 @@ function Home() {
       <MapTeaser />
       <HowItWorks />
       <InstallCta />
-      <News />
+      {/* Haberler Türkiye kaynaklı ve Türkçe; EN/AZ sürümünde gösterilmez */}
+      {dil === 'tr' && <News />}
       <Vehicles />
       <WhyCargeWay />
       <Footer />
@@ -86,45 +95,58 @@ function MapRoute() {
   );
 }
 
-function App() {
-  if (SHOW_COMING_SOON) {
-    // Bakım modunda da yasal sayfalara ve iletişim/künyeye erişilebilmeli.
-    return (
+/** Bir dilin tüm sayfaları. Türkçe önek olmadan, İngilizce /en, Azerbaycanca /az altında sunulur. */
+function DilSayfalari({ dil }: { dil: Dil }) {
+  return (
+    <DilSaglayici dil={dil}>
       <Suspense fallback={<PageLoading />}>
         <RouteEffects />
-        <Routes>
-          <Route path="/kvkk" element={<KvkkPage />} />
-          <Route path="/gizlilik" element={<PrivacyPage />} />
-          <Route path="/cerezler" element={<CookiesPage />} />
-          <Route path="/iletisim" element={<ContactPage />} />
-          <Route path="*" element={<ComingSoon />} />
-        </Routes>
+        {SHOW_COMING_SOON ? (
+          // Bakım modunda da yasal sayfalara ve iletişim/künyeye erişilebilmeli.
+          <Routes>
+            <Route path="kvkk" element={<KvkkPage />} />
+            <Route path="gizlilik" element={<PrivacyPage />} />
+            <Route path="cerezler" element={<CookiesPage />} />
+            <Route path="iletisim" element={<ContactPage />} />
+            <Route path="*" element={<ComingSoon />} />
+          </Routes>
+        ) : (
+          <Routes>
+            <Route index element={<Home />} />
+            <Route path="sarj-haritasi" element={<MapRoute />} />
+            <Route path="istasyon/:slug" element={<StationDetailPage />} />
+            <Route path="araclar" element={<VehiclesPage />} />
+            <Route path="sarj-unitesi-kurulumu" element={<InstallationPage />} />
+            <Route path="is-ortagi-ol" element={<PartnerPage />} />
+            <Route path="rehber" element={<GuidesIndexPage />} />
+            <Route path="rehber/:slug" element={<GuidePage />} />
+            <Route path="urunler" element={<ProductsPage />} />
+            <Route path="kvkk" element={<KvkkPage />} />
+            <Route path="gizlilik" element={<PrivacyPage />} />
+            <Route path="cerezler" element={<CookiesPage />} />
+            <Route path="iletisim" element={<ContactPage />} />
+            {/* Eski yazım hatalı adres */}
+            <Route path="sarcj-haritasi" element={<EskiHaritaYonlendir />} />
+            <Route path="*" element={<NotFoundPage />} />
+          </Routes>
+        )}
       </Suspense>
-    );
-  }
+    </DilSaglayici>
+  );
+}
 
+function EskiHaritaYonlendir() {
+  const lp = useYol();
+  return <Navigate to={lp('/sarj-haritasi')} replace />;
+}
+
+function App() {
   return (
-    <Suspense fallback={<PageLoading />}>
-      <RouteEffects />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/sarj-haritasi" element={<MapRoute />} />
-        <Route path="/istasyon/:slug" element={<StationDetailPage />} />
-        <Route path="/araclar" element={<VehiclesPage />} />
-        <Route path="/sarj-unitesi-kurulumu" element={<InstallationPage />} />
-        <Route path="/is-ortagi-ol" element={<PartnerPage />} />
-        <Route path="/rehber" element={<GuidesIndexPage />} />
-        <Route path="/rehber/:slug" element={<GuidePage />} />
-        <Route path="/urunler" element={<ProductsPage />} />
-        <Route path="/kvkk" element={<KvkkPage />} />
-        <Route path="/gizlilik" element={<PrivacyPage />} />
-        <Route path="/cerezler" element={<CookiesPage />} />
-        <Route path="/iletisim" element={<ContactPage />} />
-        {/* Eski yazım hatalı adres */}
-        <Route path="/sarcj-haritasi" element={<Navigate to="/sarj-haritasi" replace />} />
-        <Route path="*" element={<NotFoundPage />} />
-      </Routes>
-    </Suspense>
+    <Routes>
+      <Route path="/en/*" element={<DilSayfalari dil="en" />} />
+      <Route path="/az/*" element={<DilSayfalari dil="az" />} />
+      <Route path="/*" element={<DilSayfalari dil="tr" />} />
+    </Routes>
   );
 }
 

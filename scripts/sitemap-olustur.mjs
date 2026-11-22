@@ -16,6 +16,10 @@ const REHBER_YOLLARI = [
   ...readFileSync(new URL('../src/data/rehberler.ts', import.meta.url), 'utf8').matchAll(/^\s+slug: '([a-z0-9-]+)',$/gm),
 ].map((m) => `/rehber/${m[1]}`);
 const STATIC_PATHS = ['/', '/sarj-haritasi', '/araclar', '/sarj-unitesi-kurulumu', '/is-ortagi-ol', '/rehber', ...REHBER_YOLLARI, '/urunler', '/kvkk', '/iletisim', '/gizlilik', '/cerezler'];
+// İngilizce ve Azerbaycanca sürümü olan sayfalar
+for (const dil of ['en', 'az']) {
+  for (const p of ['/', '/araclar', '/sarj-unitesi-kurulumu', '/kvkk', '/iletisim']) STATIC_PATHS.push(p === '/' ? `/${dil}` : `/${dil}${p}`);
+}
 
 function xmlEscape(s) {
   return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');

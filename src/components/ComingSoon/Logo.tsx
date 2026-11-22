@@ -1,6 +1,8 @@
 import { Zap } from 'lucide-react';
+import { useT } from '../../i18n';
 
 export default function Logo() {
+  const t = useT();
   return (
     <div className="flex flex-col items-center gap-4">
       <div className="relative">
@@ -13,7 +15,7 @@ export default function Logo() {
         <h1 className="text-3xl font-black tracking-widest text-white uppercase">
           Carge<span className="text-green-400">Way</span>
         </h1>
-        <p className="text-xs tracking-[0.3em] text-zinc-500 uppercase mt-1">Elektrikli Araç Şarj Haritası</p>
+        <p className="text-xs tracking-[0.3em] text-zinc-500 uppercase mt-1">{t.yakinda.altBaslik}</p>
       </div>
     </div>
   );

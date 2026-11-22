@@ -150,3 +150,13 @@ Supabase → **SQL Editor**'de `select * from yonetim_il_ozeti;` ile kullanın. 
    - Tür **HTTP Request**, yöntem **POST**, URL `https://<proje-ref>.supabase.co/functions/v1/yeni-kayit-bildirim`
    - HTTP başlığı: `x-webhook-secret: <WEBHOOK_SECRET ile aynı değer>`
 5. Önizlemede bir deneme talebi ve bir deneme başvurusu gönderip e-postaların geldiğini kontrol edin; deneme kayıtlarını Table Editor'den silin.
+
+## Diller (TR / EN / AZ)
+
+Site Türkçe (önek yok), İngilizce (`/en`) ve Azerbaycanca (`/az`) sunulur. Sayfa adresleri (slug'lar) tüm dillerde aynıdır.
+
+- Arayüz metinleri: `src/i18n/messages.ts` (Türkçe kaynak; `en` ve `az` aynı yapıyı izler). AZ metinleri yayından önce ana dili Azerbaycan Türkçesi olan biri tarafından gözden geçirilmeli.
+- İç bağlantılar `src/components/DilLink.tsx` üzerinden otomatik dil önekli olur; `hreflang` etiketleri otomatik yazılır.
+- Haberler, rehberler, ürün rehberi, iş ortağı sayfası ve harita içeriği Türkiye'ye özel ve yalnızca Türkçe; EN/AZ'de bu sayfalarda "yalnızca Türkçe" notu görünür, menüde gösterilmez.
+- Teklif formu Türkiye ve Azerbaycan'dan talep alır; her talep `ulke` (TR/AZ) ve `dil` (tr/en/az) ile kaydedilir. Bu sütunlar için `supabase/migrations/20261122120000_add_ulke_dil_to_kurulum_talepleri.sql` migration'ı diğer migration'lardan sonra uygulanmalıdır.
+- "Çok Yakında" e-posta kayıtlarının `source` alanı dile göre `coming_soon_tr|en|az` olur.

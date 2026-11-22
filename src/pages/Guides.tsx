@@ -1,4 +1,5 @@
-import { Link, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
+import { Link } from '../components/DilLink';
 import { ArrowLeft, BookOpen, Clock, ExternalLink, Info } from 'lucide-react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
@@ -6,6 +7,7 @@ import InstallCta from '../components/InstallCta';
 import NotFoundPage from './NotFound';
 import { useSeo } from '../lib/seo';
 import { REHBERLER, type Blok } from '../data/rehberler';
+import { YalnizTurkceNotu } from '../components/DilSecici';
 
 export function GuidesIndexPage() {
   useSeo(
@@ -17,6 +19,7 @@ export function GuidesIndexPage() {
       <Header />
       <main className="flex-1 pt-28 pb-24">
         <div className="max-w-4xl mx-auto px-4 sm:px-6">
+          <YalnizTurkceNotu />
           <span className="text-green-500 text-sm font-semibold tracking-widest uppercase">Rehberler</span>
           <h1 className="text-4xl sm:text-5xl font-black text-white mt-2">Evde ve sitede şarj</h1>
           <p className="mt-4 text-gray-400 max-w-2xl">Kurulum, maliyet ve süreç hakkında kaynaklı, sade rehberler.</p>
@@ -76,6 +79,7 @@ export function GuidePage() {
       <Header />
       <main className="flex-1 pt-28 pb-16">
         <article className="max-w-3xl mx-auto px-4 sm:px-6">
+          <YalnizTurkceNotu />
           <Link to="/rehber" className="inline-flex items-center gap-1.5 text-sm text-gray-400 hover:text-green-400">
             <ArrowLeft className="w-4 h-4" /> Tüm rehberler
           </Link>
