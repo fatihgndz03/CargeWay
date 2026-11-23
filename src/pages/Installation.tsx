@@ -19,7 +19,7 @@ import { useSeo } from '../lib/seo';
 import { supabase } from '../lib/supabase';
 import { ILLER } from '../data/iller';
 import { AZ_SEHERLER } from '../data/azSeherler';
-import { gecersizIller, hizmetDisiIl } from '../data/hizmetBolgeleri';
+import { azerbaycanNotuGoster, gecersizIller, hizmetDisiIl } from '../data/hizmetBolgeleri';
 import { bicim, useDil, useT } from '../i18n';
 import { Alan, Secenekler, inputCls } from '../components/FormParcalari';
 
@@ -299,6 +299,15 @@ export default function InstallationPage() {
                       >
                         <AlertCircle className="w-5 h-5 shrink-0 text-amber-400" aria-hidden />
                         <p>{bicim(k.hizmetDisiUyari, { il })}</p>
+                      </div>
+                    )}
+                    {azerbaycanNotuGoster(ulke) && (
+                      <div
+                        role="status"
+                        className="flex gap-3 rounded-xl border border-amber-500/30 bg-amber-500/10 p-4 text-sm text-amber-100"
+                      >
+                        <AlertCircle className="w-5 h-5 shrink-0 text-amber-400" aria-hidden />
+                        <p>{k.azerbaycanNotu}</p>
                       </div>
                     )}
                     <Alan etiket={k.ilce}>

@@ -2,6 +2,7 @@ import { Link } from './DilLink';
 import { ArrowRight, ArrowUpRight, Car } from 'lucide-react';
 import { MARKALAR, MODELLER } from '../data/araclar';
 import { bicim, useT } from '../i18n';
+import IlgiliRehberler from './IlgiliRehberler';
 
 /**
  * Sade araç kartları. Görsel ve teknik değerler (menzil, güç, şarj süresi)
@@ -63,6 +64,11 @@ export default function Vehicles() {
             </a>
           ))}
         </div>
+
+        <IlgiliRehberler
+          className="mt-8 lg:max-w-2xl"
+          sluglar={['dogru-sarj-unitesi-secimi']}
+        />
       </div>
     </section>
   );

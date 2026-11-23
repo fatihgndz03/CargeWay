@@ -25,3 +25,21 @@ export function gecersizIller(liste: readonly string[] | null = HIZMET_VERILEN_I
   const gecerli: readonly string[] = ILLER;
   return liste.filter((x) => !gecerli.includes(x));
 }
+
+/**
+ * Azerbaycan'dan gelen teklif talepleri için bilgi notu.
+ *
+ * VARSAYILAN KAPALI (false): formda Azerbaycan seçildiğinde ek not gösterilmez.
+ * true yapılırsa (SORULAR.md Soru 21, seçenek a) ülke olarak Azerbaycan seçen
+ * ziyaretçiye "şu an Azerbaycan'da kurulum hizmeti verilemiyor; talebiniz
+ * yalnızca ilgi ölçümü için kaydedilir ve hiçbir firmayla paylaşılmaz" notu
+ * gösterilir. Talep göndermesi engellenmez.
+ *
+ * Bu not bir taahhüttür: açıkken Azerbaycan taleplerini hiçbir firmaya iletmeyin.
+ */
+export const AZERBAYCAN_BILGI_NOTU_ACIK: boolean = false;
+
+/** Seçilen ülke için Azerbaycan bilgi notu gösterilmeli mi? */
+export function azerbaycanNotuGoster(ulke: string, acik: boolean = AZERBAYCAN_BILGI_NOTU_ACIK): boolean {
+  return acik && ulke === 'AZ';
+}

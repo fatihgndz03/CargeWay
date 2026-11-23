@@ -200,6 +200,8 @@ const tr = {
     ilce: 'İlçe / semt (isteğe bağlı)',
     hizmetDisiUyari:
       '{il} ilinde şu an anlaşmalı kurulum firmamız bulunmuyor. Talebinizi yine de bırakabilirsiniz; bölgenizde hizmet veren bir firmayla anlaşma yapılana kadar bilgileriniz hiçbir firmayla paylaşılmaz ve talebiniz saklama süresi sonunda silinir.',
+    azerbaycanNotu:
+      'Şu an Azerbaycan\'da kurulum hizmeti verilemiyor. Talebinizi yine de bırakabilirsiniz; yalnızca bölgedeki ilgiyi ölçmek için kaydedilir, hiçbir firmayla paylaşılmaz ve saklama süresi sonunda silinir.',
     soru3: 'Size nasıl ulaşalım?',
     ad: 'Ad soyad',
     telefon: 'Telefon',
@@ -433,6 +435,8 @@ const en: Mesajlar = {
     ilce: 'District (optional)',
     hizmetDisiUyari:
       'We do not currently have a partner installer in {il}. You can still submit your request; your details will not be shared with any company until we reach an agreement with an installer serving your area, and your request will be deleted at the end of the retention period.',
+    azerbaycanNotu:
+      'We cannot currently provide installation services in Azerbaijan. You can still submit your request; it is recorded only to gauge interest in the region, is not shared with any company and will be deleted at the end of the retention period.',
     soru3: 'How can we reach you?',
     ad: 'Full name',
     telefon: 'Phone',
@@ -664,6 +668,8 @@ const az: Mesajlar = {
     ilce: 'Rayon / qəsəbə (istəyə bağlı)',
     hizmetDisiUyari:
       '{il} ilində hazırda müqaviləli quraşdırma şirkətimiz yoxdur. Sorğunuzu yenə də göndərə bilərsiniz; bölgənizdə xidmət göstərən bir şirkətlə razılaşma əldə olunana qədər məlumatlarınız heç bir şirkətlə paylaşılmır və sorğunuz saxlama müddətinin sonunda silinir.',
+    azerbaycanNotu:
+      'Hazırda Azərbaycanda quraşdırma xidməti göstərə bilmirik. Sorğunuzu yenə də göndərə bilərsiniz; o, yalnız bölgədəki marağı ölçmək üçün qeydə alınır, heç bir şirkətlə paylaşılmır və saxlama müddətinin sonunda silinir.',
     soru3: 'Sizinlə necə əlaqə saxlayaq?',
     ad: 'Ad və soyad',
     telefon: 'Telefon',

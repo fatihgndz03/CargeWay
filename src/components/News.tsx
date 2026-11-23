@@ -1,4 +1,5 @@
 import { ArrowUpRight, BarChart3, Clock, PlugZap, Scale, type LucideIcon } from 'lucide-react';
+import IlgiliRehberler from './IlgiliRehberler';
 import { HABERLER, formatTarih, type HaberKategori } from '../data/haberler';
 
 const KATEGORI_STIL: Record<HaberKategori, { icon: LucideIcon; badge: string; gradient: string; iconColor: string }> = {
@@ -104,6 +105,15 @@ export default function News() {
             })}
           </div>
         </div>
+
+        <IlgiliRehberler
+          className="mt-8 lg:max-w-2xl"
+          sluglar={[
+            'evde-sarj-unitesi-wallbox-kurulumu',
+            'apartman-ve-sitelerde-sarj-unitesi',
+            'isyeri-ve-otoparklara-sarj-istasyonu',
+          ]}
+        />
       </div>
     </section>
   );
