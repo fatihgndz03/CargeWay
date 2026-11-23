@@ -1,11 +1,15 @@
+import InstallCta from '../components/InstallCta';
+import IlgiliRehberler from '../components/IlgiliRehberler';
 import { useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
+import { Link } from '../components/DilLink';
 import { MapContainer, Marker, TileLayer } from 'react-leaflet';
 import L from 'leaflet';
 import { ArrowLeft, Clock, ExternalLink, Info, MapPin, Navigation, Plug, ShieldCheck, Zap } from 'lucide-react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { applySeo, DEFAULT_DESCRIPTION } from '../lib/seo';
+import { YalnizTurkceNotu } from '../components/DilSecici';
 import {
   ACCESS_LABELS,
   CONNECTOR_LABELS,
@@ -78,6 +82,7 @@ export default function StationDetailPage() {
     <div className="bg-black min-h-screen">
       <Header />
       <main className="max-w-5xl mx-auto px-4 sm:px-6 pt-28 pb-20 text-gray-300">
+        <YalnizTurkceNotu />
         <Link to="/sarj-haritasi" className="inline-flex items-center gap-1.5 text-sm text-gray-400 hover:text-green-400 mb-6">
           <ArrowLeft className="h-4 w-4" /> Şarj haritasına dön
         </Link>
@@ -198,6 +203,10 @@ function Detail({ station: s, nearby }: { station: StationDetailT; nearby: { sta
         </section>
 
         <aside className="lg:col-span-2 space-y-6">
+          <InstallCta variant="compact" />
+          <IlgiliRehberler
+            sluglar={['evde-sarj-unitesi-wallbox-kurulumu', 'apartman-ve-sitelerde-sarj-unitesi', 'isyeri-ve-otoparklara-sarj-istasyonu']}
+          />
           <div className="overflow-hidden rounded-2xl border border-gray-800">
             <div className="h-56">
               <MapContainer

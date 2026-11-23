@@ -1,16 +1,27 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link } from './DilLink';
 import { Zap, Menu, X } from 'lucide-react';
-
-const navItems = [
-  { label: 'Şarj Haritası', href: '/sarj-haritasi' },
-  { label: 'Haberler', href: '/#haberler' },
-  { label: 'Araçlar', href: '/araclar' },
-  { label: 'Nasıl Çalışır?', href: '/#nasil-calisir' },
-];
+import { useDil, useT } from '../i18n';
+import DilSecici from './DilSecici';
 
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const t = useT();
+  const dil = useDil();
+  // Haberler, rehberler ve ürünler Türkiye'ye özel ve yalnızca Türkçe; EN/AZ menüsünde kurulum öne çıkar.
+  const navItems = [
+    { label: t.ust.harita, href: '/sarj-haritasi' },
+    ...(dil === 'tr' ? [{ label: t.ust.haberler, href: '/#haberler' }] : []),
+    { label: t.ust.araclar, href: '/araclar' },
+    { label: t.ust.kurulum, href: '/sarj-unitesi-kurulumu' },
+    ...(dil === 'tr'
+      ? [
+          { label: t.ust.rehber, href: '/rehber' },
+          { label: t.ust.urunler, href: '/urunler' },
+        ]
+      : []),
+  ];
+  const hashHref = (h: string) => (dil === 'tr' ? h : `/${dil}${h.slice(1)}`);
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-black/95 backdrop-blur-md border-b border-green-500/20">
@@ -38,7 +49,7 @@ export default function Header() {
               ) : (
                 <a
                   key={item.label}
-                  href={item.href}
+                  href={hashHref(item.href)}
                   className="px-4 py-2 text-sm text-gray-400 hover:text-green-400 hover:bg-green-500/10 rounded-lg transition-all duration-200 font-medium"
                 >
                   {item.label}
@@ -48,16 +59,17 @@ export default function Header() {
           </nav>
 
           <div className="hidden md:flex items-center gap-3">
+            <DilSecici />
             <Link
               to="/sarj-haritasi"
               className="px-5 py-2 bg-green-500 hover:bg-green-400 text-black text-sm font-semibold rounded-lg transition-all duration-200 shadow-lg shadow-green-500/20 hover:shadow-green-400/30"
             >
-              Haritayı Aç
+              {t.ortak.haritayiAc}
             </Link>
           </div>
 
           <button
-            aria-label={menuOpen ? 'Menüyü kapat' : 'Menüyü aç'}
+            aria-label={menuOpen ? t.ust.menuKapat : t.ust.menuAc}
             className="md:hidden text-gray-400 hover:text-white transition-colors"
             onClick={() => setMenuOpen(!menuOpen)}
           >
@@ -81,7 +93,7 @@ export default function Header() {
             ) : (
               <a
                 key={item.label}
-                href={item.href}
+                href={hashHref(item.href)}
                 onClick={() => setMenuOpen(false)}
                 className="block px-4 py-3 text-gray-400 hover:text-green-400 hover:bg-green-500/10 rounded-lg transition-all font-medium"
               >
@@ -89,13 +101,14 @@ export default function Header() {
               </a>
             )
           ))}
+          <DilSecici className="px-4 pt-2" />
           <div className="pt-3 flex flex-col gap-2">
             <Link
               to="/sarj-haritasi"
               onClick={() => setMenuOpen(false)}
               className="block w-full px-4 py-3 text-center bg-green-500 hover:bg-green-400 text-black font-semibold rounded-lg transition-colors"
             >
-              Haritayı Aç
+              {t.ortak.haritayiAc}
             </Link>
           </div>
         </div>

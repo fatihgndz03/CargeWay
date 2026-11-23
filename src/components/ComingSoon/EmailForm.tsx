@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link } from '../DilLink';
 import { Send, CheckCircle, AlertCircle, Loader2 } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
+import { useDil, useT } from '../../i18n';
 
 type Status = 'idle' | 'loading' | 'success' | 'error' | 'duplicate';
 
@@ -9,6 +10,9 @@ export default function EmailForm() {
   const [email, setEmail] = useState('');
   const [status, setStatus] = useState<Status>('idle');
   const [onay, setOnay] = useState(false);
+  const t = useT();
+  const dil = useDil();
+  const y = t.yakinda;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -24,7 +28,7 @@ export default function EmailForm() {
 
     const { error } = await supabase
       .from('email_subscribers')
-      .insert({ email: email.trim().toLowerCase() });
+      .insert({ email: email.trim().toLowerCase(), source: `coming_soon_${dil}` });
 
     if (!error) {
       setStatus('success');
@@ -44,18 +48,18 @@ export default function EmailForm() {
   return (
     <div className="w-full max-w-md">
       <p className="text-center text-zinc-400 text-sm mb-4 tracking-wide">
-        Lansman haberi almak için kayıt ol
+        {y.epostaBaslik}
       </p>
 
       {status === 'success' ? (
         <div className="flex items-center gap-3 justify-center bg-green-500/10 border border-green-500/30 rounded-xl px-6 py-4 text-green-400">
           <CheckCircle className="w-5 h-5 shrink-0" />
-          <span className="text-sm font-medium">Harika! Seni bilgilendireceğiz.</span>
+          <span className="text-sm font-medium">{y.basari}</span>
         </div>
       ) : status === 'duplicate' ? (
         <div className="flex items-center gap-3 justify-center bg-zinc-800/60 border border-zinc-700 rounded-xl px-6 py-4 text-zinc-400">
           <CheckCircle className="w-5 h-5 shrink-0 text-green-500" />
-          <span className="text-sm font-medium">Bu e-posta zaten kayıtlı.</span>
+          <span className="text-sm font-medium">{y.kayitli}</span>
         </div>
       ) : (
         <form onSubmit={handleSubmit} className="relative flex items-center">
@@ -70,6 +74,7 @@ export default function EmailForm() {
           />
           <button
             type="submit"
+            aria-label={y.gonder}
             disabled={status === 'loading' || !email.trim() || !onay}
             className="absolute right-2 flex items-center justify-center w-10 h-10 rounded-lg bg-green-500 hover:bg-green-400 disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-200 shadow-md shadow-green-500/20 active:scale-95"
           >
@@ -92,11 +97,11 @@ export default function EmailForm() {
             className="mt-0.5 h-4 w-4 shrink-0 accent-green-500"
           />
           <span>
-            CargeWay'in lansman ve duyurularıyla ilgili bana e-posta göndermesini kabul ediyorum.{' '}
+            {y.onayOnce}{' '}
             <Link to="/kvkk" className="text-zinc-400 underline hover:text-green-400">
-              KVKK Aydınlatma Metni
+              {y.onayLink}
             </Link>
-            'ni okudum. Onayımı istediğim zaman geri alabilirim.
+            {y.onaySonra}
           </span>
         </label>
       )}
@@ -104,7 +109,7 @@ export default function EmailForm() {
       {status === 'error' && (
         <div className="flex items-center gap-2 mt-3 text-red-400 text-xs">
           <AlertCircle className="w-4 h-4 shrink-0" />
-          <span>Bir hata oluştu. Lütfen tekrar dene.</span>
+          <span>{y.hata}</span>
         </div>
       )}
     </div>

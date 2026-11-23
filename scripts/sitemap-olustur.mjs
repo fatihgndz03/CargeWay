@@ -8,10 +8,18 @@
  * - Supabase'e ulaşılamazsa derleme BOZULMAZ; yalnızca sabit sayfalarla devam edilir.
  * - "Çok Yakında" modunda (VITE_SHOW_COMING_SOON=true) yalnızca ana sayfa eklenir.
  */
-import { writeFileSync, existsSync, mkdirSync } from 'node:fs';
+import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'node:fs';
 
 const SITE = (process.env.SITE_URL || 'https://cargeway.com').replace(/\/+$/, '');
-const STATIC_PATHS = ['/', '/sarj-haritasi', '/araclar', '/kvkk', '/gizlilik', '/cerezler'];
+// Rehber adresleri src/data/rehberler.ts içindeki `slug: '...'` satırlarından otomatik okunur.
+const REHBER_YOLLARI = [
+  ...readFileSync(new URL('../src/data/rehberler.ts', import.meta.url), 'utf8').matchAll(/^\s+slug: '([a-z0-9-]+)',$/gm),
+].map((m) => `/rehber/${m[1]}`);
+const STATIC_PATHS = ['/', '/sarj-haritasi', '/araclar', '/sarj-unitesi-kurulumu', '/is-ortagi-ol', '/rehber', ...REHBER_YOLLARI, '/urunler', '/kvkk', '/iletisim', '/gizlilik', '/cerezler'];
+// İngilizce ve Azerbaycanca sürümü olan sayfalar
+for (const dil of ['en', 'az']) {
+  for (const p of ['/', '/araclar', '/sarj-unitesi-kurulumu', '/kvkk', '/iletisim']) STATIC_PATHS.push(p === '/' ? `/${dil}` : `/${dil}${p}`);
+}
 
 function xmlEscape(s) {
   return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');

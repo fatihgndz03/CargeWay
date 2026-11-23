@@ -53,3 +53,17 @@ export function applyCanonical(pathname: string) {
   link.href = url;
   setMetaTag('property', 'og:url', url);
 }
+
+/** Dil sürümleri için <link rel="alternate" hreflang> etiketlerini yazar (x-default = Türkçe). */
+export function applyAlternates(alternates: { hreflang: string; path: string }[], varsayilan: string) {
+  document.querySelectorAll('link[rel="alternate"][hreflang]').forEach((el) => el.remove());
+  const ekle = (hreflang: string, path: string) => {
+    const link = document.createElement('link');
+    link.rel = 'alternate';
+    link.hreflang = hreflang;
+    link.href = `${SITE_URL}${path === '/' ? '/' : path.replace(/\/+$/, '')}`;
+    document.head.appendChild(link);
+  };
+  alternates.forEach((a) => ekle(a.hreflang, a.path));
+  ekle('x-default', varsayilan);
+}

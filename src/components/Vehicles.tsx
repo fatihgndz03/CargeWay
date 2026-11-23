@@ -1,39 +1,42 @@
-import { Link } from 'react-router-dom';
+import { Link } from './DilLink';
 import { ArrowRight, ArrowUpRight, Car } from 'lucide-react';
 import { MARKALAR, MODELLER } from '../data/araclar';
+import { bicim, useT } from '../i18n';
+import IlgiliRehberler from './IlgiliRehberler';
 
 /**
  * Sade araç kartları. Görsel ve teknik değerler (menzil, güç, şarj süresi)
  * doğrulanmış bir kaynaktan araç veritabanı kurulana kadar (Faz 3) gösterilmez.
  */
 const vehicles = [
-  { brand: 'Togg', name: 'T10X', body: 'SUV', note: 'Yerli üretim', url: 'https://www.togg.com.tr/' },
-  { brand: 'Togg', name: 'T10F', body: 'Sedan', note: 'Yerli üretim', url: 'https://www.togg.com.tr/' },
-  { brand: 'Tesla', name: 'Model Y', body: 'SUV', note: 'İthal', url: 'https://www.tesla.com/tr_tr/modely' },
+  { brand: 'Togg', name: 'T10X', body: 'SUV', yerli: true, url: 'https://www.togg.com.tr/' },
+  { brand: 'Togg', name: 'T10F', body: 'Sedan', yerli: true, url: 'https://www.togg.com.tr/' },
+  { brand: 'Tesla', name: 'Model Y', body: 'SUV', yerli: false, url: 'https://www.tesla.com/tr_tr/modely' },
 ];
 
 export default function Vehicles() {
+  const t = useT();
+  const v0 = t.aracBolum;
   return (
     <section id="araclar" className="bg-black py-24 border-t border-gray-800 scroll-mt-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mb-12 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6">
           <div>
-          <span className="text-green-500 text-sm font-semibold tracking-widest uppercase">Araçlar</span>
+          <span className="text-green-500 text-sm font-semibold tracking-widest uppercase">{v0.ust}</span>
           <h2 className="text-4xl sm:text-5xl font-black text-white mt-2">
-            Türkiye'de Sık Görülen
+            {v0.baslik1}
             <br />
-            Elektrikli Araçlar
+            {v0.baslik2}
           </h2>
           <p className="mt-4 text-gray-400 max-w-2xl">
-            Menzil, batarya ve şarj hızı bilgilerini içeren araç rehberi hazırlanıyor. Şimdilik güncel teknik bilgiler için
-            üreticinin sayfasına bakabilirsiniz.
+            {v0.aciklama}
           </p>
           </div>
           <Link
             to="/araclar"
             className="inline-flex items-center gap-2 text-green-400 hover:text-green-300 font-semibold shrink-0 group"
           >
-            Tüm araçlar ({MODELLER.length} model, {MARKALAR.length} marka)
+            {bicim(v0.tumu, { modeller: MODELLER.length, markalar: MARKALAR.length })}
             <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
           </Link>
         </div>
@@ -54,13 +57,18 @@ export default function Vehicles() {
                 <div className="text-xs text-gray-500 font-semibold uppercase tracking-wider">{v.brand}</div>
                 <h3 className="text-xl font-bold text-white group-hover:text-green-400 transition-colors">{v.name}</h3>
                 <div className="text-xs text-gray-400 mt-1">
-                  {v.body} · {v.note}
+                  {v.body} · {v.yerli ? v0.yerli : v0.ithal}
                 </div>
               </div>
-              <ArrowUpRight className="w-5 h-5 text-gray-600 group-hover:text-green-400 transition-colors" aria-label="Üretici sayfası" />
+              <ArrowUpRight className="w-5 h-5 text-gray-600 group-hover:text-green-400 transition-colors" aria-label={v0.ureticiSayfasi} />
             </a>
           ))}
         </div>
+
+        <IlgiliRehberler
+          className="mt-8 lg:max-w-2xl"
+          sluglar={['dogru-sarj-unitesi-secimi']}
+        />
       </div>
     </section>
   );

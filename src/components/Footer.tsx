@@ -1,33 +1,14 @@
-import { Link } from 'react-router-dom';
+import { Link } from './DilLink';
 import { Zap } from 'lucide-react';
+import { useDil, useT } from '../i18n';
 
 type FooterLink = { label: string; to: string };
 
-/**
- * Yalnızca var olan sayfalara/bölümlere bağlantı verilir.
- */
-const links: Record<string, FooterLink[]> = {
-  Platform: [
-    { label: 'Şarj Haritası', to: '/sarj-haritasi' },
-    { label: 'Araçlar', to: '/araclar' },
-    { label: 'Haberler', to: '/#haberler' },
-  ],
-  CargeWay: [
-    { label: 'Nasıl Çalışır?', to: '/#nasil-calisir' },
-    { label: 'Neden CargeWay?', to: '/#neden-cargeway' },
-  ],
-  Yasal: [
-    { label: 'KVKK Aydınlatma Metni', to: '/kvkk' },
-    { label: 'Gizlilik Politikası', to: '/gizlilik' },
-    { label: 'Çerez Bilgilendirmesi', to: '/cerezler' },
-    { label: 'İletişim ve Künye', to: '/iletisim' },
-  ],
-};
-
 function FooterAnchor({ label, to }: FooterLink) {
+  const dil = useDil();
   const className = 'text-gray-400 hover:text-green-400 text-sm transition-colors';
   return to.includes('#') ? (
-    <a href={to} className={className}>
+    <a href={dil === 'tr' ? to : `/${dil}${to.slice(1)}`} className={className}>
       {label}
     </a>
   ) : (
@@ -38,6 +19,44 @@ function FooterAnchor({ label, to }: FooterLink) {
 }
 
 export default function Footer() {
+  const t = useT();
+  const dil = useDil();
+  const a = t.alt;
+  // Yalnızca var olan sayfalara/bölümlere bağlantı verilir. Türkçeye özel içerik EN/AZ'de listelenmez.
+  const links: [string, FooterLink[]][] = [
+    [
+      a.platform,
+      [
+        { label: a.harita, to: '/sarj-haritasi' },
+        { label: a.araclar, to: '/araclar' },
+        { label: a.kurulum, to: '/sarj-unitesi-kurulumu' },
+        ...(dil === 'tr'
+          ? [
+              { label: a.rehberler, to: '/rehber' },
+              { label: a.urunler, to: '/urunler' },
+              { label: a.haberler, to: '/#haberler' },
+            ]
+          : []),
+      ],
+    ],
+    [
+      a.sirket,
+      [
+        { label: a.nasil, to: '/#nasil-calisir' },
+        { label: a.neden, to: '/#neden-cargeway' },
+        { label: a.isOrtagi, to: '/is-ortagi-ol' },
+      ],
+    ],
+    [
+      a.yasal,
+      [
+        { label: a.kvkk, to: '/kvkk' },
+        { label: a.gizlilik, to: '/gizlilik' },
+        { label: a.cerezler, to: '/cerezler' },
+        { label: a.iletisim, to: '/iletisim' },
+      ],
+    ],
+  ];
   return (
     <footer id="hakkimizda" className="bg-black border-t border-gray-800">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -52,12 +71,11 @@ export default function Footer() {
               </span>
             </Link>
             <p className="text-gray-400 text-sm leading-relaxed max-w-xs">
-              Türkiye'deki elektrikli araç şarj istasyonlarını tek haritada bir araya getiren bağımsız bilgi platformu.
-              CargeWay bir şarj operatörü değildir.
+              {a.tanitim}
             </p>
           </div>
 
-          {Object.entries(links).map(([title, items]) => (
+          {links.map(([title, items]) => (
             <div key={title}>
               <h3 className="text-white font-bold text-sm mb-5 tracking-wide">{title}</h3>
               <ul className="space-y-3">
@@ -72,11 +90,8 @@ export default function Footer() {
         </div>
 
         <div className="py-6 border-t border-gray-800">
-          <p className="text-gray-500 text-sm">&copy; {new Date().getFullYear()} CargeWay. Tüm hakları saklıdır.</p>
-          <p className="text-gray-600 text-xs mt-2">
-            İstasyon bilgileri bilgilendirme amaçlıdır; doğruluğu ve güncelliği garanti edilmez. Yola çıkmadan önce
-            operatörün uygulamasından kontrol edin.
-          </p>
+          <p className="text-gray-500 text-sm">&copy; {new Date().getFullYear()} CargeWay. {t.ortak.telif}</p>
+          <p className="text-gray-600 text-xs mt-2">{t.ortak.sorumluluk}</p>
         </div>
       </div>
     </footer>

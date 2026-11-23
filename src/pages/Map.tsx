@@ -1,5 +1,8 @@
+import InstallCta from '../components/InstallCta';
+import IlgiliRehberler from '../components/IlgiliRehberler';
 import { useCallback, useEffect, useMemo, useRef, useState, type FormEvent } from 'react';
-import { Link, useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
+import { Link } from '../components/DilLink';
 import { MapContainer, TileLayer, Marker, Popup, CircleMarker, useMap } from 'react-leaflet';
 import MarkerClusterGroup from 'react-leaflet-cluster';
 import L from 'leaflet';
@@ -19,6 +22,8 @@ import {
   type StationFilters,
   type StationsResult,
 } from '../lib/stations';
+
+const HARITA_REHBERLERI = ['evde-sarj-unitesi-wallbox-kurulumu', 'dogru-sarj-unitesi-secimi'];
 
 const TURKEY_CENTER: [number, number] = [39.0, 35.0];
 const POWER_OPTIONS = [0, 11, 22, 50, 100, 150];
@@ -501,6 +506,10 @@ export default function MapPage() {
               <List className="h-4 w-4 text-green-400" /> {userPos ? 'Size en yakın istasyonlar' : 'İstasyonlar'}
             </h2>
             <StationList stations={sorted} onSelect={selectStation} selectedId={selectedId} />
+            <IlgiliRehberler className="mt-5" sluglar={HARITA_REHBERLERI} />
+          </div>
+          <div className="border-t border-gray-800 p-4">
+            <InstallCta variant="compact" />
           </div>
           <p className="border-t border-gray-800 px-5 py-3 text-[11px] leading-snug text-gray-500">
             İstasyon bilgileri bilgilendirme amaçlıdır; doğruluğu garanti edilmez. Yola çıkmadan önce operatörün
@@ -624,6 +633,10 @@ export default function MapPage() {
                       </button>
                     </div>
                     <StationList stations={sorted} onSelect={selectStation} selectedId={selectedId} />
+                    <div className="mt-4">
+                      <InstallCta variant="compact" />
+                    </div>
+                    <IlgiliRehberler className="mt-4" sluglar={HARITA_REHBERLERI} />
                   </>
                 )}
               </div>
