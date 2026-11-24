@@ -1,0 +1,7 @@
+# Netlify: deneme sayfaları arama motorlarında listelenmesin
+/deneme/*
+  X-Robots-Tag: noindex
+/en/deneme/*
+  X-Robots-Tag: noindex
+/az/deneme/*
+  X-Robots-Tag: noindex

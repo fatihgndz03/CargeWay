@@ -5,5 +5,10 @@
   "redirects": [
     { "source": "/sarcj-haritasi", "destination": "/sarj-haritasi", "permanent": true }
   ],
-  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]
+  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }],
+  "headers": [
+    { "source": "/deneme/(.*)", "headers": [{ "key": "X-Robots-Tag", "value": "noindex" }] },
+    { "source": "/en/deneme/(.*)", "headers": [{ "key": "X-Robots-Tag", "value": "noindex" }] },
+    { "source": "/az/deneme/(.*)", "headers": [{ "key": "X-Robots-Tag", "value": "noindex" }] }
+  ]
 }

@@ -219,6 +219,22 @@ const tr = {
     gonderHata: 'Talebiniz şu an gönderilemedi. Lütfen biraz sonra tekrar deneyin.',
     gonder: 'Teklif iste',
   },
+  arac3d: {
+    seo: 'Temsili 3D araç incelemesi (deneme) | CargeWay',
+    rozet: 'Deneme',
+    baslik: 'Elektrikli aracı 3D inceleyin',
+    aciklama:
+      'Temsili bir elektrikli aracı parmağınızla ya da farenizle çevirin. İlerleyen adımlarda kapıyı açıp içeri girebilecek, batarya, motor ve şarj sistemini yakından inceleyebileceksiniz.',
+    sahneEtiketi: 'Döndürülebilir temsili 3D araç sahnesi',
+    temsili: 'Temsili görsel',
+    temsiliAciklama: 'herhangi bir markanın aracını ya da gerçek parçaları birebir göstermez.',
+    ipucu: 'Çevirmek için sürükleyin · yakınlaştırmak için iki parmak / tekerlek',
+    sifirla: 'Görünümü sıfırla',
+    webglYok: 'Tarayıcınız 3D görünümü (WebGL) desteklemiyor ya da kapalı. Sayfadaki bilgiler 3D olmadan da geçerlidir.',
+    hata: '3D görünüm yüklenemedi. Sayfayı yenileyip tekrar deneyin.',
+    denemeNotu:
+      'Bu sayfa geliştirme aşamasındadır; arama motorlarında listelenmez. Şu an yalnızca sahne altyapısı (çevirme, ışık, zemin) hazırdır; araç gövdesi bir sonraki adımda eklenecek.',
+  },
   bulunamadi: {
     seo: 'Sayfa bulunamadı | CargeWay',
     baslik: 'Sayfa bulunamadı',
@@ -454,6 +470,22 @@ const en: Mesajlar = {
     gonderHata: 'Your request could not be sent right now. Please try again shortly.',
     gonder: 'Request a quote',
   },
+  arac3d: {
+    seo: 'Illustrative 3D EV explorer (preview) | CargeWay',
+    rozet: 'Preview',
+    baslik: 'Explore an electric car in 3D',
+    aciklama:
+      'Rotate an illustrative electric car with your finger or mouse. In upcoming steps you will be able to open the door, step inside and take a close look at the battery, motor and charging system.',
+    sahneEtiketi: 'Rotatable illustrative 3D car scene',
+    temsili: 'Illustrative only',
+    temsiliAciklama: 'does not depict any brand’s vehicle or its actual components.',
+    ipucu: 'Drag to rotate · pinch / scroll to zoom',
+    sifirla: 'Reset view',
+    webglYok: 'Your browser does not support 3D view (WebGL) or it is turned off. The information on this page still applies without 3D.',
+    hata: 'The 3D view could not be loaded. Please refresh the page and try again.',
+    denemeNotu:
+      'This page is under development and is not listed by search engines. Only the scene foundation (rotation, lighting, floor) is ready; the car body will be added in the next step.',
+  },
   bulunamadi: {
     seo: 'Page not found | CargeWay',
     baslik: 'Page not found',
@@ -686,6 +718,22 @@ const az: Mesajlar = {
       'Adımın, telefonumun, e-poçtumun, məkanımın və quraşdırma məlumatlarımın təklif hazırlanması üçün CargeWay-in tərəfdaş quraşdırıcıları ilə paylaşılmasına və bu şirkətlərin mənimlə əlaqə saxlamasına açıq razılıq verirəm.',
     gonderHata: 'Sorğunuz hazırda göndərilə bilmədi. Zəhmət olmasa, bir az sonra yenidən cəhd edin.',
     gonder: 'Təklif istə',
+  },
+  arac3d: {
+    seo: 'Təqdimati 3D avtomobil baxışı (sınaq) | CargeWay',
+    rozet: 'Sınaq',
+    baslik: 'Elektromobilə 3D baxın',
+    aciklama:
+      'Təqdimati elektromobili barmağınızla və ya siçanla fırladın. Növbəti mərhələlərdə qapını açıb içəri girə, batareya, mühərrik və şarj sistemini yaxından görə biləcəksiniz.',
+    sahneEtiketi: 'Fırladıla bilən təqdimati 3D avtomobil səhnəsi',
+    temsili: 'Təqdimati görüntü',
+    temsiliAciklama: 'heç bir markanın avtomobilini və ya real hissələri olduğu kimi göstərmir.',
+    ipucu: 'Fırlatmaq üçün sürüşdürün · yaxınlaşdırmaq üçün iki barmaq / təkər',
+    sifirla: 'Görünüşü sıfırla',
+    webglYok: 'Brauzeriniz 3D görünüşü (WebGL) dəstəkləmir və ya o söndürülüb. Səhifədəki məlumatlar 3D olmadan da keçərlidir.',
+    hata: '3D görünüş yüklənmədi. Səhifəni yeniləyib yenidən cəhd edin.',
+    denemeNotu:
+      'Bu səhifə hazırlanma mərhələsindədir və axtarış sistemlərində göstərilmir. Hazırda yalnız səhnə əsası (fırlatma, işıq, döşəmə) hazırdır; avtomobil gövdəsi növbəti mərhələdə əlavə olunacaq.',
   },
   bulunamadi: {
     seo: 'Səhifə tapılmadı | CargeWay',
