@@ -115,7 +115,8 @@ export function sahneKur(kap: HTMLElement, sec: SahneSecenekleri = {}): Sahne {
   sahne.add(new HemisphereLight(0xe5f9ec, 0x0a0a0a, 1.4));
   const anahtar = new DirectionalLight(0xffffff, 2.2);
   anahtar.position.set(4, 7, 5);
-  const kontur = new DirectionalLight(YESIL, 0.7);
+  // Kontur ışığı nötr: yeşil kontur parlak siyah tavanda ve çamurluklarda yeşil leke yapıyordu
+  const kontur = new DirectionalLight(0xdbe7e0, 0.55);
   kontur.position.set(-5, 3, -6);
   sahne.add(anahtar, kontur);
 

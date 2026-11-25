@@ -69,4 +69,11 @@ Ekran: `arac-3d-ekran/2026-11-25-adim2-masaustu.webp`, `…-adim2-on.webp`, `…
 
 **Bilinen küçük kusurlar (sonraki adımlarda ele alınacak):** öne bakan alçak açıdan tekerlek tünellerinin içi koyu boşluk olarak görünüyor; cam ev ile kaput birleşiminde A direği dibinde ince açık renkli üçgen kalıyor.
 
-**Sıradaki:** Adım 3 — kapıya tıklayınca kapının menteşe etrafında açılması, kameranın içeri yumuşak geçişi, basit iç mekân ve "Dışarı çık" düğmesi.
+
+### 2026-11-25 (2) — Adım 2b: görünüm iyileştirme (kullanıcı geri bildirimi)
+Kullanıcı modeli "baya kötü" buldu; gerçek araç / hazır 3D model seçenekleri yerine **kodla devam** kararı verdi (marka tasarımı kopyalanmaz, dış 3D dosyası yok kuralı aynen geçerli).
+**Yapılan:** burun ve kuyruk daha küt ve dik (kapanma üssü 2,6/3,4 → 4,2/5; üstten görünüşte köşeler daha kare), omuz yarıçapı 0,24 → 0,17 (sabun kalıbı görünümü azaldı); alt kenarda mat siyah kaplama ve çamurluk kavislerinde siyah çerçeve (yan yüzü inceltir, crossover duruşu verir; gölgelendiricide); tekerlek yarıçapı 0,36 → 0,385, tekerlekler gövdeyle aynı hizada; tavan parlak siyah ("yüzen tavan"); kapı alt kenarları kaplamanın üstüne çekildi. Yeşil kontur ışığı nötr renge çevrildi — parlak siyah tavanda ve çamurluklarda yeşil leke yapıyordu (yeşil kimlik platform halkası ve marşpiyel şeridinde duruyor).
+**Kontroller:** typecheck, lint, build sorunsuz; Playwright 1366 / 390 px, TR/EN/AZ: konsol hatası ve taşma yok.
+Ekran: `arac-3d-ekran/2026-11-25-adim2b-masaustu.webp`, `…-adim2b-on.webp`, `…-adim2b-arka-capraz.webp`, `…-adim2b-mobil.webp`.
+
+**Sıradaki:** Adım 3 — kapıya tıklayınca kapının menteşe etrafında açılması, kameranın içeri yumuşak geçişi, basit iç mekân ve "Dışarı çık" düğmesi. Kullanıcı görünümü hâlâ zayıf bulursa önce görünüm (oran, ayrıntı, ışık) üzerinde bir tur daha.

@@ -40,10 +40,10 @@ import {
 export const OLCU = {
   genislik: 1.84,
   dingilArasi: 2.75,
-  tekerYaricap: 0.36,
+  tekerYaricap: 0.385,
   tekerGenislik: 0.24,
   /** Çamurluk kavisi yarıçapı */
-  kavis: 0.44,
+  kavis: 0.465,
   /** Yerden yükseklik (alt gövde tabanı) */
   taban: 0.24,
   /** Bel çizgisi (kapı camının alt kenarı), ön kapıda */
@@ -215,19 +215,19 @@ function altGovdeKesiti(x: number): Kesit {
   if (x > 1.0) ytTaban -= 0.18 * Math.pow(yumusak(1.0, 2.15, x), 0.9);
   // Uçlarda kapanma (yan görünüş): ön burun yuvarlak, arka daha küt
   const fYan =
-    x > 0 ? kapanma((x - 1.92) / (onUc - 1.92), 2.6) : kapanma((-x - 1.98) / (-arkaUc - 1.98), 3.4);
-  const ycUc = x > 0 ? 0.56 : 0.66;
+    x > 0 ? kapanma((x - 1.98) / (onUc - 1.98), 4.2) : kapanma((-x - 2.04) / (-arkaUc - 2.04), 5);
+  const ycUc = x > 0 ? 0.6 : 0.68;
   const yt = ycUc + (ytTaban - ycUc) * fYan;
   const yb = ycUc + (taban - ycUc) * fYan;
   // Üstten görünüş: uçlarda köşeler yuvarlanır
   const fPlan =
-    x > 0 ? kapanma((x - 1.62) / (onUc - 1.62), 3.2) : kapanma((-x - 1.78) / (-arkaUc - 1.78), 4);
+    x > 0 ? kapanma((x - 1.72) / (onUc - 1.72), 4.2) : kapanma((-x - 1.86) / (-arkaUc - 1.86), 5);
   return {
     hw: YARIM_W * fPlan,
     yb,
     yt,
-    rU: 0.24,
-    rA: 0.1,
+    rU: 0.17,
+    rA: 0.09,
     carpan: (y) => {
       const s = sinirla((y - yb) / Math.max(yt - yb, 1e-4));
       // üstte içe eğim, ortada hafif bombe, altta hafif içe kıvrım
@@ -340,15 +340,21 @@ function govdeMalzemesi() {
     float arka = step(0.3, -vYerelN.x) * step(abs(vYerel.z), 0.74);
     float arkaKoyu = arka * step(0.885, vYerel.y) * step(vYerel.y, 0.965);
     float arkaB = arka * step(0.912, vYerel.y) * step(vYerel.y, 0.936) * step(abs(vYerel.z), 0.71);
-    float yanB = step(0.6, abs(vYerelN.z)) * step(${f(OLCU.taban + 0.035)}, vYerel.y) * step(vYerel.y, ${f(OLCU.taban + 0.06)}) * step(abs(vYerel.x), 0.86);
-    diffuseColor.rgb = mix(diffuseColor.rgb, vec3(0.015), max(max(onKoyu, arkaKoyu), yanB));
+    // Alt kaplama (mat siyah plastik) ve çamurluk kavisi çerçevesi: yan yüzü inceltir, crossover duruşu verir
+    float kd1 = length(vYerel.xy - vec2(${f(ON_AKS)}, ${f(TEKER_Y)}));
+    float kd2 = length(vYerel.xy - vec2(${f(ARKA_AKS)}, ${f(TEKER_Y)}));
+    float kavisCerceve = 1.0 - step(${f(OLCU.kavis + 0.06)}, min(kd1, kd2));
+    float kaplama = max(1.0 - step(${f(OLCU.taban + 0.13)}, vYerel.y), kavisCerceve);
+    float yanB = step(0.6, abs(vYerelN.z)) * step(${f(OLCU.taban + 0.075)}, vYerel.y) * step(vYerel.y, ${f(OLCU.taban + 0.09)}) * step(abs(vYerel.x), 0.8);
+    diffuseColor.rgb = mix(diffuseColor.rgb, vec3(0.035), max(kaplama, max(onKoyu, arkaKoyu)));
+    diffuseColor.rgb = mix(diffuseColor.rgb, vec3(0.02), yanB);
     totalEmissiveRadiance += vec3(1.0, 0.99, 0.95) * 2.2 * onB;
     totalEmissiveRadiance += vec3(1.0, 0.06, 0.05) * 1.8 * arkaB;
     totalEmissiveRadiance += vec3(0.133, 0.773, 0.369) * 1.2 * yanB;
   }`,
         );
   };
-  m.customProgramCacheKey = () => 'cargeway-arac-govde-v1';
+  m.customProgramCacheKey = () => 'cargeway-arac-govde-v2';
   return m;
 }
 
@@ -363,6 +369,7 @@ function malzemeler() {
       clearcoat: 1,
       clearcoatRoughness: 0.02,
     }),
+    tavan: new MeshPhysicalMaterial({ color: 0x0c0d0e, metalness: 0.3, roughness: 0.4, clearcoat: 0.6, clearcoatRoughness: 0.35 }),
     siyah: new MeshStandardMaterial({ color: 0x0b0b0b, roughness: 0.75, metalness: 0.1, side: DoubleSide }),
     lastik: new MeshStandardMaterial({ color: 0x121212, roughness: 0.92, metalness: 0 }),
     jant: new MeshStandardMaterial({ color: 0x9aa1a8, roughness: 0.28, metalness: 0.85 }),
@@ -514,33 +521,35 @@ export function aracOlustur(): AracParcalari & { malzemeler: Malzemeler } {
   govde.name = 'govde';
   kok.add(govde);
 
-  // Cam ev + tavan (tavan bölgesi ikinci malzeme grubu → boya)
+  // Cam ev + tavan (tavan bölgesi ikinci malzeme grubu → parlak siyah "yüzen tavan")
   const kabin = new Mesh(
     loft(istasyonlar(KABIN_ARKA, KABIN_ON, 70), kabinKesiti, (x) => x < 0.02 && x > -1.32),
-    [mz.cam, mz.boya],
+    [mz.cam, mz.tavan],
   );
   kabin.name = 'kabin';
   kok.add(kabin);
 
   // Kapı hatları — sıra: ön-alt, ön-üst, arka-üst, arka-alt (menteşe ön kenarda)
   const ust = (x: number) => belY(x) - 0.01;
+  // Kapılar alt kaplamanın (taban + 0,13) ve kavis çerçevelerinin dışında kalır
+  const alt = OLCU.taban + 0.135;
   const onSac: [number, number][] = [
-    [0.92, OLCU.taban + 0.1],
-    [0.92, ust(0.92)],
+    [0.83, alt],
+    [0.86, ust(0.86)],
     [0.0, ust(0)],
-    [0.0, OLCU.taban + 0.08],
+    [0.0, alt],
   ];
   const onCam: [number, number][] = [
-    [0.84, belY(0.84)],
+    [0.8, belY(0.8)],
     [0.3, 1.405],
     [0.03, 1.44],
     [0.03, belY(0.03)],
   ];
   const arkaSac: [number, number][] = [
-    [-0.03, OLCU.taban + 0.08],
+    [-0.03, alt],
     [-0.03, ust(-0.03)],
     [-0.9, ust(-0.9)],
-    [-0.93, OLCU.taban + 0.12],
+    [-0.84, alt],
   ];
   const arkaCam: [number, number][] = [
     [-0.05, belY(-0.05)],
@@ -575,7 +584,7 @@ export function aracOlustur(): AracParcalari & { malzemeler: Malzemeler } {
 
   // Tekerlekler
   const tekerlekler: Group[] = [];
-  const tekerZ = YARIM_W - OLCU.tekerGenislik / 2 - 0.03;
+  const tekerZ = YARIM_W - OLCU.tekerGenislik / 2 - 0.012;
   for (const x of [ON_AKS, ARKA_AKS]) {
     for (const sol of [true, false]) {
       const t = tekerlek(mz, sol);
