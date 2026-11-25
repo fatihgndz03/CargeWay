@@ -16,7 +16,7 @@ batarya, motor ve şarj sistemi incelenir. Ayrıntı isteyen resmi YouTube video
 
 ## Adımlar (sırayla, her biri ayrı commit)
 - [x] 1. Altyapı: `three` bağımlılığı, `/deneme/arac-3d` (noindex, menüde yok, sitemap'te yok) tembel yüklenen sahne; OrbitControls, ışık, zemin gölgesi; dokunmatik; paket boyutu ölçümü.
-- [ ] 2. Stilize gövde (prosedürel: gövde, cam, tekerlekler, kapılar ayrı nesne) + 360° sürükle-çevir, yakınlaştırma sınırları, hafif otomatik dönüş.
+- [x] 2. Stilize gövde (prosedürel: gövde, cam, tekerlekler, kapılar ayrı nesne) + 360° sürükle-çevir, yakınlaştırma sınırları, hafif otomatik dönüş.
 - [ ] 3. Kapı tıklama → kapı açılır, kamera içeri yumuşak geçiş; basit iç mekân (koltuklar, direksiyon, orta ekran, konsol); "Dışarı çık" düğmesi.
 - [ ] 4. Patlatılmış görünüm: gövde saydamlaşır/ayrılır; batarya paketi (modül/hücre), motor (stator/rotor), inverter, araç içi şarj cihazı (OBC), şarj soketi, redüktör, soğutma hattı.
 - [ ] 5. Parça bilgi kartları (tıkla/dokun), "Temsili görsel" etiketi, klavye ile gezinme.
@@ -50,4 +50,23 @@ Playwright: ana sayfa açılınca `sahne`/`Arac3dDeneme` parçası istenmiyor (d
 **Kontroller:** typecheck, lint, build sorunsuz; sitemap 25 adres (deneme yok). Playwright (swiftshader) 1366 ve 390 px, TR/EN/AZ: tuval çiziliyor, sürükleyince dönüyor, `robots=noindex`, yatay taşma 0, konsol hatası yok (yalnızca swiftshader'ın ekran görüntüsü alırken verdiği "GPU stall due to ReadPixels" performans uyarısı — test ortamına özgü).
 Ekran: `arac-3d-ekran/2026-11-24-adim1-masaustu.webp`, `arac-3d-ekran/2026-11-24-adim1-mobil.webp`.
 
-**Sıradaki:** Adım 2 — stilize gövde (gövde, cam, tekerlekler, kapılar ayrı nesne), yer tutucunun yerine.
+**Sıradaki:** Adım 2 — stilize gövde (gövde, cam, tekerlekler, kapılar ayrı nesne), yer tutucunun yerine. → 2026-11-25'te yapıldı.
+
+### 2026-11-25 — Adım 2: stilize gövde
+**Yapılan:** Yer tutucu blok kaldırıldı; yeni `src/arac3d/govde.ts` markasız, genel bir kompakt crossover üretir (boy ≈4,5 m, dingil arası 2,75 m — hiçbir modelin ölçüsü değil). Parçalar ayrı nesne: `govde` (alt gövde), `kabin` (cam ev + tavan, aynı geometride iki malzeme grubu), `kapilar` (4 kapı; her biri ön kenardaki menteşe noktasında konumlanmış `Group` → adım 3'te `rotation.y` ile açılacak; içinde gövde yüzeyini izleyen sac, kapı camı, derz çizgileri ve gömme kol), `tekerlekler` (4 adet; `donder(aci)` ile dönen iç grup → adım 6). Izgara, far imzası, logo yok; ön/arka ışık genel ince şerit, marşpiyelde site yeşili (#22c55e) vurgu. 360° çevirme, yakınlaştırma sınırları ve hafif otomatik dönüş adım 1'den aynen geçerli.
+- Yansımalar için three.js'in kodla ürettiği `RoomEnvironment` ortam haritası (PMREM) eklendi — dış dosya yok. Yeşil kontur ışığı 1,1 → 0,7 (tavanı fazla yeşile boyuyordu).
+- Kapatınca tüm geometri/malzeme/ortam dokusu temizleniyor (çizgiler dahil).
+
+**Denenen yaklaşımlar:**
+1. *(a) Yan profil + `ExtrudeGeometry`, küçük pah (0,11):* hızlı ve temiz silüet, ama yan yüzler dümdüz levha, arkası kutu gibi; araç "cenaze arabası / station wagon" gibi okunuyordu. Kapı sacları düz levha olarak gövdeden ayrı parlıyordu. Ekran: `arac-3d-ekran/2026-11-25-adim2-deneme-a-ekstruzyon.webp`.
+2. *(b) Aynı ekstrüzyon, büyük pah (0,2) + kapıyı pah eğrisine oturtma:* omuzlar biraz yuvarlandı ama yan yüz yine düz, üstten görünüşte burun/kuyruk köşeli; fark küçük. Bırakıldı.
+3. *(c) Kesitlerden loft (seçilen):* boy boyunca 111 istasyonda yuvarlatılmış dikdörtgen kesit; kesit parametreleri x'e göre değişiyor (kaput eğimi, bel çizgisi, uçlarda yan ve üst görünüşte yumuşak kapanma). Yan yüzde üstte içe eğim (tumblehome), ortada hafif bombe. Cam ev de aynı yöntemle (ön cam–tavan–arka cam eğrisi + yukarı doğru daralma). Kapı sacı ve camları aynı yüzey fonksiyonuyla hesaplanan ızgaralar olduğu için gövdeye milimetrik oturuyor. **Çamurluk kavisleri** loft'u bozmamak için gövde malzemesinin gölgelendiricisinde (`onBeforeCompile`, yerel koordinatla `discard`) kesiliyor; içerisi koyu yarım silindir astar + iç disklerle kapatıldı. Ön/arka ışık şeritleri ve marşpiyel vurgusu da gölgelendiricide yüzeye çiziliyor (eğri yüzeye tam oturuyor, ek geometri yok). İlk denemede far şeridi beyaz boyada okunmuyordu → koyu bant içinde parlak çekirdek yapıldı.
+
+**Paket boyutu:** ana paket değişmedi (274,7 kB, gzip 90,35 kB; ana sayfa `sahne` parçasını istemiyor — doğrulandı). `sahne` parçası 550 → 578 kB (gzip 137 → 145,6 kB; ortam haritası + spline). Üçgen sayısı ≈ 30 bin.
+
+**Kontroller:** typecheck, lint, build sorunsuz; sitemap 25 adres (deneme yok); sayfa `robots=noindex`. Playwright (swiftshader) 1366 ve 390 px, TR/EN/AZ, farklı açılara sürükleyerek: konsol hatası yok, yatay taşma 0.
+Ekran: `arac-3d-ekran/2026-11-25-adim2-masaustu.webp`, `…-adim2-on.webp`, `…-adim2-arka-capraz.webp`, `…-adim2-mobil.webp`.
+
+**Bilinen küçük kusurlar (sonraki adımlarda ele alınacak):** öne bakan alçak açıdan tekerlek tünellerinin içi koyu boşluk olarak görünüyor; cam ev ile kaput birleşiminde A direği dibinde ince açık renkli üçgen kalıyor.
+
+**Sıradaki:** Adım 3 — kapıya tıklayınca kapının menteşe etrafında açılması, kameranın içeri yumuşak geçişi, basit iç mekân ve "Dışarı çık" düğmesi.

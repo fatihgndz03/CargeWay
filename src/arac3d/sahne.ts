@@ -1,5 +1,5 @@
 /**
- * Temsili 3D araç sahnesi (adım 1: altyapı).
+ * Temsili 3D araç sahnesi (adım 1: altyapı, adım 2: stilize gövde → govde.ts).
  *
  * Bu dosya ve three.js YALNIZCA /deneme/arac-3d sayfasında, sayfa açıldıktan sonra
  * dinamik import ile yüklenir; ana pakete girmez.
@@ -15,17 +15,20 @@ import {
   DirectionalLight,
   Group,
   HemisphereLight,
+  Line,
   Mesh,
   MeshBasicMaterial,
   MeshStandardMaterial,
   PerspectiveCamera,
+  PMREMGenerator,
   RingGeometry,
   Scene,
   SRGBColorSpace,
   WebGLRenderer,
 } from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
-import { RoundedBoxGeometry } from 'three/examples/jsm/geometries/RoundedBoxGeometry.js';
+import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js';
+import { aracOlustur } from './govde';
 
 export type SahneSecenekleri = {
   /** Kullanıcı dokunana kadar yavaşça kendi etrafında dönsün mü? */
@@ -42,8 +45,8 @@ export type Sahne = {
 };
 
 const YESIL = 0x22c55e;
-const KAMERA_BASLANGIC = { x: 5.0, y: 2.6, z: 6.4 };
-const HEDEF_Y = 0.6;
+const KAMERA_BASLANGIC = { x: 5.4, y: 2.5, z: 6.6 };
+const HEDEF_Y = 0.72;
 
 /**
  * Zemin gölgesi: gerçek gölge haritası yerine tuvalde çizilen yumuşak radyal leke.
@@ -69,7 +72,7 @@ function zeminGolgesi(): Mesh {
     new MeshBasicMaterial({ map: doku, transparent: true, depthWrite: false }),
   );
   golge.rotation.x = -Math.PI / 2;
-  golge.scale.set(2.6, 1.35, 1);
+  golge.scale.set(2.85, 1.45, 1);
   golge.position.y = 0.002;
   return golge;
 }
@@ -89,31 +92,6 @@ function platform(): Group {
   halka.rotation.x = -Math.PI / 2;
   halka.position.y = 0.001;
   grup.add(disk, halka);
-  return grup;
-}
-
-/**
- * Yer tutucu: adım 2'de stilize gövdeyle değiştirilecek. Bilerek araca benzemeyen
- * yuvarlatılmış bir blok; yalnızca ışık, gölge ve kamera kontrolünü denemek için.
- */
-function yerTutucu(): Group {
-  const grup = new Group();
-  const govde = new Mesh(
-    new RoundedBoxGeometry(3.6, 0.9, 1.7, 6, 0.3),
-    new MeshStandardMaterial({ color: 0x9ca3af, roughness: 0.35, metalness: 0.6 }),
-  );
-  govde.position.y = 0.75;
-  const ust = new Mesh(
-    new RoundedBoxGeometry(2.0, 0.55, 1.45, 6, 0.22),
-    new MeshStandardMaterial({ color: 0x111827, roughness: 0.15, metalness: 0.2 }),
-  );
-  ust.position.set(-0.15, 1.42, 0);
-  const serit = new Mesh(
-    new RoundedBoxGeometry(3.62, 0.06, 1.72, 2, 0.03),
-    new MeshStandardMaterial({ color: YESIL, emissive: YESIL, emissiveIntensity: 0.6 }),
-  );
-  serit.position.y = 0.55;
-  grup.add(govde, ust, serit);
   return grup;
 }
 
@@ -137,11 +115,20 @@ export function sahneKur(kap: HTMLElement, sec: SahneSecenekleri = {}): Sahne {
   sahne.add(new HemisphereLight(0xe5f9ec, 0x0a0a0a, 1.4));
   const anahtar = new DirectionalLight(0xffffff, 2.2);
   anahtar.position.set(4, 7, 5);
-  const kontur = new DirectionalLight(YESIL, 1.1);
+  const kontur = new DirectionalLight(YESIL, 0.7);
   kontur.position.set(-5, 3, -6);
   sahne.add(anahtar, kontur);
 
-  sahne.add(platform(), zeminGolgesi(), yerTutucu());
+  // Yansımalar için ortam haritası: three.js'in kodla ürettiği nötr "oda" (dış dosya yok).
+  // Deneme günlüğü: ortam haritası olmadan boya ve cam düz/mat görünüyordu.
+  const pmrem = new PMREMGenerator(renderer);
+  const ortam = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+  pmrem.dispose();
+  sahne.environment = ortam;
+  sahne.environmentIntensity = 0.55;
+
+  const arac = aracOlustur();
+  sahne.add(platform(), zeminGolgesi(), arac.kok);
 
   const kontrol = new OrbitControls(kamera, renderer.domElement);
   kontrol.target.set(0, HEDEF_Y, 0);
@@ -210,7 +197,7 @@ export function sahneKur(kap: HTMLElement, sec: SahneSecenekleri = {}): Sahne {
       kontrol.removeEventListener('start', dokunuldu);
       kontrol.dispose();
       sahne.traverse((n) => {
-        if (n instanceof Mesh) {
+        if (n instanceof Mesh || n instanceof Line) {
           n.geometry.dispose();
           const mats = Array.isArray(n.material) ? n.material : [n.material];
           for (const m of mats) {
@@ -219,6 +206,8 @@ export function sahneKur(kap: HTMLElement, sec: SahneSecenekleri = {}): Sahne {
           }
         }
       });
+      for (const m of Object.values(arac.malzemeler)) m.dispose();
+      ortam.dispose();
       renderer.dispose();
       renderer.domElement.remove();
     },

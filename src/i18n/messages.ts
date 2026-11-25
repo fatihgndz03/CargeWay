@@ -233,7 +233,7 @@ const tr = {
     webglYok: 'Tarayıcınız 3D görünümü (WebGL) desteklemiyor ya da kapalı. Sayfadaki bilgiler 3D olmadan da geçerlidir.',
     hata: '3D görünüm yüklenemedi. Sayfayı yenileyip tekrar deneyin.',
     denemeNotu:
-      'Bu sayfa geliştirme aşamasındadır; arama motorlarında listelenmez. Şu an yalnızca sahne altyapısı (çevirme, ışık, zemin) hazırdır; araç gövdesi bir sonraki adımda eklenecek.',
+      'Bu sayfa geliştirme aşamasındadır; arama motorlarında listelenmez. Şu an markasız, stilize bir araç gövdesi döndürülebiliyor; kapıyı açıp içeri girme ve batarya, motor, şarj sistemi incelemesi sonraki adımlarda eklenecek.',
   },
   bulunamadi: {
     seo: 'Sayfa bulunamadı | CargeWay',
@@ -484,7 +484,7 @@ const en: Mesajlar = {
     webglYok: 'Your browser does not support 3D view (WebGL) or it is turned off. The information on this page still applies without 3D.',
     hata: 'The 3D view could not be loaded. Please refresh the page and try again.',
     denemeNotu:
-      'This page is under development and is not listed by search engines. Only the scene foundation (rotation, lighting, floor) is ready; the car body will be added in the next step.',
+      'This page is under development and is not listed by search engines. For now you can rotate an unbranded, stylised car body; opening the door, stepping inside and exploring the battery, motor and charging system will be added in upcoming steps.',
   },
   bulunamadi: {
     seo: 'Page not found | CargeWay',
@@ -733,7 +733,7 @@ const az: Mesajlar = {
     webglYok: 'Brauzeriniz 3D görünüşü (WebGL) dəstəkləmir və ya o söndürülüb. Səhifədəki məlumatlar 3D olmadan da keçərlidir.',
     hata: '3D görünüş yüklənmədi. Səhifəni yeniləyib yenidən cəhd edin.',
     denemeNotu:
-      'Bu səhifə hazırlanma mərhələsindədir və axtarış sistemlərində göstərilmir. Hazırda yalnız səhnə əsası (fırlatma, işıq, döşəmə) hazırdır; avtomobil gövdəsi növbəti mərhələdə əlavə olunacaq.',
+      'Bu səhifə hazırlanma mərhələsindədir və axtarış sistemlərində göstərilmir. Hazırda markasız, stilizə edilmiş avtomobil gövdəsini fırlada bilərsiniz; qapını açıb içəri girmək, batareya, mühərrik və şarj sisteminə baxmaq növbəti mərhələlərdə əlavə olunacaq.',
   },
   bulunamadi: {
     seo: 'Səhifə tapılmadı | CargeWay',
