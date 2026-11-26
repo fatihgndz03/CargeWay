@@ -108,4 +108,18 @@ Ekran: `arac-3d-ekran/2026-11-26-adim3-kapi-acik.webp`, `…-ic-surucu.webp`, `�
 
 **Bilinen kusurlar:** iç mekân sade ve biraz karanlık; ön camın üst kısmı içeriden koyu gri bir perde gibi; arka sıradan bakınca bagaj boşluğu boş. Kapı menteşe tarafında gövde ile kapı arasında birkaç mm aralık seçilebiliyor.
 
-**Sıradaki:** Adım 4 — patlatılmış görünüm (gövde saydamlaşır; batarya paketi, motor, inverter, OBC, soket, redüktör, soğutma hattı).
+**Sıradaki:** Adım 4 — patlatılmış görünüm (gövde saydamlaşır; batarya paketi, motor, inverter, OBC, soket, redüktör, soğutma hattı). → Önce 3b (aşağıda).
+
+### 2026-11-26 (2) — Adım 3b: yeni coupe-SUV gövde (kullanıcı geri bildirimi)
+Kullanıcı aracı yine "çok kötü" buldu ve tasarım dili için bir referans görsel paylaştı (yapay zekâyla üretilmiş, piyasada olmayan bir konsept SUV). Görsel repoya **eklenmedi**; üzerindeki yazı/logo kullanılmadı. Yalnızca genel tasarım dili kodla yorumlandı; ölçüler ve ayrıntılar özgün.
+**Yapılan:**
+- Oranlar: boy 4,49 → 4,76 m, genişlik 1,84 → 1,94 m, dingil arası 2,75 → 2,90 m, teker yarıçapı 0,385 → 0,41 m (ince profilli lastik). Uzun ve alçalan kaput, çok yatık ön cam, tavan hattı arkaya doğru akan "fastback" (coupe-SUV), arkaya doğru yükselen cam alt hattı, arka teker üstünde belirgin omuz.
+- Ön: üst kenarı keskin, altı geriye çekilen burun; kaputun ön kenarında tam genişlik ince ışık şeridi, köşelerde koyu girinti içinde ">" biçimli dikey ışıklar, altta koyu hava girişi (hepsi gölgelendiricide, `cgParca` doğru parçası uzaklığı). Arkada tam genişlik ince stop şeridi.
+- Cam hattı: A direği parlak siyah (opak), tavan gövde renginde ("yüzen tavan"), C direği gövde renginde → yan cam hattı arkada sivri bitiyor. Cam daha koyu (opaklık 0,74).
+- Jant: 10 kanatlı "türbin" jant (iki tonlu, `ExtrudeGeometry` ile kıvrık yapraklar), logosuz göbek. Ön kapılarda parlak siyah yan ayna (kapıyla birlikte açılıyor).
+- Boya: saten titanyum gri. Çamurluk kavislerinde daha geniş mat siyah çerçeve (yalnızca yan yüzlerde; ilk denemede kaputa da taşıp üstte siyah bant yapıyordu).
+- Kapı açıklıkları, iç mekân (koltuklar, panel, direksiyon) yeni ölçülere taşındı; kapıdan giriş/çıkış aynen çalışıyor.
+**Denenenler:** burun kapanması 2,2'den başlayınca ön yüz dik bir duvar gibiydi → 2,08'den ve üstten görünüşte daha erken süpürme; bel omzu tamamen siyahken arka çeyrekte büyük siyah leke oluşuyordu → cam dibinde 14 cm'lik ince şerit; kaput dibindeki iç mekân "kapağı" kesiği ön cam dibinde delik açıyordu → kesik x < 0,95 ile sınırlandı.
+**Paket:** `sahne` parçası gzip 151,4 → 159,8 kB (yalnızca deneme sayfasında); ana paket değişmedi.
+**Kontroller:** typecheck, lint, build sorunsuz; Playwright 1366 / 390 px: dört açıdan görünüm, kapıya tıklayıp giriş, düğmeyle sürücü koltuğu, içeride bakınma; konsol hatası ve taşma yok.
+Ekran: `arac-3d-ekran/2026-11-26-adim3b-on-capraz.webp`, `…-on.webp`, `…-yan.webp`, `…-arka-capraz.webp`, `…-ic-surucu.webp`, `…-mobil.webp`.
