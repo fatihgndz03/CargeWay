@@ -1,10 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
-import { Box, Info, RotateCcw } from 'lucide-react';
+import { Box, DoorOpen, Info, LogOut, RotateCcw } from 'lucide-react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { useSeo } from '../lib/seo';
 import { useT } from '../i18n';
-import type { Sahne } from '../arac3d/sahne';
+import type { Mod, Sahne } from '../arac3d/sahne';
 
 /** three.js'i yüklemeden önce WebGL desteğini kontrol eder. */
 function webglVarMi(): boolean {
@@ -29,6 +29,7 @@ export default function Arac3dDenemePage() {
   const kapRef = useRef<HTMLDivElement>(null);
   const sahneRef = useRef<Sahne | null>(null);
   const [durum, setDurum] = useState<Durum>('yukleniyor');
+  const [mod, setMod] = useState<Mod>('dis');
 
   useEffect(() => {
     const kap = kapRef.current;
@@ -42,7 +43,7 @@ export default function Arac3dDenemePage() {
     import('../arac3d/sahne')
       .then(({ sahneKur }) => {
         if (iptal) return;
-        sahneRef.current = sahneKur(kap, { hazir: () => setDurum('hazir') });
+        sahneRef.current = sahneKur(kap, { hazir: () => setDurum('hazir'), modDegisti: setMod });
       })
       .catch(() => {
         if (!iptal) setDurum('hata');
@@ -53,6 +54,16 @@ export default function Arac3dDenemePage() {
       sahneRef.current = null;
     };
   }, []);
+
+  // Esc ile araçtan çık
+  useEffect(() => {
+    if (mod !== 'ic') return;
+    const tus = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') sahneRef.current?.disariCik();
+    };
+    window.addEventListener('keydown', tus);
+    return () => window.removeEventListener('keydown', tus);
+  }, [mod]);
 
   return (
     <div className="bg-black min-h-screen flex flex-col overflow-x-clip">
@@ -76,7 +87,7 @@ export default function Arac3dDenemePage() {
               <span className="font-semibold text-green-400">{m.temsili}</span> — {m.temsiliAciklama}
             </p>
 
-            {durum === 'hazir' && (
+            {durum === 'hazir' && mod === 'dis' && (
               <button
                 type="button"
                 onClick={() => sahneRef.current?.sifirla()}
@@ -85,6 +96,19 @@ export default function Arac3dDenemePage() {
               >
                 <RotateCcw className="h-3.5 w-3.5" />
                 <span className="sr-only sm:not-sr-only">{m.sifirla}</span>
+              </button>
+            )}
+
+            {/* İçeri gir / Dışarı çık (klavye ve dokunmatik için de düğme) */}
+            {durum === 'hazir' && mod !== 'gecis' && (
+              <button
+                type="button"
+                onClick={() => (mod === 'ic' ? sahneRef.current?.disariCik() : sahneRef.current?.iceriGir())}
+                aria-keyshortcuts={mod === 'ic' ? 'Escape' : undefined}
+                className="absolute bottom-12 sm:bottom-3 right-3 inline-flex items-center gap-2 rounded-lg bg-green-500 px-3.5 py-2 text-sm font-bold text-black hover:bg-green-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-green-300"
+              >
+                {mod === 'ic' ? <LogOut className="h-4 w-4" /> : <DoorOpen className="h-4 w-4" />}
+                {mod === 'ic' ? m.disariCik : m.iceriGir}
               </button>
             )}
 
@@ -102,9 +126,12 @@ export default function Arac3dDenemePage() {
               </div>
             )}
 
-            {durum === 'hazir' && (
-              <p className="pointer-events-none absolute bottom-3 left-1/2 -translate-x-1/2 w-max max-w-[90%] text-center rounded-full bg-black/70 px-3 py-1 text-xs text-gray-400 border border-gray-800">
-                {m.ipucu}
+            {durum === 'hazir' && mod !== 'gecis' && (
+              <p
+                className="pointer-events-none absolute bottom-3 left-3 sm:left-1/2 sm:-translate-x-1/2 right-3 sm:right-auto sm:w-max sm:max-w-[60%] text-center rounded-full bg-black/70 px-3 py-1 text-xs text-gray-400 border border-gray-800"
+                aria-live="polite"
+              >
+                {mod === 'ic' ? m.ipucuIc : m.ipucu}
               </p>
             )}
           </div>

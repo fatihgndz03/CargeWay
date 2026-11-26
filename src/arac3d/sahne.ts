@@ -10,6 +10,7 @@
 import {
   ACESFilmicToneMapping,
   CanvasTexture,
+  CatmullRomCurve3,
   CircleGeometry,
   Color,
   DirectionalLight,
@@ -21,25 +22,37 @@ import {
   MeshStandardMaterial,
   PerspectiveCamera,
   PMREMGenerator,
+  Raycaster,
   RingGeometry,
   Scene,
   SRGBColorSpace,
+  Vector2,
+  Vector3,
   WebGLRenderer,
 } from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js';
-import { aracOlustur } from './govde';
+import { aracOlustur, type KapiAdi, type KapiBilgisi } from './govde';
 
 export type SahneSecenekleri = {
   /** Kullanıcı dokunana kadar yavaşça kendi etrafında dönsün mü? */
   otomatikDonus?: boolean;
   /** Sahne ilk kez çizildiğinde çağrılır (yükleniyor göstergesini kapatmak için). */
   hazir?: () => void;
+  /** Dışarıda / geçişte / içeride durumu değişince çağrılır (düğmeleri göstermek için). */
+  modDegisti?: (mod: Mod) => void;
 };
+
+export type Mod = 'dis' | 'gecis' | 'ic';
+export type { KapiAdi };
 
 export type Sahne = {
   /** Kamerayı başlangıç açısına döndürür. */
   sifirla: () => void;
+  /** Kapıyı açıp kamerayı o koltuğa götürür (varsayılan: sürücü kapısı). */
+  iceriGir: (kapi?: KapiAdi) => void;
+  /** Kamerayı dışarı alır ve kapıyı kapatır. */
+  disariCik: () => void;
   /** Sahneyi ve GPU kaynaklarını temizler. */
   kapat: () => void;
 };
@@ -151,6 +164,193 @@ export function sahneKur(kap: HTMLElement, sec: SahneSecenekleri = {}): Sahne {
   };
   kontrol.addEventListener('start', dokunuldu);
 
+  // -------------------------------------------------------------------------
+  // Adım 3: kapıya tıklayınca kapı açılır, kamera koltuğa yumuşakça geçer.
+  // -------------------------------------------------------------------------
+  let mod: Mod = 'dis';
+  const modAyarla = (m: Mod) => {
+    mod = m;
+    sec.modDegisti?.(m);
+  };
+
+  type Gecis = { bas: number; sure: number; adim: (t: number) => void; bitti?: () => void };
+  let gecisler: Gecis[] = [];
+  const gecisEkle = (sure: number, adim: (t: number) => void, bitti?: () => void, gecikme = 0) => {
+    gecisler.push({ bas: performance.now() + gecikme * 1000, sure: (azHareket ? 0.25 : 1) * sure * 1000, adim, bitti });
+  };
+  const yumusat = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+  const gecisleriIlerlet = () => {
+    if (!gecisler.length) return;
+    const simdi = performance.now();
+    const bitenler: Gecis[] = [];
+    for (const g of gecisler) {
+      if (simdi < g.bas) continue;
+      const t = Math.min((simdi - g.bas) / Math.max(g.sure, 1), 1);
+      g.adim(yumusat(t));
+      if (t >= 1) bitenler.push(g);
+    }
+    if (bitenler.length) {
+      gecisler = gecisler.filter((g) => !bitenler.includes(g));
+      for (const g of bitenler) g.bitti?.();
+    }
+  };
+
+  const kapiAc = (k: KapiBilgisi, ac: boolean, sure: number, gecikme = 0) => {
+    const bas = k.grup.rotation.y;
+    const son = ac ? k.acikAci : 0;
+    gecisEkle(sure, (t) => (k.grup.rotation.y = bas + (son - bas) * t), undefined, gecikme);
+  };
+
+  const disFov = () => (kamera.aspect < 1 ? 52 : 40);
+  const icFov = () => (kamera.aspect < 1 ? 74 : 62);
+  const icBakis = new Vector3(1, -0.1, 0).normalize();
+  let aktifKapi: KapiBilgisi | null = null;
+
+  /** Kamerayı (ve bakış noktasını) eğri boyunca götürür; görüş açısını da yumuşakça değiştirir. */
+  const kameraYolu = (konumlar: Vector3[], hedefler: Vector3[], fovSon: number, sure: number, bitti: () => void) => {
+    const yol = new CatmullRomCurve3(konumlar, false, 'centripetal');
+    const hedefYol = new CatmullRomCurve3(hedefler, false, 'centripetal');
+    const fovBas = kamera.fov;
+    const h = new Vector3();
+    gecisEkle(
+      sure,
+      (t) => {
+        yol.getPoint(t, kamera.position);
+        hedefYol.getPoint(t, h);
+        kamera.fov = fovBas + (fovSon - fovBas) * t;
+        kamera.updateProjectionMatrix();
+        kamera.lookAt(h);
+      },
+      bitti,
+    );
+  };
+
+  const disAyarlari = () => {
+    kontrol.minDistance = 4;
+    kontrol.maxDistance = 12;
+    kontrol.minPolarAngle = 0.25;
+    kontrol.maxPolarAngle = Math.PI / 2 - 0.06;
+    kontrol.enableZoom = true;
+    kontrol.rotateSpeed = 0.7;
+  };
+  const icAyarlari = () => {
+    // Göz noktasının hemen önündeki hedefin çevresinde dönmek = başını çevirmek
+    kontrol.minDistance = 0.12;
+    kontrol.maxDistance = 0.12;
+    kontrol.minPolarAngle = 0.7;
+    kontrol.maxPolarAngle = 2.3;
+    kontrol.enableZoom = false;
+    kontrol.rotateSpeed = 0.4;
+  };
+
+  const iceriGir = (ad: KapiAdi = 'onSol') => {
+    if (mod !== 'dis') return;
+    const k = arac.kapiBilgileri.find((b) => b.ad === ad);
+    if (!k) return;
+    aktifKapi = k;
+    modAyarla('gecis');
+    kontrol.autoRotate = false;
+    kontrol.enabled = false;
+    const isaret = Math.sign(k.goz.z);
+    const kapiOrtaX = k.ad.startsWith('on') ? 0.42 : -0.45;
+    kapiAc(k, true, 0.75);
+    kameraYolu(
+      [
+        kamera.position.clone(),
+        new Vector3(kapiOrtaX, 1.4, isaret * 3.1),
+        new Vector3(kapiOrtaX - 0.05, 1.24, isaret * 0.72),
+        k.goz.clone(),
+      ],
+      [
+        kontrol.target.clone(),
+        new Vector3(kapiOrtaX, 1.0, 0),
+        new Vector3(k.goz.x + 0.6, 1.05, 0),
+        k.goz.clone().addScaledVector(icBakis, 1),
+      ],
+      icFov(),
+      2.4,
+      () => {
+        kontrol.target.copy(k.goz).addScaledVector(icBakis, 0.12);
+        icAyarlari();
+        kontrol.enabled = true;
+        kontrol.update();
+        modAyarla('ic');
+        // Oturunca kapı kapanır: yanda dış sac yerine kapı döşemesi görünür
+        kapiAc(k, false, 0.8);
+      },
+    );
+  };
+
+  const disariCik = () => {
+    if (mod !== 'ic' || !aktifKapi) return;
+    const k = aktifKapi;
+    modAyarla('gecis');
+    kontrol.enabled = false;
+    const isaret = Math.sign(k.goz.z);
+    const kapiOrtaX = k.ad.startsWith('on') ? 0.42 : -0.45;
+    const son = new Vector3(KAMERA_BASLANGIC.x, KAMERA_BASLANGIC.y, isaret * KAMERA_BASLANGIC.z);
+    // Önce kapı açılır, kamera kapı yarı açıkken yola çıkar
+    kapiAc(k, true, 0.6);
+    kameraYolu(
+      [
+        kamera.position.clone(),
+        new Vector3(kapiOrtaX - 0.05, 1.24, isaret * 0.72),
+        new Vector3(kapiOrtaX + 0.6, 1.6, isaret * 3.4),
+        son,
+      ],
+      [kontrol.target.clone(), new Vector3(kapiOrtaX, 1.0, 0), new Vector3(0, 0.9, 0), new Vector3(0, HEDEF_Y, 0)],
+      disFov(),
+      2.2,
+      () => {
+        kontrol.target.set(0, HEDEF_Y, 0);
+        kapiAc(k, false, 0.7);
+        disAyarlari();
+        kontrol.enabled = true;
+        kontrol.update();
+        aktifKapi = null;
+        modAyarla('dis');
+      },
+    );
+  };
+
+  // Tıklama / dokunma: sürükleme ile karışmasın diye yalnızca kısa ve az hareketli basışlar sayılır
+  const isin = new Raycaster();
+  const fareNokta = new Vector2();
+  const kapiBul = (ox: number, oy: number): KapiBilgisi | null => {
+    const r = renderer.domElement.getBoundingClientRect();
+    fareNokta.set(((ox - r.left) / r.width) * 2 - 1, -((oy - r.top) / r.height) * 2 + 1);
+    isin.setFromCamera(fareNokta, kamera);
+    const vuruslar = isin.intersectObject(arac.kok, true).filter((v) => v.object instanceof Mesh);
+    const ilk = vuruslar[0]?.object;
+    if (!ilk) return null;
+    for (let n: typeof ilk | null = ilk; n; n = n.parent) {
+      const k = arac.kapiBilgileri.find((b) => b.grup === n);
+      if (k) return k;
+    }
+    return null;
+  };
+  let basis: { x: number; y: number; z: number } | null = null;
+  const basildi = (e: PointerEvent) => {
+    basis = { x: e.clientX, y: e.clientY, z: performance.now() };
+  };
+  const birakildi = (e: PointerEvent) => {
+    const b = basis;
+    basis = null;
+    if (!b || mod !== 'dis') return;
+    if (Math.hypot(e.clientX - b.x, e.clientY - b.y) > 8 || performance.now() - b.z > 600) return;
+    const k = kapiBul(e.clientX, e.clientY);
+    if (k) iceriGir(k.ad);
+  };
+  // Fareyle kapının üzerine gelince imleç el olsun (kareye bir kez, son konumla)
+  let fareKonum: { x: number; y: number } | null = null;
+  const fareGezdi = (e: PointerEvent) => {
+    if (e.pointerType === 'mouse' && e.buttons === 0) fareKonum = { x: e.clientX, y: e.clientY };
+  };
+  const tuval = renderer.domElement;
+  tuval.addEventListener('pointerdown', basildi);
+  tuval.addEventListener('pointerup', birakildi);
+  tuval.addEventListener('pointermove', fareGezdi);
+
   // Boyut: kapsayıcıyı izle
   const boyutla = () => {
     const w = Math.max(kap.clientWidth, 1);
@@ -160,7 +360,7 @@ export function sahneKur(kap: HTMLElement, sec: SahneSecenekleri = {}): Sahne {
     renderer.domElement.style.height = '100%';
     kamera.aspect = w / h;
     // Dar (dikey) ekranda aracın tamamı görünsün diye görüş açısını genişlet
-    kamera.fov = kamera.aspect < 1 ? 52 : 40;
+    kamera.fov = mod === 'ic' ? icFov() : disFov();
     kamera.updateProjectionMatrix();
   };
   boyutla();
@@ -177,7 +377,13 @@ export function sahneKur(kap: HTMLElement, sec: SahneSecenekleri = {}): Sahne {
   let ilkKare = true;
   renderer.setAnimationLoop(() => {
     if (!gorunur || document.hidden) return;
-    kontrol.update();
+    gecisleriIlerlet();
+    if (mod !== 'gecis') kontrol.update();
+    if (fareKonum) {
+      const k = mod === 'dis' ? kapiBul(fareKonum.x, fareKonum.y) : null;
+      tuval.style.cursor = k ? 'pointer' : '';
+      fareKonum = null;
+    }
     renderer.render(sahne, kamera);
     if (ilkKare) {
       ilkKare = false;
@@ -186,7 +392,10 @@ export function sahneKur(kap: HTMLElement, sec: SahneSecenekleri = {}): Sahne {
   });
 
   return {
+    iceriGir,
+    disariCik,
     sifirla() {
+      if (mod !== 'dis') return;
       kamera.position.set(KAMERA_BASLANGIC.x, KAMERA_BASLANGIC.y, KAMERA_BASLANGIC.z);
       kontrol.target.set(0, HEDEF_Y, 0);
       kontrol.update();
@@ -196,6 +405,10 @@ export function sahneKur(kap: HTMLElement, sec: SahneSecenekleri = {}): Sahne {
       ro.disconnect();
       io.disconnect();
       kontrol.removeEventListener('start', dokunuldu);
+      tuval.removeEventListener('pointerdown', basildi);
+      tuval.removeEventListener('pointerup', birakildi);
+      tuval.removeEventListener('pointermove', fareGezdi);
+      gecisler = [];
       kontrol.dispose();
       sahne.traverse((n) => {
         if (n instanceof Mesh || n instanceof Line) {
@@ -208,6 +421,10 @@ export function sahneKur(kap: HTMLElement, sec: SahneSecenekleri = {}): Sahne {
         }
       });
       for (const m of Object.values(arac.malzemeler)) m.dispose();
+      for (const m of arac.icMalzemeler) {
+        (m as MeshBasicMaterial).map?.dispose();
+        m.dispose();
+      }
       ortam.dispose();
       renderer.dispose();
       renderer.domElement.remove();

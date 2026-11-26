@@ -17,7 +17,7 @@ batarya, motor ve şarj sistemi incelenir. Ayrıntı isteyen resmi YouTube video
 ## Adımlar (sırayla, her biri ayrı commit)
 - [x] 1. Altyapı: `three` bağımlılığı, `/deneme/arac-3d` (noindex, menüde yok, sitemap'te yok) tembel yüklenen sahne; OrbitControls, ışık, zemin gölgesi; dokunmatik; paket boyutu ölçümü.
 - [x] 2. Stilize gövde (prosedürel: gövde, cam, tekerlekler, kapılar ayrı nesne) + 360° sürükle-çevir, yakınlaştırma sınırları, hafif otomatik dönüş.
-- [ ] 3. Kapı tıklama → kapı açılır, kamera içeri yumuşak geçiş; basit iç mekân (koltuklar, direksiyon, orta ekran, konsol); "Dışarı çık" düğmesi.
+- [x] 3. Kapı tıklama → kapı açılır, kamera içeri yumuşak geçiş; basit iç mekân (koltuklar, direksiyon, orta ekran, konsol); "Dışarı çık" düğmesi.
 - [ ] 4. Patlatılmış görünüm: gövde saydamlaşır/ayrılır; batarya paketi (modül/hücre), motor (stator/rotor), inverter, araç içi şarj cihazı (OBC), şarj soketi, redüktör, soğutma hattı.
 - [ ] 5. Parça bilgi kartları (tıkla/dokun), "Temsili görsel" etiketi, klavye ile gezinme.
 - [ ] 6. Animasyonlar: motor dönüşü; AC şarj akışı (wallbox → OBC → batarya) ve DC hızlı şarj (OBC devre dışı) karşılaştırması.
@@ -77,3 +77,35 @@ Kullanıcı modeli "baya kötü" buldu; gerçek araç / hazır 3D model seçenek
 Ekran: `arac-3d-ekran/2026-11-25-adim2b-masaustu.webp`, `…-adim2b-on.webp`, `…-adim2b-arka-capraz.webp`, `…-adim2b-mobil.webp`.
 
 **Sıradaki:** Adım 3 — kapıya tıklayınca kapının menteşe etrafında açılması, kameranın içeri yumuşak geçişi, basit iç mekân ve "Dışarı çık" düğmesi. Kullanıcı görünümü hâlâ zayıf bulursa önce görünüm (oran, ayrıntı, ışık) üzerinde bir tur daha.
+
+
+### 2026-11-26 — Adım 3: kapıyı açıp içeri girme, basit iç mekân
+**Durum:** SORULAR.md'de 22 ve 23'e yanıt yok → adım 2b görünümüyle devam edildi.
+
+**Yapılan:**
+- **Kapı tıklama:** fareyle tıklama / parmakla dokunma (8 px'ten az hareket, 600 ms'den kısa basış → sürükleme ile karışmaz). `Raycaster` ile ilk vurulan nesne bir kapıysa o kapı ön kenardaki menteşe etrafında ≈66° açılır. Fareyle kapının üstüne gelince imleç el olur (her karede en fazla bir ışın).
+- **Kamera geçişi:** `CatmullRomCurve3` ile 4 noktalı eğri (mevcut konum → kapının dışı → kapı aralığı → koltuktaki göz noktası), bakış noktası da ayrı bir eğriyle; görüş açısı 40° → 62° (dikeyde 52° → 74°). Süre 2,4 sn, `prefers-reduced-motion` açıksa ¼. Oturunca kapı kapanır (yanda dış sac yerine kapı döşemesi görünür). Dışarı çıkarken kapı açılır, kamera aynı taraftan dışarı ve başlangıç açısına döner, sonra kapı kapanır.
+- **İçeride bakınma:** OrbitControls hedefi göz noktasının 12 cm önüne alınır, mesafe sabit → sürüklemek "başını çevirmek" gibi. Yakınlaştırma kapalı; içeride "Görünümü sıfırla" gizli.
+- **Hangi koltuk:** tıklanan kapıya göre (ön sol = sürücü, ön sağ = yolcu, arkalar = arka sıra). "İçeri gir" düğmesi (klavye/ekran okuyucu ve keşfedilebilirlik için) sürücü koltuğuna götürür; içeride "Dışarı çık" düğmesi + Esc.
+- **Gövdede kapı açıklığı:** gövde ve cam ev gölgelendiricide kapı dörtgenleriyle (kapının 1 cm içi) kesiliyor (`cgIcinde` — dışbükey dörtgen testi); cam evin tabanı ve cam evin altındaki gövde "kapağı" da kesildi → iç mekân tek hacim. Gövdenin iç yüzü (arka yüz) koyu kaplama rengi; tavanın iç yüzü açık gri tavan döşemesi.
+- **Kapı kalınlığı:** her kapıya gövdenin 5 cm içinde döşeme + iki yüzü birleştiren kenar şeridi; döşemede ince yeşil (#22c55e) ortam ışığı çizgisi.
+- **İç mekân (`src/arac3d/ic.ts`):** taban, iki ön koltuk (minder, yatık sırt, baş desteği), arka sıra, bagaj rafı, orta konsol + kol dayama, gösterge paneli (alt geniş, üst cam eve sığacak kadar dar) + panel boyunca yeşil ışık şeridi, orta ekran (tuvalde çizilmiş genel arayüz: üstten araç silüeti + şarj çubuğu + şimşek; **rakam/yazı yok**), sürücü göstergesi, 3 kollu direksiyon, tavan lambası (nokta ışık). Hepsi `RoundedBoxGeometry` / temel geometri; markasız.
+- **Cam** yarı saydam füme (opaklık 0,62) → dışarıdan iç mekân seçiliyor, içeriden dışarısı görünüyor.
+- **Bel hattı:** cam evin dibindeki omuz üstü mat siyah.
+
+**Denenen yaklaşımlar / düzeltmeler:**
+1. *Opak cam (adım 2'deki gibi):* içeri girince her yön simsiyah; dışarıdan iç mekân hiç görünmüyor → yarı saydam cama geçildi.
+2. *Kapı içeride açık kalsın:* yanda kocaman beyaz kapı sacı görünüyordu (ekran: ilk deneme) → oturunca kapı kapanıyor.
+3. *Bel omzu gövde renginde:* cam ev gövdeden ~12 cm içeride olduğu için içeriden bakınca camın ardında beyaz bir raf görünüyordu → omuz üstü mat siyah (dışarıdan da cam ev "yüzer" görünüyor, siyah tavanla uyumlu).
+4. *Koordinat hatası düzeltildi:* adım 2'de "+z sol" yazılmıştı; +x'e bakan biri için +z sağdır. İlk denemede direksiyon sağda çıktı (sağdan direksiyonlu araç). Kapı/teker adları düzeltildi; sürücü artık solda (−z).
+5. *Tavan lambası olmadan* iç mekân neredeyse siyahtı (dış ışıklar yukarıdan vuruyor, tavan gölgelemiyor ama koltuk önleri karanlık) → tek nokta ışık.
+6. *Test:* swiftshader yavaş olduğu için geçişin ara kareleri, `performance.now` 8 kat yavaşlatılarak yakalandı (yalnızca test betiğinde).
+
+**Paket boyutu:** ana paket 274,72 → 274,96 kB (yalnızca yeni metinler; three.js ana pakete girmedi). `sahne` parçası 578 → 594 kB (gzip 145,6 → 151,4 kB), yalnızca bu sayfada.
+
+**Kontroller:** typecheck, lint, build sorunsuz; sitemap 25 adres. Playwright (swiftshader) 1366 ve 390 px, TR ve EN: kapıya tıklayınca / dokununca yolcu koltuğuna giriş, "Dışarı çık" ile çıkış, "İçeri gir" ile sürücü koltuğu, içeride sürükleyerek bakınma, Esc ile çıkış; konsol hatası yok, yatay taşma 0.
+Ekran: `arac-3d-ekran/2026-11-26-adim3-kapi-acik.webp`, `…-ic-surucu.webp`, `…-ic-bakis.webp`, `…-mobil-dis.webp`, `…-mobil-ic.webp`.
+
+**Bilinen kusurlar:** iç mekân sade ve biraz karanlık; ön camın üst kısmı içeriden koyu gri bir perde gibi; arka sıradan bakınca bagaj boşluğu boş. Kapı menteşe tarafında gövde ile kapı arasında birkaç mm aralık seçilebiliyor.
+
+**Sıradaki:** Adım 4 — patlatılmış görünüm (gövde saydamlaşır; batarya paketi, motor, inverter, OBC, soket, redüktör, soğutma hattı).
