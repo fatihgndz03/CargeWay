@@ -1,10 +1,25 @@
 import { useEffect, useRef, useState } from 'react';
-import { Box, DoorOpen, Info, LogOut, RotateCcw } from 'lucide-react';
+import { Box, Boxes, DoorOpen, Info, LogOut, RotateCcw } from 'lucide-react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { useSeo } from '../lib/seo';
 import { useT } from '../i18n';
 import type { Mod, Sahne } from '../arac3d/sahne';
+
+/**
+ * Lejant renkleri — src/arac3d/bilesenler.ts → PARCA_RENK ile aynı tutulmalı.
+ * (Burada ayrıca yazılı: o dosya three.js içerir ve yalnızca sahne yüklenince indirilir.)
+ */
+const PARCA_SIRASI = [
+  ['batarya', '#22c55e'],
+  ['motor', '#f59e0b'],
+  ['reduktor', '#94a3b8'],
+  ['inverter', '#60a5fa'],
+  ['obc', '#a78bfa'],
+  ['soket', '#f472b6'],
+  ['sogutma', '#22d3ee'],
+  ['kablo', '#f97316'],
+] as const;
 
 /** three.js'i yüklemeden önce WebGL desteğini kontrol eder. */
 function webglVarMi(): boolean {
@@ -55,11 +70,13 @@ export default function Arac3dDenemePage() {
     };
   }, []);
 
-  // Esc ile araçtan çık
+  // Esc ile araçtan çık / aracı birleştir
   useEffect(() => {
-    if (mod !== 'ic') return;
+    if (mod !== 'ic' && mod !== 'parca') return;
     const tus = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') sahneRef.current?.disariCik();
+      if (e.key !== 'Escape') return;
+      if (mod === 'ic') sahneRef.current?.disariCik();
+      else sahneRef.current?.parcalar(false);
     };
     window.addEventListener('keydown', tus);
     return () => window.removeEventListener('keydown', tus);
@@ -87,7 +104,7 @@ export default function Arac3dDenemePage() {
               <span className="font-semibold text-green-400">{m.temsili}</span> — {m.temsiliAciklama}
             </p>
 
-            {durum === 'hazir' && mod === 'dis' && (
+            {durum === 'hazir' && (mod === 'dis' || mod === 'parca') && (
               <button
                 type="button"
                 onClick={() => sahneRef.current?.sifirla()}
@@ -99,13 +116,31 @@ export default function Arac3dDenemePage() {
               </button>
             )}
 
+            {/* Parçaları göster / Aracı birleştir */}
+            {durum === 'hazir' && (mod === 'dis' || mod === 'parca') && (
+              <button
+                type="button"
+                onClick={() => sahneRef.current?.parcalar(mod === 'dis')}
+                aria-pressed={mod === 'parca'}
+                aria-keyshortcuts={mod === 'parca' ? 'Escape' : undefined}
+                className={`absolute bottom-16 sm:bottom-3 inline-flex items-center gap-2 rounded-lg px-3.5 py-2 text-sm font-bold focus:outline-none focus-visible:ring-2 focus-visible:ring-green-300 ${
+                  mod === 'parca'
+                    ? 'right-3 bg-green-500 text-black hover:bg-green-400'
+                    : 'left-3 sm:left-auto sm:right-36 border border-green-500/70 bg-black/70 text-green-400 hover:bg-green-500/10'
+                }`}
+              >
+                <Boxes className="h-4 w-4" />
+                {mod === 'parca' ? m.birlestir : m.parcalariGoster}
+              </button>
+            )}
+
             {/* İçeri gir / Dışarı çık (klavye ve dokunmatik için de düğme) */}
-            {durum === 'hazir' && mod !== 'gecis' && (
+            {durum === 'hazir' && (mod === 'dis' || mod === 'ic') && (
               <button
                 type="button"
                 onClick={() => (mod === 'ic' ? sahneRef.current?.disariCik() : sahneRef.current?.iceriGir())}
                 aria-keyshortcuts={mod === 'ic' ? 'Escape' : undefined}
-                className="absolute bottom-12 sm:bottom-3 right-3 inline-flex items-center gap-2 rounded-lg bg-green-500 px-3.5 py-2 text-sm font-bold text-black hover:bg-green-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-green-300"
+                className="absolute bottom-16 sm:bottom-3 right-3 inline-flex items-center gap-2 rounded-lg bg-green-500 px-3.5 py-2 text-sm font-bold text-black hover:bg-green-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-green-300"
               >
                 {mod === 'ic' ? <LogOut className="h-4 w-4" /> : <DoorOpen className="h-4 w-4" />}
                 {mod === 'ic' ? m.disariCik : m.iceriGir}
@@ -131,10 +166,26 @@ export default function Arac3dDenemePage() {
                 className="pointer-events-none absolute bottom-3 left-3 sm:left-1/2 sm:-translate-x-1/2 right-3 sm:right-auto sm:w-max sm:max-w-[60%] text-center rounded-full bg-black/70 px-3 py-1 text-xs text-gray-400 border border-gray-800"
                 aria-live="polite"
               >
-                {mod === 'ic' ? m.ipucuIc : m.ipucu}
+                {mod === 'ic' ? m.ipucuIc : mod === 'parca' ? m.ipucuParca : m.ipucu}
               </p>
             )}
           </div>
+
+          {/* Patlatılmış görünüm lejantı (renkler sahnedeki vurgu renkleriyle aynı) */}
+          {mod === 'parca' && (
+            <section className="mt-4 rounded-2xl border border-gray-800 bg-gray-950/60 p-4" aria-label={m.lejantBaslik}>
+              <h2 className="text-sm font-semibold text-white">{m.lejantBaslik}</h2>
+              <ul className="mt-3 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-2">
+                {PARCA_SIRASI.map(([ad, renk]) => (
+                  <li key={ad} className="flex items-center gap-2 text-sm text-gray-300">
+                    <span className="h-2.5 w-2.5 shrink-0 rounded-full" style={{ backgroundColor: renk }} aria-hidden />
+                    {m.parcaAdlari[ad]}
+                  </li>
+                ))}
+              </ul>
+              <p className="mt-3 text-xs text-gray-500">{m.yerlesimNotu}</p>
+            </section>
+          )}
 
           <p className="mt-4 flex gap-2 text-sm text-gray-500 max-w-3xl">
             <Info className="h-4 w-4 shrink-0 mt-0.5" />

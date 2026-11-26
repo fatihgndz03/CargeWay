@@ -1,5 +1,6 @@
 /**
- * Temsili 3D araç sahnesi (adım 1: altyapı, adım 2: stilize gövde → govde.ts).
+ * Temsili 3D araç sahnesi (adım 1: altyapı, adım 2: stilize gövde → govde.ts, adım 3: içeri girme,
+ * adım 4: patlatılmış görünüm → bilesenler.ts).
  *
  * Bu dosya ve three.js YALNIZCA /deneme/arac-3d sayfasında, sayfa açıldıktan sonra
  * dinamik import ile yüklenir; ana pakete girmez.
@@ -17,6 +18,7 @@ import {
   Group,
   HemisphereLight,
   Line,
+  type Material,
   Mesh,
   MeshBasicMaterial,
   MeshStandardMaterial,
@@ -33,6 +35,7 @@ import {
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js';
 import { aracOlustur, type KapiAdi, type KapiBilgisi } from './govde';
+import { bilesenlerOlustur } from './bilesenler';
 
 export type SahneSecenekleri = {
   /** Kullanıcı dokunana kadar yavaşça kendi etrafında dönsün mü? */
@@ -43,7 +46,7 @@ export type SahneSecenekleri = {
   modDegisti?: (mod: Mod) => void;
 };
 
-export type Mod = 'dis' | 'gecis' | 'ic';
+export type Mod = 'dis' | 'gecis' | 'ic' | 'parca';
 export type { KapiAdi };
 
 export type Sahne = {
@@ -53,6 +56,8 @@ export type Sahne = {
   iceriGir: (kapi?: KapiAdi) => void;
   /** Kamerayı dışarı alır ve kapıyı kapatır. */
   disariCik: () => void;
+  /** Patlatılmış görünümü açar (true) ya da aracı yeniden birleştirir (false). */
+  parcalar: (ac: boolean) => void;
   /** Sahneyi ve GPU kaynaklarını temizler. */
   kapat: () => void;
 };
@@ -60,6 +65,14 @@ export type Sahne = {
 const YESIL = 0x22c55e;
 const KAMERA_BASLANGIC = { x: 5.4, y: 2.5, z: 6.6 };
 const HEDEF_Y = 0.72;
+/**
+ * Patlatılmış görünüm: gövde ne kadar yükselir, ne kadar saydamlaşır; kamera nereden bakar.
+ * Deneme günlüğü: yarı saydam gövde (yerinde ya da yükseltilmiş) parçaları örtüyor ve yansımalar
+ * parlak lekeler bırakıyordu → gövde yükselirken tamamen kaybolur; tekerlekler bağlam için kalır.
+ */
+const PATLAT = { kaldir: 0.7, opaklik: 0, sure: 1.8 };
+const PARCA_KAMERA = { x: 4.4, y: 3.9, z: 5.6 };
+const PARCA_HEDEF_Y = 0.75;
 
 /**
  * Zemin gölgesi: gerçek gölge haritası yerine tuvalde çizilen yumuşak radyal leke.
@@ -142,7 +155,8 @@ export function sahneKur(kap: HTMLElement, sec: SahneSecenekleri = {}): Sahne {
   sahne.environmentIntensity = 0.55;
 
   const arac = aracOlustur();
-  sahne.add(platform(), zeminGolgesi(), arac.kok);
+  const bilesen = bilesenlerOlustur();
+  sahne.add(platform(), zeminGolgesi(), arac.kok, bilesen.kok);
 
   const kontrol = new OrbitControls(kamera, renderer.domElement);
   kontrol.target.set(0, HEDEF_Y, 0);
@@ -313,6 +327,82 @@ export function sahneKur(kap: HTMLElement, sec: SahneSecenekleri = {}): Sahne {
     );
   };
 
+  // -------------------------------------------------------------------------
+  // Adım 4: patlatılmış görünüm. Gövde (tekerlekler hariç) yükselip saydamlaşır, iç mekân gizlenir;
+  // altındaki tahrik ve şarj bileşenleri birbirinden ayrılır (bilesenler.ts).
+  // -------------------------------------------------------------------------
+  const govdeNesneleri = arac.kok.children.filter((c) => !arac.tekerlekler.includes(c as Group));
+  const govdeYlari = govdeNesneleri.map((n) => n.position.y);
+  type SaydamBilgi = { m: Material; opak: number; saydam: boolean; derinlik: boolean };
+  const saydamlar: SaydamBilgi[] = [];
+  {
+    const goruldu = new Set<unknown>();
+    for (const n of govdeNesneleri) {
+      if (n === arac.ic) continue;
+      n.traverse((c) => {
+        if (!(c instanceof Mesh || c instanceof Line)) return;
+        for (const m of Array.isArray(c.material) ? c.material : [c.material]) {
+          if (goruldu.has(m)) continue;
+          goruldu.add(m);
+          saydamlar.push({ m, opak: m.opacity, saydam: m.transparent, derinlik: m.depthWrite });
+        }
+      });
+    }
+  }
+  let patlatma = 0;
+  let saydamMi = false;
+  const patlatmaUygula = (t: number) => {
+    patlatma = t;
+    const kalk = PATLAT.kaldir * yumusat(Math.min(t / 0.8, 1));
+    govdeNesneleri.forEach((n, i) => (n.position.y = govdeYlari[i] + kalk));
+    const o = 1 - (1 - PATLAT.opaklik) * Math.min(t / 0.5, 1);
+    const saydamOlsun = t > 0;
+    for (const s of saydamlar) {
+      if (saydamOlsun !== saydamMi) {
+        s.m.transparent = saydamOlsun || s.saydam;
+        s.m.depthWrite = saydamOlsun ? false : s.derinlik;
+        s.m.needsUpdate = true;
+      }
+      s.m.opacity = s.opak * o;
+    }
+    saydamMi = saydamOlsun;
+    arac.ic.visible = t === 0;
+    // Tamamen saydamsa çizme (yansımalar ve parlamalar da kaybolsun)
+    const govdeGorunsun = o > 0.005;
+    for (const n of govdeNesneleri) if (n !== arac.ic) n.visible = govdeGorunsun;
+    bilesen.patlat(t);
+  };
+
+  const parcalar = (ac: boolean) => {
+    if (ac ? mod !== 'dis' : mod !== 'parca') return;
+    modAyarla('gecis');
+    kontrol.autoRotate = false;
+    kontrol.enabled = false;
+    const bas = patlatma;
+    const son = ac ? 1 : 0;
+    gecisEkle(PATLAT.sure, (t) => patlatmaUygula(bas + (son - bas) * t));
+    // Kamera: patlatınca biraz yukarıdan ve uzaktan, birleştirince başlangıç açısı (aynı yanda kalır)
+    const isaret = Math.sign(kamera.position.z) || 1;
+    const k = ac ? PARCA_KAMERA : KAMERA_BASLANGIC;
+    const hedefY = ac ? PARCA_HEDEF_Y : HEDEF_Y;
+    const sonKonum = new Vector3(k.x * Math.sign(kamera.position.x || 1), k.y, isaret * k.z);
+    const ara = kamera.position.clone().lerp(sonKonum, 0.5).multiplyScalar(1.04);
+    kameraYolu(
+      [kamera.position.clone(), ara, sonKonum],
+      [kontrol.target.clone(), new Vector3(0, (kontrol.target.y + hedefY) / 2, 0), new Vector3(0, hedefY, 0)],
+      disFov(),
+      PATLAT.sure,
+      () => {
+        kontrol.target.set(0, hedefY, 0);
+        disAyarlari();
+        if (ac) kontrol.maxDistance = 14;
+        kontrol.enabled = true;
+        kontrol.update();
+        modAyarla(ac ? 'parca' : 'dis');
+      },
+    );
+  };
+
   // Tıklama / dokunma: sürükleme ile karışmasın diye yalnızca kısa ve az hareketli basışlar sayılır
   const isin = new Raycaster();
   const fareNokta = new Vector2();
@@ -394,10 +484,12 @@ export function sahneKur(kap: HTMLElement, sec: SahneSecenekleri = {}): Sahne {
   return {
     iceriGir,
     disariCik,
+    parcalar,
     sifirla() {
-      if (mod !== 'dis') return;
-      kamera.position.set(KAMERA_BASLANGIC.x, KAMERA_BASLANGIC.y, KAMERA_BASLANGIC.z);
-      kontrol.target.set(0, HEDEF_Y, 0);
+      if (mod !== 'dis' && mod !== 'parca') return;
+      const k = mod === 'parca' ? PARCA_KAMERA : KAMERA_BASLANGIC;
+      kamera.position.set(k.x, k.y, k.z);
+      kontrol.target.set(0, mod === 'parca' ? PARCA_HEDEF_Y : HEDEF_Y, 0);
       kontrol.update();
     },
     kapat() {
@@ -421,6 +513,7 @@ export function sahneKur(kap: HTMLElement, sec: SahneSecenekleri = {}): Sahne {
         }
       });
       for (const m of Object.values(arac.malzemeler)) m.dispose();
+      for (const m of bilesen.malzemeler) m.dispose();
       for (const m of arac.icMalzemeler) {
         (m as MeshBasicMaterial).map?.dispose();
         m.dispose();

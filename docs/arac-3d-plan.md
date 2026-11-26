@@ -18,7 +18,7 @@ batarya, motor ve şarj sistemi incelenir. Ayrıntı isteyen resmi YouTube video
 - [x] 1. Altyapı: `three` bağımlılığı, `/deneme/arac-3d` (noindex, menüde yok, sitemap'te yok) tembel yüklenen sahne; OrbitControls, ışık, zemin gölgesi; dokunmatik; paket boyutu ölçümü.
 - [x] 2. Stilize gövde (prosedürel: gövde, cam, tekerlekler, kapılar ayrı nesne) + 360° sürükle-çevir, yakınlaştırma sınırları, hafif otomatik dönüş.
 - [x] 3. Kapı tıklama → kapı açılır, kamera içeri yumuşak geçiş; basit iç mekân (koltuklar, direksiyon, orta ekran, konsol); "Dışarı çık" düğmesi.
-- [ ] 4. Patlatılmış görünüm: gövde saydamlaşır/ayrılır; batarya paketi (modül/hücre), motor (stator/rotor), inverter, araç içi şarj cihazı (OBC), şarj soketi, redüktör, soğutma hattı.
+- [x] 4. Patlatılmış görünüm: gövde saydamlaşır/ayrılır; batarya paketi (modül/hücre), motor (stator/rotor), inverter, araç içi şarj cihazı (OBC), şarj soketi, redüktör, soğutma hattı.
 - [ ] 5. Parça bilgi kartları (tıkla/dokun), "Temsili görsel" etiketi, klavye ile gezinme.
 - [ ] 6. Animasyonlar: motor dönüşü; AC şarj akışı (wallbox → OBC → batarya) ve DC hızlı şarj (OBC devre dışı) karşılaştırması.
 - [ ] 7. Varyantlar: tek/çift motor, önden/arkadan/4x4 çekiş, soket konumu — parametreyle değişen sahne.
@@ -123,3 +123,32 @@ Kullanıcı aracı yine "çok kötü" buldu ve tasarım dili için bir referans 
 **Paket:** `sahne` parçası gzip 151,4 → 159,8 kB (yalnızca deneme sayfasında); ana paket değişmedi.
 **Kontroller:** typecheck, lint, build sorunsuz; Playwright 1366 / 390 px: dört açıdan görünüm, kapıya tıklayıp giriş, düğmeyle sürücü koltuğu, içeride bakınma; konsol hatası ve taşma yok.
 Ekran: `arac-3d-ekran/2026-11-26-adim3b-on-capraz.webp`, `…-on.webp`, `…-yan.webp`, `…-arka-capraz.webp`, `…-ic-surucu.webp`, `…-mobil.webp`.
+
+### 2026-11-26 (3) — Adım 4: patlatılmış görünüm
+**Durum:** SORULAR.md'de 22–24'e yanıt yok; `veriler/` içinde yeni veri yok. 3b gövdesinin üzerine kuruldu.
+
+**Yapılan:**
+- Yeni `src/arac3d/bilesenler.ts`: kodla üretilen, markasız, temsili bileşenler. Yerleşim genel bir **arkadan itişli, tek motorlu** düzen (adım 7'de varyantlar):
+  - *Batarya paketi* (dingiller arası, taban altı): tepsi + orta kiriş, 2×6 modül (üstte yeşil plaka), bir "örnek" modülde üst kapak yok → 6×11 silindirik hücre (`InstancedMesh`, tek çizim çağrısı) ve uç kapakları görünür; paket kapağı.
+  - *Elektrik motoru* (arka aks): kanatçıklı döküm gövde + lamine stator + iki uçta bakır sargı başları; ayrı *rotor* (lamine gövde, mil, çubuk izleri).
+  - *Redüktör*: döküm kasa + üç dişli (kodla dişli profili, `ExtrudeGeometry`). Aks milleri tekerleklere.
+  - *İnverter* (motorun üstünde, mavi vurgu, soğutma rakorları), *OBC* (arka bagaj tabanı altında, mor vurgu, soğutucu kanatçıklar), *şarj soketi* (arka sol çeyrek; genel pim düzeni — belirli bir standardın birebir dizilimi değil).
+  - *Soğutma*: önde ısı eşanjörü (radyatör) + pompa; *soğutma hattı* (camgöbeği borular) ve *yüksek gerilim kabloları* (turuncu: soket→OBC (AC), soket→batarya (DC), OBC→batarya, batarya→inverter→motor). Borular patlak konumlar için çizilir ve yalnızca görünüm tamamen açılınca belirir (araç kapalıyken zaten gövde içinde, görünmez).
+- `sahne.ts`: yeni `parca` modu ve `parcalar(ac)`; 1,8 sn'lik geçişte gövde (tekerlekler hariç) 0,7 m yükselirken tamamen saydamlaşıp gizlenir, iç mekân gizlenir, parçalar kendi gecikmeleriyle ayrılır (modüller aralanıp yükselir, örnek modül dışarı çıkar, rotor statordan eksen boyunca kayar, redüktör kasası ve dişlileri yana açılır, inverter/OBC/radyatör yükselir, soket dışarı çıkar; batarya kapağı önce kalkıp sonra aracın yanına yere iner). Kamera aynı yanda kalarak biraz yukarı/uzağa geçer; yakınlaştırma sınırı 14. "Aracı birleştir" (ya da Esc) her şeyi geri alır; malzemelerin saydamlık/derinlik ayarları özgün hâline döner (birleştirdikten sonra kapıdan giriş aynen çalışıyor — test edildi).
+- Sayfa: "Parçaları göster / Aracı birleştir" düğmesi (`aria-pressed`, Esc), patlatılmış görünümde renk noktalı **parça lejantı** ve "yerleşim genel bir düzeni temsil eder; parça konumu, sayısı ve boyutu araçtan araca değişir" notu. Metinler TR/EN/AZ. Mobilde düğmeler ipucu balonunun üstüne binmesin diye biraz yukarı alındı (önceden de birkaç px biniyordu).
+
+**Denenen yaklaşımlar (gövde ne olsun):**
+1. *(b) Gövde 1,55 m yükselir, %16 opaklıkta kalır:* bağlam iyi ama hayalet gövde kadrajın üst yarısını kaplıyor, tepeden bakınca parçaları örtüyor; saydam malzemede yansımalar beyaz lekeler bırakıyor. Ekran: `arac-3d-ekran/2026-11-26-adim4-deneme-b-yukari-saydam.webp`.
+2. *(a) Gövde yerinde, %10 opaklık ("röntgen"):* yükselen parçalar gövdenin içinden çıkıyor gibi karışık; A direği/ayna yansımaları yine parlak. Ekran: `…-adim4-deneme-a-yerinde-saydam.webp`.
+3. *(c, seçilen) Gövde yükselirken tamamen kaybolur, tekerlekler kalır:* "kaykay" şasi görünümü, en okunaklısı; tekerlekler ölçek/yön bağlamı veriyor.
+- *Batarya kapağı:* önce modüllerin üstünde yarı saydam yükseliyordu → modülleri soluklaştırıyordu; sonra açık gri olarak yanda yere indi → çok baskındı; son hâli koyu gri, aracın yanında yerde.
+
+**Paket:** `sahne` parçası gzip 159,8 → 164,4 kB (yalnızca deneme sayfasında); ana paket yalnızca yeni metinler kadar büyüdü (gzip ≈ 91,2 kB); ana sayfa `sahne`/`Arac3dDeneme` parçalarını istemiyor (doğrulandı).
+
+**Kontroller:** typecheck, lint, build sorunsuz; sitemap 25 adres; `robots=noindex`. Playwright (swiftshader) 1366 ve 390 px, TR ve EN: parçaları göster → sürükleyerek çevirme → birleştir (düğme ve Esc) → kapıdan içeri giriş; konsol hatası yok, yatay taşma 0.
+Ekran: `arac-3d-ekran/2026-11-26-adim4-masaustu.webp`, `…-adim4-ust-aci.webp`, `…-adim4-mobil.webp`, `…-adim4-birlestir.webp`.
+
+**Bilinen kusurlar:** motor ve redüktör ölçeği küçük, mobilde zor seçiliyor (adım 5'te parçaya tıklayınca kamera yaklaşabilir); kablolar bazı açılardan birbirini kesiyor; parçalara henüz tıklanamıyor (adım 5).
+
+**Sıradaki:** Adım 5 — parçaya tıklayınca/dokununca vurgulama + bilgi kartı (genel çalışma prensibi; araca özel rakam yok), klavye ile parçalar arasında gezinme.
+
