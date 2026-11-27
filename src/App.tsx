@@ -25,6 +25,8 @@ const InstallationPage = lazy(() => import('./pages/Installation'));
 const PartnerPage = lazy(() => import('./pages/Partner'));
 const VehiclesPage = lazy(() => import('./pages/Vehicles'));
 const NotFoundPage = lazy(() => import('./pages/NotFound'));
+// Deneme: temsili 3D araç (three.js yalnızca bu sayfada yüklenir; noindex, menüde/sitemap'te yok)
+const Arac3dDenemePage = lazy(() => import('./pages/Arac3dDeneme'));
 const KvkkPage = lazy(() => import('./pages/Legal').then((m) => ({ default: m.KvkkPage })));
 const PrivacyPage = lazy(() => import('./pages/Legal').then((m) => ({ default: m.PrivacyPage })));
 const ContactPage = lazy(() => import('./pages/Legal').then((m) => ({ default: m.ContactPage })));
@@ -125,6 +127,7 @@ function DilSayfalari({ dil }: { dil: Dil }) {
             <Route path="gizlilik" element={<PrivacyPage />} />
             <Route path="cerezler" element={<CookiesPage />} />
             <Route path="iletisim" element={<ContactPage />} />
+            <Route path="deneme/arac-3d" element={<Arac3dDenemePage />} />
             {/* Eski yazım hatalı adres */}
             <Route path="sarcj-haritasi" element={<EskiHaritaYonlendir />} />
             <Route path="*" element={<NotFoundPage />} />
