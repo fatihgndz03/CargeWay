@@ -179,3 +179,8 @@ Ekran: `arac-3d-ekran/2026-11-27-adim5-batarya.webp`, `…-motor.webp`, `…-red
 **Bilinen kusurlar:** mobilde kart sahnenin altında; okumak için kaydırmak gerekiyor (otomatik kaydırma sahneyi kadrajdan çıkaracağı için yapılmadı). Soluk parçaların ışın seçimi açık: yakın odakta önde kalan soluk parçaya dokunmak onu seçer (bilinçli; "başka parçaya dokun" davranışı).
 
 **Sıradaki:** Adım 6 — animasyonlar: motor/rotor dönüşü; AC şarj akışı (wallbox → soket → OBC → batarya) ve DC hızlı şarj (OBC devre dışı) karşılaştırması.
+
+**Not (bilgisayara ulaşılamadı):** Bu çalışmanın sonunda kullanıcının bilgisayarı bağlı değildi; ILERLEME.md ve SORULAR.md güncellenemedi. Bir sonraki çalışma şu kaydı oraya taşımalı:
+- *ILERLEME.md — 2026-11-27, F adım 5:* commit `bb3dc82` (`arac-3d`), PR #5 açıklaması güncellendi, önizleme https://carge-way-git-arac-3d-fatihgndz03-6279s-projects.vercel.app/deneme/arac-3d — ayrıntılar yukarıda.
+- *SORULAR.md — Soru 26 (3D araç — parça bilgi kartları):* "Parçaları göster"den sonra bir parçaya dokunun. (1) Kart metinleri anlaşılır mı, çok mu teknik/uzun? (2) Mobilde kartın sahnenin altında açılması uygun mu, yoksa sahnenin üstünde küçük bir kart mı olsun? (3) OBC ve soket kartlarındaki "wallbox kurulum teklifi al" bağlantısı uygun mu, başka kartlara da eklensin mi? Yanıt yoksa adım 6'ya (motor dönüşü, AC/DC şarj akışı animasyonu) geçilir.
+
