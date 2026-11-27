@@ -36,7 +36,11 @@ import {
 import { RoundedBoxGeometry } from 'three/examples/jsm/geometries/RoundedBoxGeometry.js';
 import { OLCU } from './govde';
 
-export type ParcaAdi = 'batarya' | 'motor' | 'reduktor' | 'inverter' | 'obc' | 'soket' | 'sogutma' | 'kablo';
+import type { ParcaAdi } from '../data/parcaBilgileri';
+export type { ParcaAdi };
+
+/** Sayfadaki lejant ve klavyeyle gezinme sırası. */
+export const PARCA_ADLARI: ParcaAdi[] = ['batarya', 'motor', 'reduktor', 'inverter', 'obc', 'soket', 'sogutma', 'kablo'];
 
 /** Lejant/bilgi kartı rengi (sayfadaki renk noktalarıyla aynı). */
 export const PARCA_RENK: Record<ParcaAdi, string> = {

@@ -19,7 +19,7 @@ batarya, motor ve şarj sistemi incelenir. Ayrıntı isteyen resmi YouTube video
 - [x] 2. Stilize gövde (prosedürel: gövde, cam, tekerlekler, kapılar ayrı nesne) + 360° sürükle-çevir, yakınlaştırma sınırları, hafif otomatik dönüş.
 - [x] 3. Kapı tıklama → kapı açılır, kamera içeri yumuşak geçiş; basit iç mekân (koltuklar, direksiyon, orta ekran, konsol); "Dışarı çık" düğmesi.
 - [x] 4. Patlatılmış görünüm: gövde saydamlaşır/ayrılır; batarya paketi (modül/hücre), motor (stator/rotor), inverter, araç içi şarj cihazı (OBC), şarj soketi, redüktör, soğutma hattı.
-- [ ] 5. Parça bilgi kartları (tıkla/dokun), "Temsili görsel" etiketi, klavye ile gezinme.
+- [x] 5. Parça bilgi kartları (tıkla/dokun), "Temsili görsel" etiketi, klavye ile gezinme.
 - [ ] 6. Animasyonlar: motor dönüşü; AC şarj akışı (wallbox → OBC → batarya) ve DC hızlı şarj (OBC devre dışı) karşılaştırması.
 - [ ] 7. Varyantlar: tek/çift motor, önden/arkadan/4x4 çekiş, soket konumu — parametreyle değişen sahne.
 - [ ] 8. Kaynaklı araç verisi: `src/data/araclar.ts`'e isteğe bağlı alanlar (motorSayisi, cekis, bataryaKwh, acKw, dcKw, soket, kaynaklar[{ad,url,tarih}]); önce Türkiye'de yaygın 3–5 model.
@@ -152,3 +152,30 @@ Ekran: `arac-3d-ekran/2026-11-26-adim4-masaustu.webp`, `…-adim4-ust-aci.webp`,
 
 **Sıradaki:** Adım 5 — parçaya tıklayınca/dokununca vurgulama + bilgi kartı (genel çalışma prensibi; araca özel rakam yok), klavye ile parçalar arasında gezinme.
 
+### 2026-11-27 — Adım 5: parça bilgi kartları, vurgulama, klavyeyle gezinme
+**Durum:** SORULAR.md'de 22–25'e yanıt yok; `veriler/` içinde yeni veri yok. Adım 4 görünümü üzerine kuruldu.
+
+**Yapılan:**
+- **Seçim:** patlatılmış görünümde parçaya tıklama / dokunma (sürükleme ile karışmaz; adım 3'teki kısa basış kuralı). Işının ilk vurduğu görünür ağın atası `parca-*` grubundan parça adı bulunur. Boş alana dokunmak seçimi kaldırır; fareyle parçanın üstüne gelince imleç el olur.
+- **Vurgulama:** seçilmeyen parçalar, aks milleri ve tekerlekler tek bir koyu, %13 opak malzemeye geçici olarak takas edilir (asıl malzemeler `Map`'te saklanır, seçim kalkınca/birleştirince/sayfadan çıkınca geri konur).
+- **Kamera odağı:** aynı bakış yönünden parçanın sınır kutusunun merkezine 0,9 sn'lik küresel geçiş (kamera aracın içinden geçmez; karşı yana dönerken hafif yukarıdan). Mesafe parçanın boyutuna göre; parçaya özel ayar: soket küçük ve yüzü sola bakıyor → soldan ve yakından; redüktör dişlileri +z'de → o yandan; kablo ve soğutma hattı tüm araca yayıldığı için genel görünüm ve yukarıdan (≈35°). Seçim varken yakınlaştırma sınırı 1,2.
+- **Bilgi kartı:** masaüstünde sahnenin sağında (w-80), mobilde sahnenin altında. Parça adı + renk noktası, 1–2 cümlelik özet, 2–3 madde (genel çalışma prensibi; **araca özel rakam yok**), "genel prensiptir, araçtan araca değişir" notu, önceki/sonraki düğmeleri, kapatma. OBC ve soket kartlarında "Ev tipi şarj ünitesi (wallbox) kurulum teklifi al" bağlantısı (`/sarj-unitesi-kurulumu`, dile göre). Masaüstünde kart sahneyi örtmesin diye izdüşüm `setViewOffset` ile kart payının yarısı kadar sola kayar (kamera konumu değişmez, ışın seçimi doğru kalır).
+- **Klavye / erişilebilirlik:** lejant satırları artık `aria-pressed` düğmeler (Tab + Enter ile seçim). Patlatılmış görünümde ← → parçalar arasında gezinir; Esc önce kartı kapatır, ikinci Esc aracı birleştirir. Kart `aria-live="polite"`.
+- **Metinler:** düğme/ipucu metinleri `messages.ts`'de TR/EN/AZ. Kart içerikleri (uzun metin) `src/data/parcaBilgileri.ts`'de TR/EN/AZ — rehberler gibi veri dosyası; yalnızca deneme sayfasının tembel parçasına girer (ilk denemede `messages.ts`'e konunca ana paket gzip +4,5 kB büyüyordu).
+- İçerik notları: Tip 2 / CCS2 yaygınlığı (Türkiye ve Avrupa), turuncu yüksek gerilim kablosu uygulaması, OBC'nin AC şarj gücünü sınırlaması, DC şarjda OBC'nin devre dışı kalması, tek oranlı redüktör ("çoğu araçta") gibi genel ve yerleşik bilgiler; kesin sayı yok. AZ metinleri yayından önce ana dili AZ olan biri gözden geçirmeli.
+
+**Denenen yaklaşımlar (vurgulama):**
+1. *'tel' — diğer parçalar tel kafes:* büyük parçalarda (tekerlek, batarya) yoğun çizgi örgüsü, yakın odakta ekranı dolduruyor. Ekran: `arac-3d-ekran/2026-11-27-adim5-deneme-tel.webp`.
+2. *'isik' — yalnızca seçilen parça yeşil parlar, diğerleri olduğu gibi:* batarya zaten yeşil → fark az; diğer parçalar soluklaşmadığı için yakın odakta kablolar ve borular önü kapatıyor. Ekran: `…-adim5-deneme-isik.webp`.
+3. *'soluk' (seçilen) — diğerleri koyu, yarı saydam:* bağlam kalıyor, seçilen parça net. `VURGU` sabitiyle diğerleri yeniden denenebilir.
+- *Kart yerleşimi:* önce kart sahnenin üstüne biniyor, parça kartın altında kalıyordu → `setViewOffset` ile kaydırma. Mobilde kart sahne üstünde yer bırakmadığı için alta alındı.
+- *Kamera:* ilk denemede kablo odağında kablolar kadrajın üstünden taşıyordu, soket arkadan (yüzü görünmeden) gösteriliyordu, redüktör kasası dişlileri ve tekerlek önünü kapatıyordu → parçaya özel yön/mesafe + tekerlekler de soluklaşıyor. Mobilde batarya çok uzakta kalıyordu → mesafe çarpanı 1,35 → 1,15.
+
+**Paket:** ana paket değişmedi (gzip ≈ 91,6 kB; yalnızca birkaç kısa düğme metni). `Arac3dDeneme` parçası gzip ≈ 8,5 kB (kart içerikleri dahil), `sahne` gzip 164,4 → 165,4 kB. Ana sayfa `sahne`/`Arac3dDeneme` parçalarını istemiyor (doğrulandı).
+
+**Kontroller:** typecheck, lint, build sorunsuz; sitemap 25 adres. Playwright (swiftshader) 1366 px (TR) ve 390 px (TR/EN/AZ, dokunma): parçaya tıklama/dokunma, ← → ile 8 parçanın tamamı, boş alana dokununca kapanma, Esc ×2, lejant düğmesi, kart açıkken "Aracı birleştir" → "İçeri gir" (iç mekân çalışıyor); konsol hatası yok, yatay taşma 0.
+Ekran: `arac-3d-ekran/2026-11-27-adim5-batarya.webp`, `…-motor.webp`, `…-reduktor.webp`, `…-kablo.webp`, `…-mobil.webp`.
+
+**Bilinen kusurlar:** mobilde kart sahnenin altında; okumak için kaydırmak gerekiyor (otomatik kaydırma sahneyi kadrajdan çıkaracağı için yapılmadı). Soluk parçaların ışın seçimi açık: yakın odakta önde kalan soluk parçaya dokunmak onu seçer (bilinçli; "başka parçaya dokun" davranışı).
+
+**Sıradaki:** Adım 6 — animasyonlar: motor/rotor dönüşü; AC şarj akışı (wallbox → soket → OBC → batarya) ve DC hızlı şarj (OBC devre dışı) karşılaştırması.

@@ -234,7 +234,14 @@ const tr = {
     disariCik: 'Dışarı çık',
     parcalariGoster: 'Parçaları göster',
     birlestir: 'Aracı birleştir',
-    ipucuParca: 'Çevirmek için sürükleyin · yakınlaştırmak için iki parmak ya da fare tekerleği',
+    ipucuParca: 'Bilgi için bir parçaya dokunun · çevirmek için sürükleyin',
+    ipucuParcaSecili: 'Başka bir parçaya dokunun · boş alana dokununca kart kapanır',
+    kartKapat: 'Bilgi kartını kapat',
+    oncekiParca: 'Önceki parça',
+    sonrakiParca: 'Sonraki parça',
+    kartNotu: 'Genel çalışma prensibidir; parçanın yeri, sayısı ve özellikleri araçtan araca değişir.',
+    kartTeklif: 'Ev tipi şarj ünitesi (wallbox) kurulum teklifi al',
+    lejantIpucu: 'Bir parçayı seçip bilgi kartını açın (klavyede ← → ile de gezebilirsiniz).',
     lejantBaslik: 'Sahnedeki parçalar',
     parcaAdlari: {
       batarya: 'Batarya paketi (modüller, hücreler)',
@@ -252,7 +259,7 @@ const tr = {
     webglYok: 'Tarayıcınız 3D görünümü (WebGL) desteklemiyor ya da kapalı. Sayfadaki bilgiler 3D olmadan da geçerlidir.',
     hata: '3D görünüm yüklenemedi. Sayfayı yenileyip tekrar deneyin.',
     denemeNotu:
-      'Bu sayfa geliştirme aşamasındadır; arama motorlarında listelenmez. Şu an markasız, stilize bir aracı döndürebilir, kapıyı açıp sade bir iç mekâna girebilir ve aracı parçalarına ayırabilirsiniz; parça bilgi kartları ve şarj akışı animasyonu sonraki adımlarda eklenecek.',
+      'Bu sayfa geliştirme aşamasındadır; arama motorlarında listelenmez. Şu an markasız, stilize bir aracı döndürebilir, kapıyı açıp sade bir iç mekâna girebilir ve aracı parçalarına ayırıp her parçanın ne işe yaradığını okuyabilirsiniz; şarj akışı animasyonu sonraki adımlarda eklenecek.',
   },
   bulunamadi: {
     seo: 'Sayfa bulunamadı | CargeWay',
@@ -504,7 +511,14 @@ const en: Mesajlar = {
     disariCik: 'Step out',
     parcalariGoster: 'Show components',
     birlestir: 'Reassemble',
-    ipucuParca: 'Drag to rotate · pinch or scroll to zoom',
+    ipucuParca: 'Tap a component for details · drag to rotate',
+    ipucuParcaSecili: 'Tap another component · tap empty space to close the card',
+    kartKapat: 'Close info card',
+    oncekiParca: 'Previous component',
+    sonrakiParca: 'Next component',
+    kartNotu: 'This is the general working principle; the position, number and specifications of components vary from car to car.',
+    kartTeklif: 'Get a home charger (wallbox) installation quote',
+    lejantIpucu: 'Select a component to open its info card (you can also browse with ← → on the keyboard).',
     lejantBaslik: 'Components in the scene',
     parcaAdlari: {
       batarya: 'Battery pack (modules, cells)',
@@ -522,7 +536,7 @@ const en: Mesajlar = {
     webglYok: 'Your browser does not support 3D view (WebGL) or it is turned off. The information on this page still applies without 3D.',
     hata: 'The 3D view could not be loaded. Please refresh the page and try again.',
     denemeNotu:
-      'This page is under development and is not listed by search engines. For now you can rotate an unbranded, stylised car, open a door, step into a simple interior and take the car apart; component info cards and a charging-flow animation will be added in upcoming steps.',
+      'This page is under development and is not listed by search engines. For now you can rotate an unbranded, stylised car, open a door, step into a simple interior and take the car apart to read what each component does; a charging-flow animation will be added in upcoming steps.',
   },
   bulunamadi: {
     seo: 'Page not found | CargeWay',
@@ -772,7 +786,14 @@ const az: Mesajlar = {
     disariCik: 'Çölə çıx',
     parcalariGoster: 'Hissələri göstər',
     birlestir: 'Avtomobili yığ',
-    ipucuParca: 'Fırlatmaq üçün sürüşdürün · yaxınlaşdırmaq üçün iki barmaq və ya siçan çarxı',
+    ipucuParca: 'Məlumat üçün hissəyə toxunun · fırlatmaq üçün sürüşdürün',
+    ipucuParcaSecili: 'Başqa hissəyə toxunun · kartı bağlamaq üçün boş sahəyə toxunun',
+    kartKapat: 'Məlumat kartını bağla',
+    oncekiParca: 'Əvvəlki hissə',
+    sonrakiParca: 'Növbəti hissə',
+    kartNotu: 'Bu, ümumi iş prinsipidir; hissənin yeri, sayı və xüsusiyyətləri avtomobildən avtomobilə dəyişir.',
+    kartTeklif: 'Ev tipli şarj qurğusu (wallbox) quraşdırma təklifi al',
+    lejantIpucu: 'Məlumat kartını açmaq üçün hissəni seçin (klaviaturada ← → ilə də keçə bilərsiniz).',
     lejantBaslik: 'Səhnədəki hissələr',
     parcaAdlari: {
       batarya: 'Batareya bloku (modullar, hüceyrələr)',
@@ -790,7 +811,7 @@ const az: Mesajlar = {
     webglYok: 'Brauzeriniz 3D görünüşü (WebGL) dəstəkləmir və ya o söndürülüb. Səhifədəki məlumatlar 3D olmadan da keçərlidir.',
     hata: '3D görünüş yüklənmədi. Səhifəni yeniləyib yenidən cəhd edin.',
     denemeNotu:
-      'Bu səhifə hazırlanma mərhələsindədir və axtarış sistemlərində göstərilmir. Hazırda markasız, stilizə edilmiş avtomobili fırlada, qapını açıb sadə salona girə və avtomobili hissələrinə ayıra bilərsiniz; hissə məlumat kartları və şarj axını animasiyası növbəti mərhələlərdə əlavə olunacaq.',
+      'Bu səhifə hazırlanma mərhələsindədir və axtarış sistemlərində göstərilmir. Hazırda markasız, stilizə edilmiş avtomobili fırlada, qapını açıb sadə salona girə və avtomobili hissələrinə ayırıb hər hissənin nə iş gördüyünü oxuya bilərsiniz; şarj axını animasiyası növbəti mərhələlərdə əlavə olunacaq.',
   },
   bulunamadi: {
     seo: 'Səhifə tapılmadı | CargeWay',
